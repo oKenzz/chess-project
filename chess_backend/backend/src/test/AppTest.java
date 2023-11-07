@@ -1,4 +1,4 @@
-package com.example;
+package chess_backend.backend.src.test;
 
 import static org.junit.Assert.assertTrue;
 

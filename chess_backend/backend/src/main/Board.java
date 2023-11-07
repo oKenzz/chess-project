@@ -1,4 +1,4 @@
-package com;
+package chess_backend.backend.src.main;
 
 import java.util.*;
 
