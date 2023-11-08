@@ -1,23 +1,26 @@
 import { Chessboard } from "react-chessboard";
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
+import CustomPieces from "../config/CustomPieces";
 
-type ChessProps = {
+
+  
+const Chess = ({ color }: {
     color: BoardOrientation;
-};
-
-
-const Chess = ({ color }: ChessProps) => {
+}) => {
 
     return (
         <Chessboard 
                 id="BasicBoard"
                 boardOrientation={color}
-                arePremovesAllowed={true}
+                arePremovesAllowed={true} 
                 customDarkSquareStyle={{backgroundColor: "#B7C0D8"}}
                 customLightSquareStyle={{backgroundColor: "#E8EDF9"}}
+                 customPremoveDarkSquareStyle={{backgroundColor: "#d64040"}}
+                customPremoveLightSquareStyle={{backgroundColor: "#eb6a6a"}}
                 showPromotionDialog={true}
-            
-                
+                customPieces={
+                    CustomPieces
+                }
         />
     );
 };

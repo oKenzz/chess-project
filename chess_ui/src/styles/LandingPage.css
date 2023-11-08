@@ -3,11 +3,13 @@
     display: grid;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
     grid-template-columns: 0.5fr auto 0.5fr;
     grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    overflow: hidden;
 }
 
 .div1 { grid-area: 1 / 1 / 4 / 2; }
@@ -58,15 +60,6 @@
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background and transform */
     cursor: pointer; 
-}
-.buttons button:hover {
-    opacity: 0.9;
-    scale: 1.02;
-}
-
-.buttons button:active {
-    background-color: #6658d3b9; /* Darker purple to indicate the button is being pressed */
-    transform: translateY(2px); /* Button moves down slightly to simulate press */
 }
 
 

@@ -12,9 +12,10 @@ body {
   background: radial-gradient(
     73.5% 73.45% at 50% 50%,
     #FFFFFF 0%,
-    rgba(140, 142, 178, 0.20) 100%
+    rgba(140, 142, 178, 0.40) 100%
   );
   min-height: 100vh;
+  overflow: hidden;
 }
 
 p{
