@@ -9,7 +9,7 @@ const PlayButton = ({ link, text}: Props) => {
     return (
         <button onClick={() => window.location.href = link}>
             <p>{text}</p>
-            <img src="/images/CircledPlay.png"></img>
+            <img src="/images/CircledPlay.png" alt="Play Button Image"></img>
         </button>
     );
 };

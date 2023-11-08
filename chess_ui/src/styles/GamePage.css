@@ -1,0 +1,40 @@
+.container {  
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+
+    grid-template-columns: 15% 60% 25%;
+    grid-template-rows: 8vh auto;
+    gap: 1% 1%;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "headers headers headers"
+      "left-panel game-panel right-panel";
+}
+
+/* Assuming the chessboard is the first direct child div of .game-panel */
+
+.headers { 
+    grid-area: headers; 
+
+}
+.left-panel { grid-area: left-panel; }
+.right-panel { grid-area: right-panel; }
+.game-panel { 
+    grid-area: game-panel; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-panel > div {
+    height: auto; /* Set height to auto to maintain aspect ratio */
+    max-width: calc(100vh - 8vh - 7% ); /* Set maximum width to the height of the viewport minus the header's height */
+    max-height: calc(100vh - 8vh - 7%); /* Set maximum height similarly */
+    aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
+    padding: 8px;
+    background-color: #FFF;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
