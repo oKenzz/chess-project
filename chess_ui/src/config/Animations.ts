@@ -39,6 +39,7 @@ export const backgroundVariants = {
         opacity: 0,
         originX: 1, // Rotation origin at the right
         originY: 1, // Rotation origin at the bottom
+        zIndex: -99 // Ensure the background is behind other elements
     },
     animate: {
         x: 0, // End at the natural x position
