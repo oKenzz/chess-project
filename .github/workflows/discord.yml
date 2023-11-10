@@ -12,6 +12,5 @@ jobs:
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_EMBEDS: '[{"title": "Deployment Status", "description": "The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully.", "color": 5814783, "fields": [{"name": "Branch", "value": "{{ EVENT_PAYLOAD.ref }}"}, {"name": "Action Triggered By", "value": "{{ EVENT_PAYLOAD.sender.login }}"}], "author": {"name": "{{ EVENT_PAYLOAD.sender.login }}", "icon_url": "{{ EVENT_PAYLOAD.sender.avatar_url }}"}, "timestamp": "{{ EVENT_PAYLOAD.head_commit.timestamp }}"}]'
       uses: Ilshidur/action-discord@0.3.2
-      with:
-        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been updated.'
