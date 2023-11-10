@@ -14,4 +14,28 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@0.3.2
       with:
-        args: '{"embeds": [{"title": "Deployment Status", "description": "The project ${GITHUB_REPOSITORY} has been deployed successfully.", "color": 5814783, "fields": [{"name": "Branch", "value": "${GITHUB_REF_NAME}"}, {"name": "Action Triggered By", "value": "${GITHUB_ACTOR}"}], "author": {"name": "${GITHUB_ACTOR}", "icon_url": "https://github.com/${GITHUB_ACTOR}.png"}, "timestamp": "${{ github.event.head_commit.timestamp }}"}]}'
+        args: >
+          {
+            "embeds": [
+              {
+                "title": "Deployment Status",
+                "description": "The project ${{ github.repository }} has been deployed successfully.",
+                "color": 5814783,
+                "fields": [
+                  {
+                    "name": "Branch",
+                    "value": "${{ github.ref_name }}"
+                  },
+                  {
+                    "name": "Action Triggered By",
+                    "value": "${{ github.actor }}"
+                  }
+                ],
+                "author": {
+                  "name": "${{ github.actor }}",
+                  "icon_url": "https://github.com/${{ github.actor }}.png"
+                },
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
+          }
