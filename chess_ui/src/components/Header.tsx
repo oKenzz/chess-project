@@ -3,6 +3,7 @@ import { ReactSVG } from 'react-svg';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { buttonVariants } from '../config/Animations';
+import ButtonImg from './ButtonImg';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -78,7 +79,8 @@ const Header = () => {
             </div>
 
             <div className="header-right">
-                <ReactSVG src="/images/Settings.svg" />
+                <ButtonImg img='/images/Settings.svg' alt='Settings' size={50} event={() => {}}/>
+                {/* <ReactSVG src="/images/Settings.svg" /> */}
             </div>
         </motion.header>
     );

@@ -85,12 +85,9 @@
     }
 }
 
-.header-right:hover > div {
+.header-right:hover > button {
     animation: slowSpin 10s linear infinite; /* Apply the slow spin animation */
 }
-
-
-
 
 /* Left panel */
 .left-panel { 
