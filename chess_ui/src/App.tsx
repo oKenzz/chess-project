@@ -1,45 +1,26 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider} from "react-router-dom";
-import {  motion } from 'framer-motion';
-import "./styles/global.css";
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from './pages/LandingPage';
-import GamePage from './pages/GamePage';
-import { pageVariants } from './config/Animations';
-
-//Add page transitions to all pages
-export function PageTransitions({ children }: {
-  children: React.ReactNode;
-}) {
-  return (
-    <motion.div
-      variants={pageVariants}
-      initial="initial"
-      animate="enter"
-      exit="exit"
-      style={{ position: 'absolute', inset: 0 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+const GamePage = React.lazy(() => import('./pages/GamePage'));
 
 const routes = [
   {
+    index: true,
     path: "/",
-    element: (
-      <PageTransitions>
-        <LandingPage />
-      </PageTransitions>
-    ),
+    element: <LandingPage />,
   },
   {
     path: "/game",
     element: (
-        <GamePage />
-    ),
+        <React.Suspense fallback={<div></div>}>
+          <GamePage />
+        </React.Suspense>
+      )
   },
 ];
+
 const router = createBrowserRouter(routes);
+
 function App() {
   return (
     <RouterProvider router={router} />

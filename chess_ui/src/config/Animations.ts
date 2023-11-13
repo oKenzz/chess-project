@@ -17,9 +17,9 @@ export const buttonVariants = {
     hover: {
         scale: 1.1, // grow when hovered
         transition: {
-            duration: 0.1, // how long the hover effect should take
-            yoyo: Infinity // apply the effect back and forth forever
-        }
+            duration: 0.1, // the duration of the animation
+            ease: 'easeInOut', // easing function to use for a smooth effect
+        },
     },
     tap: {
         scale: 0.95, // slightly shrink when tapped or clicked

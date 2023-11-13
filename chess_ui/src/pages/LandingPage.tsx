@@ -1,62 +1,67 @@
-import { useState } from 'react';
-import { ReactSVG } from 'react-svg';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// Components
-import PlayButton from '../components/PlayButton';
-
-// Config
-import { backgroundVariants, itemVariants } from '../config/Animations';
-
-// Styles
-import '../styles/LandingPage.css';
+import { useState } from "react";
+import { ReactSVG } from "react-svg";
+import { motion, AnimatePresence } from "framer-motion";
+import PlayButton from "../components/PlayButton";
+import { backgroundVariants, itemVariants } from "../config/Animations";
 
 const LandingPage = () => {
-    const [isExiting, setExiting] = useState(false);
+  const [isExiting, setExiting] = useState(false);
 
-    // Function to handle button click
-    const handleButtonClick = (link: string) => {
-        setExiting(true); // Trigger the exit animation
-        setTimeout(() => {
-            window.location.href = link; // Redirect after the animation
-        }, 500); // Set the same duration as the exit animation
-    };
+  const handleButtonClick = (link: string) => {
+    setExiting(true);
+    setTimeout(() => {
+      window.location.href = link;
+    }, 500);
+  };
 
-    return (
-        <AnimatePresence mode="wait">
-            {!isExiting && (
-                <motion.main
-                    className="main-landingpage"
-                    initial={{ opacity: 1 }}
-                    exit={{ x: '100vw', transition: { duration: 0.5 } }}
-                >
-                    <div className="div1"> </div>
-                    <div className="div2"> </div>
+  return (
+    <AnimatePresence mode="wait">
+      {!isExiting && (
+        <motion.main
+          className="relative flex h-screen w-full flex-col items-stretch"
+          initial={{ opacity: 1 }}
+          exit={{ x: "100vw", transition: { duration: 0.5 } }}
+        >
+          {/* background image */}
+          <motion.div
+            variants={backgroundVariants}
+            initial="initial"
+            animate="animate"
+            className="-z-index-1 absolute bottom-0 right-0"
+          >
+            <ReactSVG src="/images/Background.svg" />
+          </motion.div>
 
-                    <motion.div className="div3" variants={itemVariants} initial="hidden" animate="visible"> 
-                        <div className='title'>
-                            <h1>Simple</h1>
-                            <h1>Chess</h1>
-                        </div>
-                    </motion.div>
-
-                    <div className="buttons">
-                        <PlayButton link='/game' text="Singleplayer" onClick={() => handleButtonClick('/game')} />
-                        <PlayButton link='/game' text="Multiplayer" onClick={() => handleButtonClick('/game')} />
-                    </div>
-
-                    <motion.div
-                        variants={backgroundVariants}
-                        initial="initial"
-                        animate="animate"
-                        style={{ position: 'absolute', right: 0, bottom: 0 }}
-                    >
-                        <ReactSVG id='background' src="/images/Background.svg" />
-                    </motion.div>
-                </motion.main>
-            )}
-        </AnimatePresence>
-    );
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <h1 className="font-roboto font-900 relative mt-10 text-center text-6xl text-[#7B61FF] md:text-[8rem]">
+              Simple <span className="text-[#34364C]">Chess</span>
+            </h1>
+          </motion.div>
+          <div className="relative flex h-full min-h-[inherit] flex-col p-8 md:flex-row ">
+            <div className="min-height-[inherit] flex h-full flex-[3] flex-col justify-center md:items-end">
+              <div className="flex flex-col gap-8 pb-[50%]">
+                <PlayButton
+                  link="/game"
+                  text="Singleplayer"
+                  onClick={() => handleButtonClick("/game")}
+                />
+                <PlayButton
+                  link="/game"
+                  text="Multiplayer"
+                  onClick={() => handleButtonClick("/game")}
+                />
+              </div>
+            </div>
+            <div className="flex-[3]"></div>
+          </div>
+        </motion.main>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default LandingPage;

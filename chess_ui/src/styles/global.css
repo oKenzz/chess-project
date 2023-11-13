@@ -1,11 +1,14 @@
 /* global.css */
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Roboto&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Roboto;
 }
   
 body {
@@ -16,12 +19,4 @@ body {
   );
   min-height: 100vh;
   overflow: hidden;
-}
-
-p{
-  text-align: center;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: 900;
-  line-height: normal;    
 }

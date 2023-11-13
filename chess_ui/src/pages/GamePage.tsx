@@ -1,14 +1,15 @@
 import '../styles/GamePage.css';
 import Chess from "../components/Chess";
 import { motion } from 'framer-motion';
-import Header from '../components/Header';
 import LeftSidebar from '../components/LeftSidebar';
+import CustomNavbar from '../components/CustomNavbar';
 
 const GamePage = () => {
     return (
-        <div className="container" >
+        <div className="game-grid" >
             {/* Headers */}
-            <Header />
+            <CustomNavbar  />
+            {/* <Header /> */}
             <motion.div
                 initial={{  opacity: 0}
             }
