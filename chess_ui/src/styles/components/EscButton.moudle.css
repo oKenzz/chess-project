@@ -1,0 +1,43 @@
+
+.escbutton.pressed {
+    transform:  scale(0.95);
+}
+.escbutton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-right: -100px;
+    padding: 3px 16px;
+    border-radius: 8px;
+    position: relative; 
+    overflow: hidden;
+    border: 2px solid #7B61FF;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.fill-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0%; 
+    background-color: #aea3e4;
+    transition: width 0.3s ease; 
+    z-index: 0;
+}
+.escbutton:hover .fill-bg,
+.escbutton.pressed .fill-bg {
+    width: 100%; 
+}
+.escbutton img,
+.escbutton span{
+    color: #7B61FF;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    position: relative;
+    z-index: 1; 
+}

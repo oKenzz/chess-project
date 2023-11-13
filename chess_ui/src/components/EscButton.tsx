@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion';
-import { ReactSVG } from 'react-svg';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { buttonVariants } from '../config/Animations';
-import ButtonImg from './ButtonImg';
-
-const Header = () => {
+import '../styles/components/EscButton.moudle.css';
+const EscButton = ( style:{
+    style?: React.CSSProperties
+})=> {
     const navigate = useNavigate();
     const [isEscPressed, setIsEscPressed] = useState(false);
     const [isEscReleased, setIsEscReleased] = useState(false);
@@ -52,38 +51,24 @@ const Header = () => {
     }, [ isEscReleased, navigate]);
 
     return (
-        <motion.header 
-            initial={{ y: '-8vh' }}
-            animate={{ y: 0, transition: { duration: 0.5, delay: 0.5 }}}
-            className="header"
-        > 
-            <motion.div 
-                className={`header-left ${isEscPressed ? 'pressed' : ''}`} // Add 'pressed' class when Esc is pressed
-                onClick={navigateToLandingPage}
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.05 }} // Scale up slightly on hover
-                animate={{ scale: isEscPressed ? 0.95 : 1 }} // Scale down when Esc is pressed
-            >
-                <div className="fill-bg"></div> {/* This div will animate on hover and when Esc is pressed */}
-                <img 
-                    src="/images/ESCButton.png"
-                    alt="Esc"
-                    width={42}
-                    height={42}
-                />
-                <span>Leave</span>
-            </motion.div>
+        <motion.div 
+            className={`escbutton ${isEscPressed ? 'pressed' : ''}`} // Add 'pressed' class when Esc is pressed
+            onClick={navigateToLandingPage}
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.05 }} // Scale up slightly on hover
+            animate={{ scale: isEscPressed ? 0.95 : 1 }} // Scale down when Esc is pressed
+            style={style.style}
+        >
+            <div className="fill-bg"></div> {/* This div will animate on hover and when Esc is pressed */}
+            <img 
+                src="/images/ESCButton.png"
+                alt="Esc"
+                width={42}
+                height={42}
+            />
+            <span>Leave</span>
+        </motion.div>
+    )
+}
 
-            <div className="header-center">
-                <ReactSVG src="/images/logo.svg" />
-            </div>
-
-            <div className="header-right">
-                <ButtonImg img='/images/Settings.svg' alt='Settings' size={50} event={() => {}}/>
-                {/* <ReactSVG src="/images/Settings.svg" /> */}
-            </div>
-        </motion.header>
-    );
-};
-
-export default Header;
+export default EscButton

@@ -12,7 +12,7 @@ const routes = [
   {
     path: "/game",
     element: (
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense fallback={<div></div>}>
           <GamePage />
         </React.Suspense>
       )
