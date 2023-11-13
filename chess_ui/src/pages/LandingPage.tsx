@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import { motion, AnimatePresence } from 'framer-motion';
-
 // Components
 import PlayButton from '../components/PlayButton';
 
