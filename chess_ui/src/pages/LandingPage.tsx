@@ -34,8 +34,7 @@ const LandingPage = () => {
 
                     <motion.div className="div3" variants={itemVariants} initial="hidden" animate="visible"> 
                         <div className='title'>
-                            <h1>Simple</h1>
-                            <h1>Chess</h1>
+                            <h1>Simple <span>Chess</span></h1>
                         </div>
                     </motion.div>
 
