@@ -38,7 +38,7 @@ const LandingPage = () => {
             animate="visible"
           >
             <h1 className="font-roboto font-900 relative mt-10 text-center text-6xl text-[#7B61FF] md:text-[8rem]">
-              Simple <span className="text-[#34364C]">Chess</span>
+              Simple <span className="text-[#34364C]">Chess</span> 
             </h1>
           </motion.div>
           <div className="relative flex h-full min-h-[inherit] flex-col p-8 md:flex-row ">

@@ -11,4 +11,6 @@ public class ChessBackendApplication {
 		SpringApplication.run(ChessBackendApplication.class, args);
 	}
 
+
+
 }
