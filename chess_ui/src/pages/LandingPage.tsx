@@ -45,14 +45,16 @@ const LandingPage = () => {
             <div className="min-height-[inherit] flex h-full flex-[3] flex-col justify-center md:items-end">
               <div className="flex flex-col gap-8 pb-[50%]">
                 <PlayButton
-                  link="/game"
+                  link="/singleplayer"
                   text="Singleplayer"
-                  onClick={() => handleButtonClick("/game")}
+                  onClick={() => handleButtonClick("/singleplayer")}
+                  disabled = {true}
+
                 />
                 <PlayButton
-                  link="/game"
+                  link="/multiplayer"
                   text="Multiplayer"
-                  onClick={() => handleButtonClick("/game")}
+                  onClick={() => handleButtonClick("/multiplayer")}
                 />
               </div>
             </div>
