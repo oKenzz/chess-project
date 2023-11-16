@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const URL = process.env.SOCKET_URL || 'http://localhost:8000';
+const URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:8000';
 
 export class SocketClient {
     private static instance: SocketClient;
