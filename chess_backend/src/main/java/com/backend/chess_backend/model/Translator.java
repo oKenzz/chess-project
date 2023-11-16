@@ -1,7 +1,8 @@
 package com.backend.chess_backend.model;
 
-import com.backend.chess_backend.model.Pieces.Piece;
 import java.util.ArrayList;
+
+import com.backend.chess_backend.model.Pieces.Piece;
 
 public class Translator {
 
@@ -46,40 +47,52 @@ public class Translator {
         int emptyCount = 0;
         String rowStr = "";
 
-        for(int x = 0; x < board.length; x++){
-
-
-            for (int y = board[0].length-1; y > -1; y--){
+        for(int y = board[0].length-1; y > -1; y--){
+            for (int x = 0; x < board.length-1; x++ ){
                 if(board[x][y] == null){
                     emptyCount++;
                 }
                 else{
-                    rowStr = emptyCount + board[x][y].getPieceType();
+                    if(emptyCount != 0){
+                        rowStr += emptyCount + board[x][y].getPieceType();
+                    }else{
+                        rowStr += board[x][y].getPieceType();
+                    }
+                    if(x != board.length-2){
+                        emptyCount = 0;
+                    }
                 }
             }
+
+            if(emptyCount != 0){
+                rowStr += emptyCount;
+            }
             if (y != 0){
+                
                 rowStr += "/";
             }
             boardString += rowStr;
+            rowStr = "";
+            emptyCount = 0;
         }
         return boardString;
     }
 
-    // private String translateCoords(int x, int y){
-    //     String pos = alphabet.charAt(x) + y+1;
-    //     return pos;
-    // }
+    private String translateCoords(int x, int y){
+        String pos = alphabet.charAt(x) + y+1 + "";
+        return pos;
+    }
 
-    // public ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard){
-    //     ArrayList<String> posMoves = new ArrayList<>();
+    public ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard){
+        ArrayList<String> posMoves = new ArrayList<>();
 
-    //     for(int x = 0; x < board.length(); x++){
-    //         for(int y = 0; y < board[0].length(); y++){
-    //             if(bolBoard[x][y]){
-    //                 posMoves.add(translateCoords(x, y));
-    //             }
-    //         }
-    //     }
-    //     return posMoves; 
-    // }
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(bolBoard[x][y]){
+                    posMoves.add(translateCoords(x, y));
+                }
+            }
+        }
+        return posMoves; 
+    }
 }

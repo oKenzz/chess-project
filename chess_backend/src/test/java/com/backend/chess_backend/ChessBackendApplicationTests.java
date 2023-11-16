@@ -1,14 +1,13 @@
 package com.backend.chess_backend;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.backend.chess_backend.model.Translator;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Pieces.Rook;
+import com.backend.chess_backend.model.Translator;
 
 @SpringBootTest
 class ChessBackendApplicationTests {
@@ -30,8 +29,8 @@ class ChessBackendApplicationTests {
                 }
             }
         }
-        // String fen = translator.translateBoard(board);
-        // assertTrue(fen.equals("R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1"));
-		assertTrue(true);
-	}
+        String fen = translator.translateBoard(board);
+        assertEquals(fen, "R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1/R1R1R1R1");
+        //assertTrue(true);
+    }
 }
