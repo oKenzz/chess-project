@@ -7,39 +7,46 @@ export class SocketClient {
     private socket: Socket;
     private reconnectAttempts: number = 0;
     private maxReconnectAttempts: number = 3;
-    private shouldReconnect: boolean = true; // New flag to control reconnection
+    private shouldReconnect: boolean = true;
 
     private constructor() {
         this.socket = io(URL, {
             autoConnect: false,
-            ackTimeout: 10000,
         });
 
         this.socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
-            if (this.reconnectAttempts < this.maxReconnectAttempts && this.shouldReconnect) {
-                console.log(`Attempting to reconnect... (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
-                this.reconnectAttempts++;
-                setTimeout(() => this.socket.connect(), 2000); // Attempt to reconnect after 2 seconds
-            } else {
-                console.error('Maximum reconnection attempts reached. No further attempts will be made.');
-                this.shouldReconnect = false; // Prevent further reconnection attempts
-            }
+            this.attemptReconnect();
         });
 
         this.socket.on('connect', () => {
             console.log('Connected to the server.');
-            this.reconnectAttempts = 0; // Reset the attempts counter upon successful connection
-            this.shouldReconnect = true; // Allow reconnections in future if needed
+            this.resetReconnectionParams();
         });
 
         this.socket.on('disconnect', (reason) => {
             console.log(`Socket disconnected: ${reason}`);
-            if (reason === 'io server disconnect' && this.shouldReconnect) {
-                // The server disconnected the socket, attempt to reconnect
-                this.socket.connect();
+            if (reason !== 'io client disconnect' && this.shouldReconnect) {
+                // Attempt to reconnect only if the client didn't initiate the disconnection
+                this.attemptReconnect();
             }
         });
+    }
+
+    private attemptReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts && this.shouldReconnect) {
+            console.log(`Attempting to reconnect... (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
+            this.reconnectAttempts++;
+            setTimeout(() => this.socket.connect(), 2000);
+        } else {
+            console.error('Maximum reconnection attempts reached. No further attempts will be made.');
+            this.shouldReconnect = false;
+        }
+    }
+
+    private resetReconnectionParams() {
+        this.reconnectAttempts = 0;
+        this.shouldReconnect = true;
     }
 
     public static getInstance(): SocketClient {
@@ -50,15 +57,19 @@ export class SocketClient {
     }
 
     public connect() {
-        if (this.shouldReconnect) {
-            this.socket.connect();
-        }
+        this.shouldReconnect = true;
+        this.socket.connect();
     }
 
     public disconnect() {
+        this.removeAllListeners(); // Remove all listeners before disconnecting
+        this.shouldReconnect = false;
         this.socket.disconnect();
     }
 
+    public removeAllListeners() {
+        this.socket.off(); // This removes all listeners attached to the socket
+    }
     public getSocket(): Socket {
         return this.socket;
     }

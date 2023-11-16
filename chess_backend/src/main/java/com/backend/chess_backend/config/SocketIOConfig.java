@@ -23,7 +23,7 @@ public class SocketIOConfig {
         config.setPort(port);
 
         // Configure CORS
-        config.setOrigin(":*:");
+        config.setOrigin("*");
 
         // Log URL to connect to
         System.out.println("\nURL to connect: http://" + host + ":" + port + "\n");

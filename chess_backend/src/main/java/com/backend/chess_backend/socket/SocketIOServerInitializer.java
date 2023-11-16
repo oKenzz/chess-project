@@ -11,19 +11,22 @@ import jakarta.annotation.PreDestroy;
 public class SocketIOServerInitializer {
 
     private final SocketIOServer server;
-    private final TestHandler testHandler;
+    private final ChessHandler chessHandler;
 
     @Autowired
-    public SocketIOServerInitializer(SocketIOServer server, TestHandler testHandler) {
+    public SocketIOServerInitializer(SocketIOServer server, ChessHandler chessHandler) {
         this.server = server;
-        this.testHandler = testHandler;
+        this.chessHandler = chessHandler;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void startServer() {
-        server.addConnectListener(testHandler.onConnected());
-        server.addDisconnectListener(testHandler.onDisconnected());
-        server.addEventListener("message", String.class, testHandler::onChatMessage);
+        server.addConnectListener(chessHandler.onConnected());
+        server.addDisconnectListener(chessHandler.onDisconnected());
+        server.addEventListener("message", String.class, chessHandler::onChatMessage);
+        server.addEventListener("move", String.class, chessHandler::moveListener);
+        server.addEventListener("newGamePosition", String.class, chessHandler::newGamePostionListener);
+
         server.start();
     }
 
