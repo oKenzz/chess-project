@@ -11,6 +11,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "chess.js": "^1.0.0-beta.6",
     "flowbite-react": "^0.6.4",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
@@ -19,6 +20,7 @@
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
     "react-svg": "^16.1.29",
+    "socket.io-client": "^4.7.2",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },

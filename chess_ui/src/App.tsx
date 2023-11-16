@@ -1,19 +1,28 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from './pages/LandingPage';
-const GamePage = React.lazy(() => import('./pages/GamePage'));
-
+const MultiPlayerGame = React.lazy(() => import('./pages/MultiPlayerGame'));
+const SinglePlayerGame = React.lazy(() => import('./pages/SinglePlayerGame'));
 const routes = [
+  
   {
     index: true,
     path: "/",
     element: <LandingPage />,
   },
   {
-    path: "/game",
+    path: "/multiplayer",
     element: (
         <React.Suspense fallback={<div></div>}>
-          <GamePage />
+          <MultiPlayerGame />
+        </React.Suspense>
+      )
+  },
+  {
+    path: "/singleplayer",
+    element: (
+        <React.Suspense fallback={<div></div>}>
+          <SinglePlayerGame />
         </React.Suspense>
       )
   },

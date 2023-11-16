@@ -38,21 +38,23 @@ const LandingPage = () => {
             animate="visible"
           >
             <h1 className="font-roboto font-900 relative mt-10 text-center text-6xl text-[#7B61FF] md:text-[8rem]">
-              Simple <span className="text-[#34364C]">Chess</span>
+              Simple <span className="text-[#34364C]">Chess</span> 
             </h1>
           </motion.div>
           <div className="relative flex h-full min-h-[inherit] flex-col p-8 md:flex-row ">
             <div className="min-height-[inherit] flex h-full flex-[3] flex-col justify-center md:items-end">
               <div className="flex flex-col gap-8 pb-[50%]">
                 <PlayButton
-                  link="/game"
+                  link="/singleplayer"
                   text="Singleplayer"
-                  onClick={() => handleButtonClick("/game")}
+                  onClick={() => handleButtonClick("/singleplayer")}
+                  disabled = {true}
+
                 />
                 <PlayButton
-                  link="/game"
+                  link="/multiplayer"
                   text="Multiplayer"
-                  onClick={() => handleButtonClick("/game")}
+                  onClick={() => handleButtonClick("/multiplayer")}
                 />
               </div>
             </div>

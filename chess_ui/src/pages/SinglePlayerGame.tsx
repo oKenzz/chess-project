@@ -4,7 +4,10 @@ import { motion } from 'framer-motion';
 import LeftSidebar from '../components/LeftSidebar';
 import CustomNavbar from '../components/CustomNavbar';
 
-const GamePage = () => {
+const SinglePlayerGame = () => {
+
+    
+
     return (
         <div className="game-grid" >
             {/* Headers */}
@@ -27,4 +30,4 @@ const GamePage = () => {
     );
 };
 
-export default GamePage;
+export default SinglePlayerGame;
