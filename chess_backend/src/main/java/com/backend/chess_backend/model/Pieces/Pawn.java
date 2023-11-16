@@ -50,7 +50,7 @@ public class Pawn extends Piece{
     }
     @Override
     public String getPieceType(){
-        if(color == PieceColor.BLACK){
+        if(this.getColor() == PieceColor.BLACK){
             return "p";
         }else{
             return "P";

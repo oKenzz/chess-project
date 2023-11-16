@@ -37,7 +37,7 @@ public class Queen extends Piece{
 
     @Override
     public String getPieceType(){
-        if(color == PieceColor.BLACK){
+        if(this.getColor() == PieceColor.BLACK){
             return "q";
         }else{
             return "Q";

@@ -48,7 +48,7 @@ public class Translator {
         String rowStr = "";
 
         for(int y = board[0].length-1; y > -1; y--){
-            for (int x = 0; x < board.length-1; x++ ){
+            for (int x = 0; x < board.length; x++ ){
                 if(board[x][y] == null){
                     emptyCount++;
                 }
@@ -58,7 +58,7 @@ public class Translator {
                     }else{
                         rowStr += board[x][y].getPieceType();
                     }
-                    if(x != board.length-2){
+                    if(x != board.length-1){
                         emptyCount = 0;
                     }
                 }
