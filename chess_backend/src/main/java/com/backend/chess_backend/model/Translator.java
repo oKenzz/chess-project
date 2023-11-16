@@ -41,29 +41,29 @@ public class Translator {
         return allCoordinates;
     }
 
-    // public String translateBoard(Piece[][] board){
-    //     String boardString = "";
-    //     int emptyCount = 0;
-    //     String rowStr = "";
+    public String translateBoard(Piece[][] board){
+        String boardString = "";
+        int emptyCount = 0;
+        String rowStr = "";
 
-    //     for(int x = 0; x < board.length(); x++){
+        for(int x = 0; x < board.length; x++){
 
 
-    //         for (int y = board[0].lenth()-1; y > -1; y--){
-    //             if(board[x][y] == null){
-    //                 emptyCount++;
-    //             }
-    //             else{
-    //                 rowStr = emptyCount + board[x][y].getPieceType();
-    //             }
-    //         }
-    //         if (y != 0){
-    //             rowStr += "/";
-    //         }
-    //         boardString += rowStr;
-    //     }
-    //     return boardString;
-    // }
+            for (int y = board[0].length-1; y > -1; y--){
+                if(board[x][y] == null){
+                    emptyCount++;
+                }
+                else{
+                    rowStr = emptyCount + board[x][y].getPieceType();
+                }
+            }
+            if (y != 0){
+                rowStr += "/";
+            }
+            boardString += rowStr;
+        }
+        return boardString;
+    }
 
     // private String translateCoords(int x, int y){
     //     String pos = alphabet.charAt(x) + y+1;
