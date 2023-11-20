@@ -8,9 +8,10 @@ public class Player {
     
     private PieceColor teamColor;
     private Timer timer;
+    private String uuid;
 
-    public Player(PieceColor color){
-
+    public Player(PieceColor color, String clientUUID){
+        this.uuid = clientUUID;
         this.teamColor = color;
     }
 
@@ -24,5 +25,8 @@ public class Player {
 
     public PieceColor getColor(){
         return teamColor;
+    }
+    public String getUuid() {
+        return uuid;
     }
 }
