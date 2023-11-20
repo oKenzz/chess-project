@@ -12,8 +12,10 @@ public class Translator {
         this.alphabet = "abcdefgh";
     }
 
-    public int[] translatePos(String pos){
-        int[] coordinates = new int[2];
+    public ArrayList<Integer> translatePos(String pos){
+
+        ArrayList<Integer> coordinates = new ArrayList<Integer>();
+        
         int yCoord = 0;
         int xCoord = 0;
 
@@ -24,20 +26,22 @@ public class Translator {
                 break;
             }
         }
-        yCoord = pos.charAt(1);
+
+
+        yCoord = Character.getNumericValue(pos.charAt(1));
         yCoord--;
-        coordinates[0] = xCoord;
-        coordinates[1] = yCoord;
+        coordinates.add(xCoord);
+        coordinates.add(yCoord);
         
         return coordinates;
     }
 
-    public int[][] translatePos(String oldPos, String newPos){
+    public ArrayList<ArrayList<Integer>> translatePos(String oldPos, String newPos){
 
-        int[][] allCoordinates = new int[2][2];
+        ArrayList<ArrayList<Integer>> allCoordinates = new ArrayList<>();
 
-        allCoordinates[0] = translatePos(oldPos);
-        allCoordinates[1] = translatePos(newPos);
+        allCoordinates.add(translatePos(oldPos));
+        allCoordinates.add(translatePos(newPos));
 
         return allCoordinates;
     }
@@ -79,16 +83,17 @@ public class Translator {
     }
 
     private String translateCoords(int x, int y){
-        String pos = alphabet.charAt(x) + y+1 + "";
-        return pos;
+        String xpos = "" + alphabet.charAt(x);
+        String ypos = "" + (y+1);
+        return xpos + ypos;
     }
 
     public ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard){
         ArrayList<String> posMoves = new ArrayList<>();
 
-        for(int x = 0; x < 8; x++){
-            for(int y = 0; y < 8; y++){
-                if(bolBoard[x][y]){
+        for(int x = 0; x < bolBoard.length; x++){
+            for(int y = 0; y < bolBoard.length; y++){
+                if(bolBoard[x][y] == true){
                     posMoves.add(translateCoords(x, y));
                 }
             }
