@@ -62,9 +62,7 @@ public class Translator {
                     }else{
                         rowStr += board[x][y].getPieceType();
                     }
-                    if(x != board.length-1){
-                        emptyCount = 0;
-                    }
+                    emptyCount = 0;
                 }
             }
 
