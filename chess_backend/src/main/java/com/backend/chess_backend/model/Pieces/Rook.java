@@ -22,7 +22,7 @@ public class Rook extends Piece{
         
         for (int x = 0; x < boardW; x++){
             for (int y = 0; y < boardH; y++){
-                if (x == xCoord ^ y == yCoord){ //if in same row/column but not itself
+                if (x == this.getX() ^ y == this.getY()){ //if in same row/column but not itself
                     possibleMoves[x][y] = true;
                 }else{
                     possibleMoves[x][y] = false;
