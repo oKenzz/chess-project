@@ -97,7 +97,6 @@ class TranslatorTest{
 
         assertTrue(coords.get(1).equals(actual2));
 
-
     }
 
     //Method needs to be made public to run tests on it
@@ -117,7 +116,7 @@ class TranslatorTest{
 
         Boolean[][] bolBoard = new Boolean[8][8];
 
-        for(int x = 0; x <bolBoard.length; x++){
+        for(int x = 0; x < bolBoard.length; x++){
             for(int y = 0; y < bolBoard.length; y++){
 
                 if(x == 3){
@@ -135,6 +134,5 @@ class TranslatorTest{
         for(int i = 0; i < possitions.size(); i++){
             assertEquals(possitions.get(i), actual.get(i));
         }
-
     }
 }
