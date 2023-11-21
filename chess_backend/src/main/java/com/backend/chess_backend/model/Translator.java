@@ -65,7 +65,7 @@ public class Translator {
                     emptyCount = 0;
                 }
             }
-
+            
             if(emptyCount != 0){
                 rowStr += emptyCount;
             }
