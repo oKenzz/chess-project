@@ -12,15 +12,14 @@ public class Bishop extends Piece{
     public  Boolean[][] getPossibleMoves(int boardW, int boardH){
 
         Boolean[][] possibleMoves = new Boolean[boardW][boardH];
-
+        
+        
         for (int x = 0; x < boardW; x++){
             for (int y = 0; y < boardH; y++){
-                if (x != this.getX() && y != this.getY()){
-                    if (Math.abs(x - this.getX()) - Math.abs(y - this.getY()) == 0){
-                        possibleMoves[x][y] = true;
-                    }else{
-                        possibleMoves[x][y] = false;
-                    }
+                if((Math.abs(x - this.getX()) - Math.abs(y - this.getY()) == 0) && x != this.getX()){ //if in diagonal but avoiding itself
+                    possibleMoves[x][y] = true;
+                }else{
+                    possibleMoves[x][y] = false;
                 }
             }
         }
