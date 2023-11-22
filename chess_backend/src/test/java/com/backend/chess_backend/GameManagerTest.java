@@ -21,7 +21,6 @@ public class GameManagerTest {
     @BeforeEach
     void setUp() {
         gameManager.reset();
-        gameManager.generateID();
         playerOne = new Player("uuid-player-1");
         playerTwo = new Player("uuid-player-2");
     }
