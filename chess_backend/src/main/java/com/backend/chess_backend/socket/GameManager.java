@@ -10,20 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GameManager {
-    private static GameManager instance;
     private Map<String, Game> games; // Keyed by game ID
     private Map<String, String> playerGameMap; // Keyed by player UUID, value is game ID
 
-    private GameManager() {
+    public GameManager() {
         games = new HashMap<>();
         playerGameMap = new HashMap<>();
-    }
-
-    public static GameManager getInstance() {
-        if (instance == null) {
-            instance = new GameManager();
-        }
-        return instance;
     }
 
     private Game createGame(String clientId){
@@ -35,6 +27,7 @@ public class GameManager {
         return newGame;
     }
 
+    // Remove use joinRandomGame instead
     public Game joinOrCreateGame(String gameId, String clientId) {
         Game hasJoined  = join(gameId,clientId);
         if( hasJoined == null){
@@ -75,10 +68,6 @@ public class GameManager {
     public String getGameIdByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
         return gameId != null ? gameId : null;
-    }
-
-    public static void reset() {
-        instance = null;
     }
 
     public String generateID() {

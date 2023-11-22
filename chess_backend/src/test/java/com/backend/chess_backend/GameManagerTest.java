@@ -5,17 +5,19 @@ import com.backend.chess_backend.socket.GameManager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+@ContextConfiguration(classes = {GameManager.class})
 public class GameManagerTest {
     private GameManager gameManager;
     private Player playerOne;
     private Player playerTwo;
-
+    
     @BeforeEach
     void setUp() {
-        GameManager.reset(); // Reset GameManager to its initial state before each test
-        gameManager = GameManager.getInstance();
         gameManager.generateID();
         playerOne = new Player("uuid-player-1");
         playerTwo = new Player("uuid-player-2");
