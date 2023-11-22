@@ -1,28 +1,24 @@
 package com.backend.chess_backend.socket;
 
-import com.backend.chess_backend.model.Game;
-import com.backend.chess_backend.socket.GameManager;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-
 import lombok.extern.log4j.Log4j2;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 @Log4j2
 @Component
 public class ChessHandler {
 
+    private final GameManager gameManager;
+
     @Autowired
-    private GameManager gameManager;
+    public ChessHandler(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
     // Listener for client connection events
     public ConnectListener onConnected() {
@@ -40,46 +36,44 @@ public class ChessHandler {
                 log.info("No room was found. Joining a random room.");
                 String roomCode = gameManager.joinRandomGame(client.getSessionId().toString()).getId();
                 client.joinRoom(roomCode);
-                log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(), roomCode);
+                log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(),
+                        roomCode);
             }
 
         };
 
     }
 
-    public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest){
+    public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
         log.info("Message: " + message + " From: " + client.getSessionId());
         // send message to global chat
         client.getNamespace().getBroadcastOperations().sendEvent("chat", message);
 
-        if (ackRequest.isAckRequested()){
+        if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData("Message has been receieved");
         }
     }
 
-    public void moveListener(SocketIOClient client, String move, AckRequest ackRequest){
+    public void moveListener(SocketIOClient client, String move, AckRequest ackRequest) {
         log.info("Move: " + move + " From: " + client.getSessionId());
 
-        //String movePossible backend.checkMove();
-        // send random FEN string to client as test
-        // client.getNamespace().getBroadcastOperations().sendEvent("gameState", move);
         String fen = "8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50";
-            client.getNamespace().getBroadcastOperations().sendEvent("gameState", fen);
-        if (ackRequest.isAckRequested()){
+        client.getNamespace().getBroadcastOperations().sendEvent("gameState", fen);
+        if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(true);
         }
 
     }
 
-    public void newGamePostionListener(SocketIOClient client, String fen, AckRequest ackRequest){
+    public void newGamePostionListener(SocketIOClient client, String fen, AckRequest ackRequest) {
         log.info("Chess position: " + fen + " From: " + client.getSessionId());
-        
+
         // GameManager gameManager = GameManager.getInstance();
         String roomID = gameManager.getGameIdByPlayerUuid(client.getSessionId().toString());
         log.info("Sending new game position to room: " + roomID);
         client.getNamespace().getRoomOperations(roomID).sendEvent("gameState", fen);
 
-        if (ackRequest.isAckRequested()){
+        if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(true);
         }
     }

@@ -20,7 +20,7 @@
         {
             "label": "Start Chess Backend",
             "type": "shell",
-            "command": "./mvnw spring-boot:run",
+            "command": "mvnw spring-boot:run",
             "options": {
                 "cwd": "${workspaceFolder}/chess_backend"
             },

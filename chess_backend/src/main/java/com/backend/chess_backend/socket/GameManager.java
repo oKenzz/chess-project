@@ -2,7 +2,6 @@ package com.backend.chess_backend.socket;
 
 import com.backend.chess_backend.model.Game;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,8 +18,8 @@ public class GameManager {
         playerGameMap = new ConcurrentHashMap<>();
     }
 
-    public synchronized Game createGame(String clientId){
-        String newGameId = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+    public synchronized Game createGame(String clientId) {
+        String newGameId = generateID();
         Game newGame = new Game(newGameId);
         newGame.addPlayer(clientId);
         games.put(newGameId, newGame);
@@ -28,15 +27,16 @@ public class GameManager {
         return newGame;
     }
 
-    public synchronized Game join(String gameId, String clientId){
+    public synchronized Game join(String gameId, String clientId) {
         Game game = games.get(gameId);
         System.out.println(game);
         System.out.println(game != null);
-        if (game != null){
+        if (game != null) {
             game.addPlayer(clientId);
-                playerGameMap.put(clientId, game.getId());
-                return game;
-        };
+            playerGameMap.put(clientId, game.getId());
+            return game;
+        }
+        ;
         return null;
     }
 
@@ -51,12 +51,10 @@ public class GameManager {
         return createGame(clientId);
     }
 
-
     public Game getGameByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
         return gameId != null ? games.get(gameId) : null;
     }
-
 
     public String getGameIdByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
@@ -67,9 +65,8 @@ public class GameManager {
         return UUID.randomUUID().toString().substring(0, 4).toUpperCase();
     }
 
-    public void reset(){
+    public void reset() {
         games.clear();
         playerGameMap.clear();
     }
-
 }

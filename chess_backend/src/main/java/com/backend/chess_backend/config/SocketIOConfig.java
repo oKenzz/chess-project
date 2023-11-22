@@ -21,13 +21,9 @@ public class SocketIOConfig {
         Configuration config = new Configuration();
         config.setHostname(host);
         config.setPort(port);
+        config.setOrigin("*");// Configure CORS
 
-        // Configure CORS
-        config.setOrigin("*");
-
-        // Log URL to connect to
         System.out.println("\nURL to connect: http://" + host + ":" + port + "\n");
-
         return new SocketIOServer(config);
     }
 }
