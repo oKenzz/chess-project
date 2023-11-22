@@ -7,7 +7,7 @@ public class Rook extends Piece{
     private int xCoord;
     private int yCoord;
 
-
+    int x = 0;
 
     public Rook(PieceColor color, int xCoord, int yCoord){
         super(color, xCoord, yCoord);
