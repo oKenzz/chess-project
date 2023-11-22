@@ -5,6 +5,7 @@ import com.backend.chess_backend.model.Game;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,11 @@ public class GameManager {
     private Map<String, String> playerGameMap; // Keyed by player UUID, value is game ID
 
     public GameManager() {
-        games = new HashMap<>();
-        playerGameMap = new HashMap<>();
+        games = new ConcurrentHashMap<>();
+        playerGameMap = new ConcurrentHashMap<>();
     }
 
-    private Game createGame(String clientId){
+    public synchronized Game createGame(String clientId){
         String newGameId = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
         Game newGame = new Game(newGameId);
         newGame.addPlayer(clientId);
@@ -27,17 +28,10 @@ public class GameManager {
         return newGame;
     }
 
-    // Remove use joinRandomGame instead
-    public Game joinOrCreateGame(String gameId, String clientId) {
-        Game hasJoined  = join(gameId,clientId);
-        if( hasJoined == null){
-            return createGame(clientId);
-        }
-        return hasJoined;
-    }
-
-    private Game join(String gameId, String clientId){
+    public synchronized Game join(String gameId, String clientId){
         Game game = games.get(gameId);
+        System.out.println(game);
+        System.out.println(game != null);
         if (game != null){
             game.addPlayer(clientId);
                 playerGameMap.put(clientId, game.getId());
@@ -46,15 +40,15 @@ public class GameManager {
         return null;
     }
 
-    public String joinRandomGame(String clientId) {
+    public synchronized Game joinRandomGame(String clientId) {
         for (Game game : games.values()) {
             if (game.isFull() == false) {
                 game.addPlayer(clientId);
                 playerGameMap.put(clientId, game.getId());
-                return game.getId();
+                return game;
             }
         }
-        return createGame(clientId).getId();
+        return createGame(clientId);
     }
 
 
@@ -71,6 +65,11 @@ public class GameManager {
 
     public String generateID() {
         return UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+    }
+
+    public void reset(){
+        games.clear();
+        playerGameMap.clear();
     }
 
 }
