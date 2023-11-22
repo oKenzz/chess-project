@@ -13,12 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Log4j2
 @Component
 public class ChessHandler {
+
+    @Autowired
+    private GameManager gameManager;
+
     // Listener for client connection events
     public ConnectListener onConnected() {
         return client -> {
@@ -28,12 +33,12 @@ public class ChessHandler {
             String room = params.containsKey("room") ? params.get("room").get(0) : null;
             if (room != null && !room.isEmpty()) {
                 // Check if the room exists
-                GameManager.joinOrCreateGame(room, client.getSessionId().toString())
+                gameManager.joinOrCreateGame(room, client.getSessionId().toString());
                 client.joinRoom(room);
                 log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(), room);
             } else {
                 log.info("No room was found. Joining a random room.");
-                String roomCode = GameManager.joinRandomGame(client.getSessionId().toString());
+                String roomCode = gameManager.joinRandomGame(client.getSessionId().toString());
                 client.joinRoom(roomCode);
                 log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(), roomCode);
             }
@@ -70,7 +75,7 @@ public class ChessHandler {
         log.info("Chess position: " + fen + " From: " + client.getSessionId());
         
         // GameManager gameManager = GameManager.getInstance();
-        String roomID = GameManager.getGameIdByPlayerUuid(client.getSessionId().toString());
+        String roomID = gameManager.getGameIdByPlayerUuid(client.getSessionId().toString());
         log.info("Sending new game position to room: " + roomID);
         client.getNamespace().getRoomOperations(roomID).sendEvent("gameState", fen);
 

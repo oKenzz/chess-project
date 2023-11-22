@@ -1,69 +1,87 @@
 package com.backend.chess_backend.socket;
 
 import com.backend.chess_backend.model.Game;
-import com.backend.chess_backend.model.Player;
-import com.backend.chess_backend.repository.GameRepository;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
 
+@Service
 public class GameManager {
-    private static GameRepository gameRepository;
+    private static GameManager instance;
+    private Map<String, Game> games; // Keyed by game ID
+    private Map<String, String> playerGameMap; // Keyed by player UUID, value is game ID
 
-    public static Game createGame(String clientId){
-        String newGameId = GameManager.generateID();
+    private GameManager() {
+        games = new HashMap<>();
+        playerGameMap = new HashMap<>();
+    }
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+        return instance;
+    }
+
+    private Game createGame(String clientId){
+        String newGameId = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
         Game newGame = new Game(newGameId);
-
-        // Add player to game
-        Player player = new Player(clientId);
-        newGame.addPlayer( player.getUuid() );
-
-        // Save the game to the database
-        gameRepository.save(newGame);
+        newGame.addPlayer(clientId);
+        games.put(newGameId, newGame);
+        playerGameMap.put(clientId, newGameId);
         return newGame;
     }
 
-    public static Game joinOrCreateGame(String gameId, String clientId) {
-        Game hasJoined = join(gameId, clientId);
+    public Game joinOrCreateGame(String gameId, String clientId) {
+        Game hasJoined  = join(gameId,clientId);
         if( hasJoined == null){
             return createGame(clientId);
         }
         return hasJoined;
     }
 
-    public static Game join(String gameId, String ClientId){
-        List<Game> games = gameRepository.findAll();
-        for (Game game : games) {
-            if (game.getId().equals(gameId) && game.isFull() == false) {
-                game.addPlayer(ClientId);
-                gameRepository.save(game);
+    private Game join(String gameId, String clientId){
+        for (Game game : games.values()){
+            if (game.getId() == gameId) {
+                game.addPlayer(clientId);
+                playerGameMap.put(clientId, game.getId());
                 return game;
             }
         }
-
         return null;
     }
 
-    public static String joinRandomGame(String clientId) {
-        List<Game> games = gameRepository.findAll();
-        for (Game game : games) {
+    public String joinRandomGame(String clientId) {
+        for (Game game : games.values()) {
             if (game.isFull() == false) {
                 game.addPlayer(clientId);
-                gameRepository.save(game);
+                playerGameMap.put(clientId, game.getId());
                 return game.getId();
             }
         }
         return createGame(clientId).getId();
     }
 
+
     public Game getGameByPlayerUuid(String playerUuid) {
-        return gameRepository.findByUserId(playerUuid);
+        String gameId = playerGameMap.get(playerUuid);
+        return gameId != null ? games.get(gameId) : null;
     }
-    public static String getGameIdByPlayerUuid(String playerUuid) {
-        return gameRepository.findByUserId(playerUuid).getId();
+
+
+    public String getGameIdByPlayerUuid(String playerUuid) {
+        String gameId = playerGameMap.get(playerUuid);
+        return gameId != null ? gameId : null;
     }
-    public static String generateID() {
+
+    public static void reset() {
+        instance = null;
+    }
+
+    public String generateID() {
         return UUID.randomUUID().toString().substring(0, 4).toUpperCase();
     }
 
