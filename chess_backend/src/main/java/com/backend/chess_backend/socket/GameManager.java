@@ -37,13 +37,12 @@ public class GameManager {
     }
 
     private Game join(String gameId, String clientId){
-        for (Game game : games.values()){
-            if (game.getId() == gameId) {
-                game.addPlayer(clientId);
+        Game game = games.get(gameId);
+        if (game != null){
+            game.addPlayer(clientId);
                 playerGameMap.put(clientId, game.getId());
                 return game;
-            }
-        }
+        };
         return null;
     }
 
