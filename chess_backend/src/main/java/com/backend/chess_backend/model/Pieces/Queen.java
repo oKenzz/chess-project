@@ -21,14 +21,13 @@ public class Queen extends Piece{
         
         for (int x = 0; x < boardW; x++){
             for (int y = 0; y < boardH; y++){
-                if (x != xCoord || y != yCoord){ //avoid itself
-                    if (Math.abs(x - xCoord) - Math.abs(y - yCoord) == 0){//if in diagonal
-                        possibleMoves[x][y] = true;
-                    }else if(x == xCoord || y == yCoord){ //if in same row/column
-                        possibleMoves[x][y] = true;
-                    }else{
-                        possibleMoves[x][y] = false;
-                    }
+                //avoid itself
+                if ((Math.abs(x - this.getX()) - Math.abs(y - this.getY()) == 0) && !(x == this.getX() && y == this.getY())){ //if in diagonal disregarding itself
+                    possibleMoves[x][y] = true;
+                }else if(x == this.getX() ^ y == this.getY()){ //if in same row/column disregarding itself
+                    possibleMoves[x][y] = true;
+                }else{
+                    possibleMoves[x][y] = false;
                 }
             }
         }
