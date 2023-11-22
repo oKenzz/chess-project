@@ -35,6 +35,7 @@ const MultiPlayerGame = () => {
             }
         };
 
+
         socketRef.current.on('chat', chatListener);
         socketRef.current.on('gameState', gameStateListener);
 

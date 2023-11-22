@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Chess UI",
+            "type": "shell",
+            "command": "cd chess_ui && yarn start dev",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "group": "chess",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            "label": "Start Chess Backend",
+            "type": "shell",
+            "command": "./mvnw spring-boot:run",
+            "options": {
+                "cwd": "${workspaceFolder}/chess_backend"
+            },
+            "presentation": {
+                "group": "chess",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        }
+    ]
+}

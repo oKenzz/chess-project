@@ -6,13 +6,11 @@ import io.netty.util.Timer;
 
 public class Player {
     
-    private PieceColor teamColor;
     private Timer timer;
     private String uuid;
 
-    public Player(PieceColor color, String clientUUID){
+    public Player(String clientUUID){
         this.uuid = clientUUID;
-        this.teamColor = color;
     }
 
     public void toggleTimer(){
@@ -23,9 +21,6 @@ public class Player {
         
     // }
 
-    public PieceColor getColor(){
-        return teamColor;
-    }
     public String getUuid() {
         return uuid;
     }

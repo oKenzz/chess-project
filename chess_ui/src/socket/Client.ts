@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:8000';
+const URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:15025';
 
 export class SocketClient {
     private static instance: SocketClient;
@@ -12,6 +12,9 @@ export class SocketClient {
     private constructor() {
         this.socket = io(URL, {
             autoConnect: false,
+            // query: {
+            //     room: 'default',
+            // },
         });
 
         this.socket.on('connect_error', (error) => {
@@ -31,6 +34,7 @@ export class SocketClient {
                 this.attemptReconnect();
             }
         });
+
     }
 
     private attemptReconnect() {

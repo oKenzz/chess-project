@@ -21,8 +21,8 @@ public class Game {
         this.gameId = gameid;
         this.turnsMade = 0;
         this.board = new Board();
-       // this.playerWhite = new Player(WHITE);
-       // this.playerBlack = new Player(BLACK);
+        this.playerWhite = null;
+        this.playerBlack = null;
     }
 
     public Boolean[][] possibleMoves(int x, int y){
@@ -71,7 +71,8 @@ public class Game {
         turnsMade--;
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(String clinetId) {
+        Player player = new Player(clinetId);
         if (playerWhite == null) {
             playerWhite = player;
         } else if (playerBlack == null) {

@@ -16,13 +16,14 @@ public class GameManagerTest {
     void setUp() {
         GameManager.reset(); // Reset GameManager to its initial state before each test
         gameManager = GameManager.getInstance();
-        playerOne = new Player(null, "uuid-player-1");
-        playerTwo = new Player(null, "uuid-player-2");
+        gameManager.generateID();
+        playerOne = new Player("uuid-player-1");
+        playerTwo = new Player("uuid-player-2");
     }
 
     @Test
     void testJoinOrCreateGame_NewGame() {
-        Game game = gameManager.joinOrCreateGame(playerOne);
+        Game game = gameManager.joinOrCreateGame("TEST", playerOne.getUuid());
         System.out.println(game.getId());
 
         assertNotNull(game, "Game should not be null");
@@ -31,8 +32,8 @@ public class GameManagerTest {
 
     @Test
     void testJoinOrCreateGame_ExistingGame() {
-        Game firstGame = gameManager.joinOrCreateGame(playerOne);
-        Game secondGame = gameManager.joinOrCreateGame(playerTwo);
+        Game firstGame = gameManager.joinOrCreateGame("TEST", playerOne.getUuid());
+        Game secondGame = gameManager.joinOrCreateGame("TEST", playerTwo.getUuid());
 
         assertEquals(firstGame, secondGame, "Both players should be in the same game");
         assertTrue(secondGame.isFull(), "Game should be full after two players join");
