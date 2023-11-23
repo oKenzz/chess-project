@@ -29,8 +29,8 @@ public class Pawn extends Piece {
         int direction = (this.color == PieceColor.WHITE) ? -1 : 1;
 
         // Check the square directly in front of the pawn
-        int forwardX = this.xCoord;
-        int forwardY = this.yCoord + direction;
+        int forwardX = this.getX();
+        int forwardY = this.getY() + direction;
 
         if (forwardY >= 0 && forwardY < boardH) {
             moves[forwardX][forwardY] = true;
@@ -42,7 +42,7 @@ public class Pawn extends Piece {
         }
 
         // Check the diagonal squares for capturing
-        int[] captureX = { this.xCoord - 1, this.xCoord + 1 };
+        int[] captureX = { this.getX() - 1, this.getX() + 1 };
 
         for (int x : captureX) {
             if (x >= 0 && x < boardW && forwardY >= 0 && forwardY < boardH) {
