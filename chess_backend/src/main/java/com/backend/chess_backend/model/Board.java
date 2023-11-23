@@ -229,7 +229,7 @@ public class Board {
                     if (Math.abs(piece.getX() - x) - Math.abs(piece.getY() - y) == 0) {
                         // checks if the found piece is to the up and left of the original piece
                         if (x < piece.getX() && y < piece.getY()) {
-                            while (tmpx > 0 && tmpy > 0) {
+                            while (tmpx >= 0 && tmpy >= 0) {
                                 if (possibleMoves[tmpx][tmpy] == false) {
                                     break;
                                 }
@@ -240,7 +240,7 @@ public class Board {
                         }
                         // down left
                         else if (x < piece.getX() && y > piece.getY()) {
-                            while (tmpx > 0 && tmpy < board.length) {
+                            while (tmpx >= 0 && tmpy < board.length) {
                                 if (possibleMoves[tmpx][tmpy] == false) {
                                     break;
                                 }
@@ -252,7 +252,7 @@ public class Board {
                         }
                         // up right
                         else if (x > piece.getX() && y < piece.getY()) {
-                            while (tmpx < board.length && tmpy > 0) {
+                            while (tmpx < board.length && tmpy >= 0) {
                                 if (possibleMoves[tmpx][tmpy] == false) {
                                     break;
                                 }
