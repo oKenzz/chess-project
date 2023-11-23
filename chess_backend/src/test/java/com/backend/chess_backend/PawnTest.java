@@ -15,7 +15,7 @@ class PawnTest {
 
     @Test
     public void TestGetPossibleMoves(){
-        Piece pawn = new Pawn(PieceColor.WHITE, 0, 1);
+        Pawn pawn = new Pawn(PieceColor.WHITE, 0, 1);
         Boolean[][] BoardList = new Boolean[8][8];
 
         for (int i = 0; i < 8; i++) {
@@ -24,9 +24,10 @@ class PawnTest {
             }
         } 
         BoardList[0][2] = true;
+        BoardList[1][2] = true;
         BoardList[0][3] = true;
 
-        assertArrayEquals(pawn.getPossibleMoves(8, 8), BoardList);
+        assertEquals(pawn.getPossibleMoves(8, 8), BoardList);
     }
 
 }
