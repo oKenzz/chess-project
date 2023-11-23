@@ -41,15 +41,20 @@ public class GameManager {
     }
 
     public synchronized Game joinRandomGame(String clientId) {
-        for (Game game : games.values()) {
-            if (game.isFull() == false) {
-                game.addPlayer(clientId);
-                playerGameMap.put(clientId, game.getId());
-                return game;
+            if (playerGameMap.containsKey(clientId)) {
+                return null;
             }
-        }
-        return createGame(clientId);
+        
+            for (Game game : games.values()) {
+                if (!game.isFull()) {
+                    game.addPlayer(clientId);
+                    playerGameMap.put(clientId, game.getId());
+                    return game;
+                }
+            }
+            return createGame(clientId);
     }
+    
 
     public Game getGameByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);

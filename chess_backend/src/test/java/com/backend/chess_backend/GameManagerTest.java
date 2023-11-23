@@ -66,5 +66,14 @@ public class GameManagerTest {
 
     }
 
+
+    @Test
+    void testJoinSameGame(){
+        Game firstGame = gameManager.createGame(playerOne.getUuid());
+        Game secondGame = gameManager.joinRandomGame(playerOne.getUuid());
+        assertTrue(!firstGame.isFull(), "Only one player in game");
+        assertNotEquals(firstGame, secondGame);
+    }
+
     // Additional tests as needed...
 }

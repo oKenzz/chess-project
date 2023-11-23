@@ -1,5 +1,6 @@
 package com.backend.chess_backend.socket;
 
+import com.backend.chess_backend.model.Game;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -34,15 +35,18 @@ public class ChessHandler {
                 client.joinRoom(room);
                 log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId, room);
             } else {
-                log.info("No room was found. Joining a random room.");
-                String roomCode = gameManager.joinRandomGame(sessionId).getId();
+                log.info("No room was found. Attempting to join a random room.");
+                Game joinedGame = gameManager.joinRandomGame(sessionId);
+                if (joinedGame != null) {
+                String roomCode = joinedGame.getId();
                 client.joinRoom(roomCode);
-                log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId,
-                        roomCode);
+                log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId, roomCode);
+                } else {
+                log.info("Player is already in a game. Not joining a new game.");
+                // Optionally, send a message to the client about not being able to join a new game.
+                }
             }
-
         };
-
     }
 
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
