@@ -23,20 +23,21 @@ public class ChessHandler {
     // Listener for client connection events
     public ConnectListener onConnected() {
         return client -> {
+            String sessionId = client.getSessionId().toString();
             var params = client.getHandshakeData().getUrlParams();
 
             // Attempt to retrieve the first 'room' parameter
             String room = params.containsKey("room") ? params.get("room").get(0) : null;
             if (room != null && !room.isEmpty()) {
                 // Check if the room exists
-                gameManager.join(room, client.getSessionId().toString());
+                gameManager.join(room, sessionId);
                 client.joinRoom(room);
-                log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(), room);
+                log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId, room);
             } else {
                 log.info("No room was found. Joining a random room.");
-                String roomCode = gameManager.joinRandomGame(client.getSessionId().toString()).getId();
+                String roomCode = gameManager.joinRandomGame(sessionId).getId();
                 client.joinRoom(roomCode);
-                log.info("Socket ID[{}] - room[{}] - Connected to chess game", client.getSessionId().toString(),
+                log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId,
                         roomCode);
             }
 

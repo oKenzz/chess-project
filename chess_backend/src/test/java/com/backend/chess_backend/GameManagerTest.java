@@ -17,18 +17,24 @@ public class GameManagerTest {
     private GameManager gameManager;
     private Player playerOne;
     private Player playerTwo;
+    private Player playerThree;
+    private Player playerFour;
+    private Player playerFive;
+
     
     @BeforeEach
     void setUp() {
         gameManager.reset();
         playerOne = new Player("uuid-player-1");
         playerTwo = new Player("uuid-player-2");
+        playerThree = new Player("uuid-player-3");
+        playerFour = new Player("uuid-player-4");
+        playerFive = new Player("uuid-player-4");
     }
 
     @Test
     void testCreateGame() {
         Game game = gameManager.createGame(playerOne.getUuid());
-        System.out.println(game.getId());
 
         assertNotNull(game, "Game should not be null");
         assertFalse(game.isFull(), "Newly created game should not be full");
@@ -48,8 +54,14 @@ public class GameManagerTest {
     void testJoinRandomGame(){
         Game firstGame = gameManager.createGame(playerOne.getUuid());
         Game secondGame = gameManager.joinRandomGame(playerTwo.getUuid());
+        Game thirdGame = gameManager.joinRandomGame(playerThree.getUuid());
+        Game fourthGame = gameManager.joinRandomGame(playerThree.getUuid());
+        Game fifthGame = gameManager.joinRandomGame(playerThree.getUuid());
+
 
         assertEquals(firstGame, secondGame, "Both players should be in the same game");
+        assertEquals(thirdGame, fourthGame, "Should be the same game");
+        assertTrue(!fifthGame.isFull(), "Should not be full");
         assertTrue(secondGame.isFull(), "Game should be full after two players join");
 
     }
