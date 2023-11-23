@@ -4,15 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.Pieces.Pawn;
+import com.backend.chess_backend.model.Pieces.PieceColor;
 
 @SpringBootTest
-class ChessBackendApplicationTests {
+class PawnTest {
 
     @Test
-    public void GameTest(){
-        Game game = new Game();
-
+    public void TestGetPossibleMoves(){
+        Pawn pawn = new Pawn(PieceColor.WHITE, 0, 1);
         Boolean[][] BoardList = new Boolean[8][8];
 
         for (int i = 0; i < 8; i++) {
@@ -21,10 +21,10 @@ class ChessBackendApplicationTests {
             }
         } 
         BoardList[0][2] = true;
+        BoardList[1][2] = true;
         BoardList[0][3] = true;
 
-        assertArrayEquals(game.possibleMoves(0, 1), BoardList);
-        
+        assertArrayEquals(pawn.getPossibleMoves(8, 8), BoardList);
     }
 
 }
