@@ -280,7 +280,7 @@ public class Board {
                     else if (piece.getX() == x) {
                         // to the left
                         if (x < piece.getX()) {
-                            while (tmpx > 0) {
+                            while (tmpx >= 0) {
                                 if (possibleMoves[tmpx][y] == false) {
                                     break;
                                 }
@@ -308,7 +308,7 @@ public class Board {
                     else if (piece.getY() == y) {
                         // above
                         if (y < piece.getY()) {
-                            while (tmpy > 0) {
+                            while (tmpy >= 0) {
                                 if (possibleMoves[x][tmpy] == false) {
                                     break;
                                 }
