@@ -12,7 +12,8 @@ class GameTest {
 
     @Test
     public void GameTest(){
-        Game game = new Game();
+        String testId = "ABC1";
+        Game game = new Game(testId);
 
         Boolean[][] BoardList = new Boolean[8][8];
 
