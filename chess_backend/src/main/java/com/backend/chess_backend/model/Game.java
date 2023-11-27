@@ -1,6 +1,7 @@
 package com.backend.chess_backend.model;
 
 import java.beans.PersistenceDelegate;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 
@@ -13,12 +14,15 @@ public class Game {
     private Player playerWhite;
     private Player playerBlack;
     private int turnsMade;
+    private String gameId;
 
-    public Game(){
+
+    public Game(String gameid){
+        this.gameId = gameid;
         this.turnsMade = 0;
-    this.board = new Board();
-       this.playerWhite = new Player(PieceColor.WHITE);
-       this.playerBlack = new Player(PieceColor.BLACK);
+        this.board = new Board();
+        this.playerWhite = null;
+        this.playerBlack = null;
     }
 
     public Boolean[][] possibleMoves(int x, int y){
@@ -67,5 +71,22 @@ public class Game {
 
     private void subtractTurn(){
         turnsMade--;
+    }
+
+    public void addPlayer(String clinetId) {
+        Player player = new Player(clinetId);
+        if (playerWhite == null) {
+            playerWhite = player;
+        } else if (playerBlack == null) {
+            playerBlack = player;
+        }
+    }
+
+    public boolean isFull() {
+        return playerWhite != null && playerBlack != null;
+    }
+
+    public String getId() {
+        return gameId;
     }
 }

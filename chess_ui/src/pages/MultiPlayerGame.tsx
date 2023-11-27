@@ -18,30 +18,32 @@ const MultiPlayerGame = () => {
     const game = useRef(new ChessGame());
 
     useEffect(() => {
+        console.log("Creating component and connecting to socket");
         const socketClient = SocketClient.getInstance();
         socketClient.connect();
-        socketRef.current = socketClient.getSocket(); // Update the ref with the socket instance
-
-
+        socketRef.current = socketClient.getSocket();
+    
         const chatListener = (data: string) => {
             console.log(`Received message: ${data}`);
         };
-
-        const gameStateListener = (data: FEN) => { 
-            if (data.length > 0 || data !== null) {
-                console.log(`Received game state: ${data}`);
-                setFen(data);
-                game.current.load(data);
+    
+        const gameStateListener = (newFen : FEN) => {
+            if (newFen && newFen !== fen) {
+                console.log(`Received game state: ${newFen}`);
+                setFen(newFen);
+                game.current.load(newFen);
             }
         };
-
+    
         socketRef.current.on('chat', chatListener);
         socketRef.current.on('gameState', gameStateListener);
-
+    
         return () => {
+            console.log("Removing component");
             socketClient.disconnect();
         };
-    }, []); 
+    }, []); // Empty dependency array for setup on mount and cleanup on unmount
+    
 
     const movePiece: ChessboardProps['onPieceDrop'] = (sourceSquare, targetSquare, piece) => {
         // Use the socket ref here
