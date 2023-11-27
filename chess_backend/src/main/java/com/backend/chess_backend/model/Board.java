@@ -54,15 +54,15 @@ public class Board {
                 movelist[piece.getX() + 1][piece.getY() - 1] = false;
             } 
             //removes the option from a black pawn to move diagonally down left when there is not black peice to take
-            else if (piece.getX()!=0 && piece.getY()!=0 &&board[piece.getX() - 1][piece.getY() - 1] == null) {
+            if (piece.getX()!=0 && piece.getY()!=0 &&board[piece.getX() - 1][piece.getY() - 1] == null) {
                 movelist[piece.getX() - 1][piece.getY() - 1] = false;
             }
             //adds en pessant moves to the left to possible moves
-            else if(piece.getX()!=0 && piece.getY()!=0 &&board[piece.getX() - 1][piece.getY()] !=null && board[piece.getX() - 1][piece.getY()].getPieceType()=="P"){
+            if(piece.getX()!=0 && piece.getY()!=0 &&board[piece.getX() - 1][piece.getY()] !=null && board[piece.getX() - 1][piece.getY()].getPieceType()=="P"&& board[piece.getX() - 1][piece.getY()].getMovesMade()==1){
                 movelist[piece.getX()-1][piece.getY()-1]=true;
             }
             //adds enpessant move to the right to possible moves
-            else if(piece.getX()!=7 && piece.getY()!=0 &&board[piece.getX() + 1][piece.getY()] !=null && board[piece.getX() + 1][piece.getY()].getPieceType()=="P"){
+            if(piece.getX()!=7 && piece.getY()!=0 &&board[piece.getX() + 1][piece.getY()] !=null && board[piece.getX() + 1][piece.getY()].getPieceType()=="P"&&board[piece.getX() + 1][piece.getY()].getMovesMade()==1){
                 movelist[piece.getX()+1][piece.getY()-1]=true;
             }
             
@@ -72,15 +72,15 @@ public class Board {
                 movelist[piece.getX() + 1][piece.getY() + 1] = false;
             }
             //removes the option from a white pawn to move diagonally up left when there is not black peice to take
-            else if(piece.getX()!=0 && piece.getY()!=7 &&board[piece.getX() - 1][piece.getY() + 1] == null){
+            if(piece.getX()!=0 && piece.getY()!=7 &&board[piece.getX() - 1][piece.getY() + 1] == null){
                 movelist[piece.getX() - 1][piece.getY() + 1] = false;
             }
             //enpessant to the left            
-            else if(piece.getX()!=0 && piece.getY()!=7 &&board[piece.getX() - 1][piece.getY()] !=null && board[piece.getX() - 1][piece.getY()].getPieceType()=="p"){
+            if(piece.getX()!=0 && piece.getY()!=7 &&board[piece.getX() - 1][piece.getY()] !=null && board[piece.getX() - 1][piece.getY()].getPieceType()=="p"&&board[piece.getX() - 1][piece.getY()].getMovesMade()==1){
                 movelist[piece.getX()-1][piece.getY()+1]=true;
             }
             //enpessant to the right
-            else if(piece.getX()!=7 && piece.getY()!=7 &&board[piece.getX() + 1][piece.getY()] !=null && board[piece.getX() + 1][piece.getY()].getPieceType()=="p"){
+            if(piece.getX()!=7 && piece.getY()!=7 &&board[piece.getX() + 1][piece.getY()] !=null && board[piece.getX() + 1][piece.getY()].getPieceType()=="p"&&board[piece.getX() + 1][piece.getY()].getMovesMade()==1){
                 movelist[piece.getX()+1][piece.getY()+1]=true;
             }
 
