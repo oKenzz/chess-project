@@ -33,15 +33,13 @@ public class Game {
                 emptyList[i][j] = false;
             }
         }
-
-
     
-        // if(currentBoard[x][y].getColor() == PieceColor.WHITE && turnsMade % 2 == 0){
-        //     return board.getPossibleMoves(currentPiece);
-        // }
-        // else if (currentBoard[x][y].getColor() == PieceColor.BLACK && turnsMade % 2 != 0){
-        //     return board.getPossibleMoves(currentPiece);
-        // }
+        if(currentBoard[x][y].getColor() == PieceColor.WHITE && turnsMade % 2 == 0){
+            return board.getPossibleMoves(currentPiece);
+        }
+        else if (currentBoard[x][y].getColor() == PieceColor.BLACK && turnsMade % 2 != 0){
+            return board.getPossibleMoves(currentPiece);
+        }
 
         return board.getPossibleMoves(currentPiece);
 
