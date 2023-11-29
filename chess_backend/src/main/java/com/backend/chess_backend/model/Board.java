@@ -49,6 +49,16 @@ public class Board {
         movelist = removeExcess(piece, movelist);
         //checks if the piece is a black pawn
         if (piece.getPieceType() == "p") {
+            if(piece.getY()>0 &&board[piece.getX()][piece.getY()-1]!=null){
+                movelist[piece.getX()][piece.getY()-1]=false;
+                if(movelist[piece.getX()][piece.getY()-2]==true){
+                    movelist[piece.getX()][piece.getY()-2]=false;
+                }
+                
+            }
+            else if(piece.getMovesMade()==0 &&board[piece.getX()][piece.getY()-2]!=null){
+                movelist[piece.getX()][piece.getY()-2]=false;
+            }
             //removes the option from a black pawn to move diagonally down right when there is not black peice to take
             if (piece.getX()!=7 && piece.getY()!=0 &&board[piece.getX() + 1][piece.getY() - 1] == null) {
                 movelist[piece.getX() + 1][piece.getY() - 1] = false;
@@ -67,6 +77,16 @@ public class Board {
             }
             
         } else if (piece.getPieceType() == "P") {
+            if(piece.getY()<7 &&board[piece.getX()][piece.getY()+1]!=null){
+                movelist[piece.getX()][piece.getY()+1]=false;
+                if(movelist[piece.getX()][piece.getY()+2]==true){
+                    movelist[piece.getX()][piece.getY()+2]=false;
+                }
+
+            }
+            else if(piece.getMovesMade()==0&&board[piece.getX()][piece.getY()+2]!=null){
+                movelist[piece.getX()][piece.getY()+2]=false;
+            }
             //removes the option from a white pawn to move diagonally up right when there is not black peice to take
             if (piece.getX()!=7 && piece.getY()!=7 &&board[piece.getX() + 1][piece.getY() + 1] == null) {
                 movelist[piece.getX() + 1][piece.getY() + 1] = false;
