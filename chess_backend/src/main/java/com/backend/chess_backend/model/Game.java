@@ -9,15 +9,14 @@ import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 
 public class Game {
-    
+
     private Board board;
     private Player playerWhite;
     private Player playerBlack;
     private int turnsMade;
     private String gameId;
 
-
-    public Game(String gameid){
+    public Game(String gameid) {
         this.gameId = gameid;
         this.turnsMade = 0;
         this.board = new Board();
@@ -25,7 +24,7 @@ public class Game {
         this.playerBlack = null;
     }
 
-    public Boolean[][] possibleMoves(int x, int y){
+    public Boolean[][] possibleMoves(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
         Piece currentPiece = currentBoard[x][y];
         int boardW = currentBoard.length;
@@ -37,11 +36,10 @@ public class Game {
                 emptyList[i][j] = false;
             }
         }
-    
-        if(currentBoard[x][y].getColor() == PieceColor.WHITE && turnsMade % 2 == 0){
+
+        if (attemptToMoveWhite(x, y) && isWhitesTurn()) {
             return board.getPossibleMoves(currentPiece);
-        }
-        else if (currentBoard[x][y].getColor() == PieceColor.BLACK && turnsMade % 2 != 0){
+        } else if (attemptToMoveBlack(x, y) && isBlacksTurn()) {
             return board.getPossibleMoves(currentPiece);
         }
 
@@ -49,27 +47,62 @@ public class Game {
 
     }
 
-    public Boolean attemptMove(int x, int y, int newX, int newY){
-        Piece[][] currentBoard = board.getBoard(); 
-        Boolean[][] possibleM = board.getPossibleMoves(x, y);
-        if (board.checkIfallowed(newX, newY, possibleM)){
-            board.updateCoords(currentBoard[x][y], newX, newY);
-            IncrementTurn();
+    public Boolean attemptMove(int x, int y, int newX, int newY) {
+        Piece[][] currentBoard = board.getBoard();
+        Boolean[][] possibleM = board.getPossibleMoves(currentBoard[x][y]);
+
+        if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
+            if (board.checkIfallowed(newX, newY, possibleM)) {
+                board.updateCoords(currentBoard[x][y], newX, newY);
+                IncrementTurn();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Boolean attemptToMoveWhite(int x, int y) {
+        Piece[][] currentBoard = board.getBoard();
+        if (currentBoard[x][y].getColor() == PieceColor.WHITE) {
             return true;
         }
 
         return false;
-
     }
-    private void IncrementTurn(){
+
+    private Boolean attemptToMoveBlack(int x, int y) {
+        Piece[][] currentBoard = board.getBoard();
+        if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private Boolean isWhitesTurn() {
+        if (turnsMade % 2 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean isBlacksTurn() {
+        if (turnsMade % 2 != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private void IncrementTurn() {
         turnsMade++;
     }
 
-    public Piece[][] getBoard(){
+    public Piece[][] getBoard() {
         return board.getBoard();
     }
 
-    private void subtractTurn(){
+    private void subtractTurn() {
         turnsMade--;
     }
 

@@ -67,7 +67,7 @@ public class ChessHandler {
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(true);
         }
-
+        
     }
 
     public void newGamePostionListener(SocketIOClient client, String fen, AckRequest ackRequest) {
