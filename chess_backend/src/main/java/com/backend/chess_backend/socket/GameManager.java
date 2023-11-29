@@ -1,15 +1,11 @@
 package com.backend.chess_backend.socket;
 
 import com.backend.chess_backend.model.Game;
-import com.backend.chess_backend.model.Translator;
-import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.SocketIOClient;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,10 +1,4 @@
 package com.backend.chess_backend.model;
-
-import java.beans.PersistenceDelegate;
-import java.util.UUID;
-
-import javax.swing.BorderFactory;
-
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 
