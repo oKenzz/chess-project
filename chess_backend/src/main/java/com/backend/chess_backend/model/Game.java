@@ -37,9 +37,7 @@ public class Game {
             }
         }
 
-        if (attemptToMoveWhite(x, y) && isWhitesTurn()) {
-            return board.getPossibleMoves(currentPiece);
-        } else if (attemptToMoveBlack(x, y) && isBlacksTurn()) {
+        if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             return board.getPossibleMoves(currentPiece);
         }
 
