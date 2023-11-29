@@ -15,6 +15,7 @@ public class Game {
     private Player playerBlack;
     private int turnsMade;
     private String gameId;
+    private long gameStartedTime;
 
     public Game(String gameid) {
         this.gameId = gameid;
@@ -22,6 +23,7 @@ public class Game {
         this.board = new Board();
         this.playerWhite = null;
         this.playerBlack = null;
+        this.gameStartedTime = System.currentTimeMillis() / 1000L;
     }
 
     public Boolean[][] possibleMoves(int x, int y) {
@@ -96,8 +98,20 @@ public class Game {
         turnsMade++;
     }
 
+    public String getTurn() {
+        if (isWhitesTurn()) {
+            return "w";
+        } else {
+            return "b";
+        }
+    }
+
     public Piece[][] getBoard() {
         return board.getBoard();
+    }
+
+    public long getGameStartedTime() {
+        return gameStartedTime;
     }
 
     private void subtractTurn() {
@@ -111,6 +125,37 @@ public class Game {
         } else if (playerBlack == null) {
             playerBlack = player;
         }
+    }
+
+    public void removePlayer(String clientId) {
+        if (playerWhite != null && playerWhite.getUuid().equals(clientId)) {
+            playerWhite = null;
+        } else if (playerBlack != null && playerBlack.getUuid().equals(clientId)) {
+            playerBlack = null;
+        }
+    }
+
+    public String getPlayerColor(String clinetId) {
+        if (playerWhite.getUuid().equals(clinetId)) {
+            return "white";
+        } else if (playerBlack.getUuid().equals(clinetId)) {
+            return "black";
+        }
+        return null;
+    }
+
+    public Player getPlayer(String clinetId) {
+        if (playerWhite.getUuid().equals(clinetId)) {
+            return playerWhite;
+        } else if (playerBlack.getUuid().equals(clinetId)) {
+            return playerBlack;
+        }
+        return null;
+    }
+
+    public Player[] getPlayers() {
+        Player[] players = { playerWhite, playerBlack };
+        return players;
     }
 
     public boolean isFull() {

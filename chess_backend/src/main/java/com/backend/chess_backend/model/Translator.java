@@ -6,37 +6,31 @@ import com.backend.chess_backend.model.Pieces.Piece;
 
 public class Translator {
 
-    private String alphabet;
+    private static String alphabet = "abcdefgh";
 
-    public Translator(){
-        this.alphabet = "abcdefgh";
-    }
-
-    public ArrayList<Integer> translatePos(String pos){
+    public static ArrayList<Integer> translatePos(String pos) {
 
         ArrayList<Integer> coordinates = new ArrayList<Integer>();
-        
+
         int yCoord = 0;
         int xCoord = 0;
 
-
-        for(int i = 0; i < alphabet.length(); i++){
-            if(alphabet.charAt(i) == Character.toLowerCase(pos.charAt(0))){
+        for (int i = 0; i < alphabet.length(); i++) {
+            if (alphabet.charAt(i) == Character.toLowerCase(pos.charAt(0))) {
                 xCoord = i;
                 break;
             }
         }
 
-
         yCoord = Character.getNumericValue(pos.charAt(1));
         yCoord--;
         coordinates.add(xCoord);
         coordinates.add(yCoord);
-        
+
         return coordinates;
     }
 
-    public ArrayList<ArrayList<Integer>> translatePos(String oldPos, String newPos){
+    public static ArrayList<ArrayList<Integer>> translatePos(String oldPos, String newPos) {
 
         ArrayList<ArrayList<Integer>> allCoordinates = new ArrayList<>();
 
@@ -46,56 +40,57 @@ public class Translator {
         return allCoordinates;
     }
 
-    public String translateBoard(Piece[][] board){
+    public static String translateBoard(Piece[][] board, String color) {
         String boardString = "";
         int emptyCount = 0;
         String rowStr = "";
 
-        for(int y = board[0].length-1; y > -1; y--){
-            for (int x = 0; x < board.length; x++ ){
-                if(board[x][y] == null){
+        for (int y = board[0].length - 1; y > -1; y--) {
+            for (int x = 0; x < board.length; x++) {
+                if (board[x][y] == null) {
                     emptyCount++;
-                }
-                else{
-                    if(emptyCount != 0){
+                } else {
+                    if (emptyCount != 0) {
                         rowStr += emptyCount + board[x][y].getPieceType();
-                    }else{
+                    } else {
                         rowStr += board[x][y].getPieceType();
                     }
                     emptyCount = 0;
                 }
             }
-            
-            if(emptyCount != 0){
+
+            if (emptyCount != 0) {
                 rowStr += emptyCount;
             }
-            if (y != 0){
-                
+            if (y != 0) {
+
                 rowStr += "/";
             }
             boardString += rowStr;
             rowStr = "";
             emptyCount = 0;
         }
+
+        boardString += " " + color;
         return boardString;
     }
 
-    private String translateCoords(int x, int y){
+    public static String translateCoords(int x, int y) {
         String xpos = "" + alphabet.charAt(x);
-        String ypos = "" + (y+1);
+        String ypos = "" + (y + 1);
         return xpos + ypos;
     }
 
-    public ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard){
+    public static ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard) {
         ArrayList<String> posMoves = new ArrayList<>();
 
-        for(int x = 0; x < bolBoard.length; x++){
-            for(int y = 0; y < bolBoard.length; y++){
-                if(bolBoard[x][y] == true){
+        for (int x = 0; x < bolBoard.length; x++) {
+            for (int y = 0; y < bolBoard.length; y++) {
+                if (bolBoard[x][y] == true) {
                     posMoves.add(translateCoords(x, y));
                 }
             }
         }
-        return posMoves; 
+        return posMoves;
     }
 }

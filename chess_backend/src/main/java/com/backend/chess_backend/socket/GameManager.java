@@ -1,11 +1,15 @@
 package com.backend.chess_backend.socket;
 
 import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.Translator;
+import com.corundumstudio.socketio.AckRequest;
+import com.corundumstudio.socketio.SocketIOClient;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,20 +45,34 @@ public class GameManager {
     }
 
     public synchronized Game joinRandomGame(String clientId) {
-            if (playerGameMap.containsKey(clientId)) {
-                return null;
+        if (playerGameMap.containsKey(clientId)) {
+            return null;
+        }
+
+        for (Game game : games.values()) {
+            if (!game.isFull()) {
+                game.addPlayer(clientId);
+                playerGameMap.put(clientId, game.getId());
+                return game;
             }
-        
-            for (Game game : games.values()) {
-                if (!game.isFull()) {
-                    game.addPlayer(clientId);
-                    playerGameMap.put(clientId, game.getId());
-                    return game;
-                }
-            }
-            return createGame(clientId);
+        }
+        return createGame(clientId);
     }
-    
+
+    public synchronized boolean disconnect(String clientId) {
+        String gameId = playerGameMap.get(clientId);
+        if (gameId != null) {
+            Game game = games.get(gameId);
+            if (game != null) {
+                game.removePlayer(clientId);
+                playerGameMap.remove(clientId);
+                return true;
+            }
+            playerGameMap.remove(clientId);
+            return true;
+        }
+        return false;
+    }
 
     public Game getGameByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);

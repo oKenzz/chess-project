@@ -11,7 +11,9 @@ const SinglePlayerGame = () => {
     return (
         <div className="game-grid" >
             {/* Headers */}
-            <CustomNavbar  />
+            <CustomNavbar  
+                roomCode={"Single Player :("} 
+            />
             {/* <Header /> */}
             <motion.div
                 initial={{  opacity: 0}

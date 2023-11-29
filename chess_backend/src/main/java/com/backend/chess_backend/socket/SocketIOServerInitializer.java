@@ -25,8 +25,8 @@ public class SocketIOServerInitializer {
         server.addDisconnectListener(chessHandler.onDisconnected());
         server.addEventListener("message", String.class, chessHandler::onChatMessage);
         server.addEventListener("move", String.class, chessHandler::moveListener);
-        server.addEventListener("newGamePosition", String.class, chessHandler::newGamePostionListener);
-
+        server.addEventListener("getGameState", Void.class, chessHandler::getGameStateListener);
+        server.addEventListener("getPossibleMoves", String.class, chessHandler::possibleMoveListener);
         server.start();
     }
 

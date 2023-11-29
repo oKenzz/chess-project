@@ -4,7 +4,7 @@ import { ReactSVG } from 'react-svg';
 import ButtonImg from './ButtonImg';
 import { motion } from 'framer-motion';
 
-const CustomNavbar = () => {
+const CustomNavbar = (  { roomCode } : { roomCode: string } ) => {
   return (
     <motion.div
         initial={{ y: '-8vh' }}
@@ -38,6 +38,9 @@ const CustomNavbar = () => {
         </Navbar.Collapse>
 
       </Navbar>
+      <div className='w-[100vw] h-8 bg-white flex items-center justify-center'>
+        <p className='text-center text-gray-500'>Room Code: {roomCode}</p>
+      </div>
     </motion.div>
   );
 }
