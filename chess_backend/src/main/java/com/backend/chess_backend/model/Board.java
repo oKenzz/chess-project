@@ -285,9 +285,6 @@ public class Board {
                         // down right
                         else if (x > piece.getX() && y > piece.getY()) {
                             while (tmpx < board.length && tmpy < board.length) {
-                                if (possibleMoves[tmpx][tmpy] == false) {
-                                    break;
-                                }
                                 possibleMoves[tmpx][tmpy] = false;
                                 tmpx++;
                                 tmpy++;
@@ -301,9 +298,6 @@ public class Board {
                         // to the left
                         if (y < piece.getY()) {
                             while (tmpy >= 0) {
-                                if (possibleMoves[x][tmpy] == false) {
-                                    break;
-                                }
                                 possibleMoves[x][tmpy] = false;
                                 tmpy--;
                             }
@@ -313,9 +307,6 @@ public class Board {
                         else {
                             if (y > piece.getY()) {
                                 while (tmpy < board.length) {
-                                    if (possibleMoves[x][tmpy] == false) {
-                                        break;
-                                    }
                                     possibleMoves[x][tmpy] = false;
                                     tmpy++;
                                 }
@@ -329,9 +320,6 @@ public class Board {
                         // above
                         if (x < piece.getX()) {
                             while (tmpx >= 0) {
-                                if (possibleMoves[tmpx][y] == false) {
-                                    break;
-                                }
                                 possibleMoves[tmpx][y] = false;
                                 tmpx--;
                             }
