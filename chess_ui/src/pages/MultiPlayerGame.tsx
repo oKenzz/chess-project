@@ -77,25 +77,27 @@ const MultiPlayerGame = () => {
     const movePiece: ChessboardProps['onPieceDrop'] = (sourceSquare, targetSquare, piece) => {
         setSquareStyles({});
         // Use the socket ref here
-        if (socketRef.current) {
-            const moved_pos = JSON.stringify({
-                from: sourceSquare,
-                to: targetSquare,
-            });
-            console.log(`Moved piece from ${sourceSquare} to ${targetSquare}`);
-            console.log(`Sending message: ${moved_pos}`);
-            socketRef.current.emit('move', moved_pos , (success: boolean) => {
-                if (success) {
-                    console.log("Move successful");
-                    return true;
-                }
-                console.log("Move unsuccessful");
-                return false;
-            });
-        }
-        return false;
+        return sendPieceMovement(sourceSquare, targetSquare)
     };
 
+    const movePieceOnClick: ChessboardProps['onSquareClick'] = (square) => {
+        if (square !== pieceSquare){
+            setSquareStyles({}) // Handle remove in a better way
+        }
+        console.log("Square pressed: " + square)
+        const piece : Piece | undefined = positions[square]
+        // Select Piece
+        if(piece !== undefined && piece[0] === color[0]){
+            addHighlightSquare(square.toString());
+            setPieceSquare(square)
+        } else {
+            // Move Piece
+            const sourceSquare : string | undefined = pieceSquare?.toString()
+            const targetSquare : string = square.toString()
+            sendPieceMovement(sourceSquare, targetSquare)
+        }
+
+    }
 
     const IsDraggablePiece: ChessboardProps['isDraggablePiece'] = ({ piece, sourceSquare }) => {
         // ex, piece = 'wP', color = 'white'
@@ -104,7 +106,21 @@ const MultiPlayerGame = () => {
     };
     
     const highlightSquare: ChessboardProps['onPieceDragBegin'] = (piece, sourceSquare) => {
-        socketRef.current?.emit("getPossibleMoves", sourceSquare, (possibleMoves: string[]) => {
+        addHighlightSquare(sourceSquare)
+    };
+
+    const removeHighlightSquare: ChessboardProps['onPieceDragEnd'] = (piece, sourceSquare) => {
+        setSquareStyles({})
+    }
+
+
+    const getPositionObject: ChessboardProps['getPositionObject'] = (currentPosition) => {
+        console.log(currentPosition)
+        setPositions(currentPosition)
+    }
+
+    const addHighlightSquare = (square: string) => {
+        socketRef.current?.emit("getPossibleMoves", square, (possibleMoves: string[]) => {
             const highlightStyles = possibleMoves.reduce((styles, move) => {
                 return { 
                     ...styles,
@@ -114,64 +130,28 @@ const MultiPlayerGame = () => {
                     }
                 };
             }, {});
-    
+
             setSquareStyles(highlightStyles);
         });
-    };
-
-    const removeHighlightSquare: ChessboardProps['onPieceDragEnd'] = (piece, sourceSquare) => {
-        setSquareStyles({})
     }
 
-    const highlightOnPieceClick: ChessboardProps['onSquareClick'] = (square) => {
-        setSquareStyles({}) // Handle remove in a better way
-        console.log("Square pressed: " + square)
-        let piece : Piece | undefined = positions[square]
-        if(piece != undefined && piece[0] === color[0]){
-            socketRef.current?.emit("getPossibleMoves", square, (possibleMoves: string[]) => {
-                const highlightStyles = possibleMoves.reduce((styles, move) => {
-                    return { 
-                        ...styles,
-                        [move]: {
-                            background: "radial-gradient(circle at center, rgba(255, 255, 0, 1) 25%, transparent 30%)",
-                            borderRadius: "50%",
-                        }
-                    };
-                }, {});
-
-                setSquareStyles(highlightStyles);
-                setPieceSquare(square)
-            });
-
-        } else {
-            const moved_pos = JSON.stringify({
-                from: pieceSquare?.toString(),
-                to: square.toString(),
-            });
-            console.log(`Moved piece from ${pieceSquare} to ${square}`);
-            console.log(`Sending message: ${moved_pos}`);
-            socketRef.current?.emit('move', moved_pos , (success: boolean) => {
-                if (success) {
-                    console.log("Move successful");
-                    return true;
-                }
-                console.log("Move unsuccessful");
-                return false;
-            });
-        }
-
+    const sendPieceMovement = (sourceSquare : string | undefined, targetSquare: string) : boolean => {
+        const moved_pos = JSON.stringify({
+            from: sourceSquare,
+            to: targetSquare,
+        });
+        console.log(`Moved piece from ${sourceSquare} to ${targetSquare}`);
+        console.log(`Sending message: ${moved_pos}`);
+        socketRef.current?.emit('move', moved_pos , (success: boolean) => {
+            if (success) {
+                console.log("Move successful");
+                return true;
+            }
+            console.log("Move unsuccessful");
+            return false;
+        });
+        return false;
     }
-
-    useEffect(() => {
-        console.log("Updated PieceSquare: " + pieceSquare);
-    }, [pieceSquare]); 
-
-    const getPositionObject: ChessboardProps['getPositionObject'] = (currentPosition) => {
-        console.log(currentPosition)
-        setPositions(currentPosition)
-    }
-    
-    
     
     return (
         <div className="game-grid" >
@@ -189,12 +169,12 @@ const MultiPlayerGame = () => {
                 <Chess 
                     color={color} 
                     position={fen}
+                    customSquareStyles={squareStyles}
                     onPieceDrop={movePiece}
+                    onSquareClick={movePieceOnClick}
+                    isDraggablePiece={IsDraggablePiece}
                     onPieceDragBegin={highlightSquare}
                     onPieceDragEnd={removeHighlightSquare}
-                    isDraggablePiece={IsDraggablePiece}
-                    customSquareStyles={squareStyles}
-                    onSquareClick={highlightOnPieceClick}
                     getPositionObject={getPositionObject}
                 />
             </motion.div>
