@@ -6,7 +6,7 @@ import CustomNavbar from '../components/CustomNavbar';
 import { SocketClient } from '../socket/Client'; // Adjust the import path as necessary
 import { useEffect, useRef, useState } from 'react';
 import { FEN } from '../constants/types';
-import type { BoardOrientation, ChessboardProps, Piece } from "react-chessboard/dist/chessboard/types";
+import { BoardPosition, type BoardOrientation, type ChessboardProps, type Piece, Square } from "react-chessboard/dist/chessboard/types";
 import { Socket } from 'socket.io-client';
 import { Alert } from 'flowbite-react';
 import { HiInformationCircle } from 'react-icons/hi';
@@ -20,7 +20,8 @@ const MultiPlayerGame = () => {
     const [roomCode, setRoomCode] = useState<string>('');
     const [warning, setWarning] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [piece, setPiece] = useState<Piece | null>(null);
+    const [pieceSquare, setPieceSquare] = useState<Square | null>(null);
+    const [positions, setPositions] = useState<BoardPosition>({});
 
     useEffect(() => {
         const socketClient = SocketClient.getInstance();
@@ -123,24 +124,53 @@ const MultiPlayerGame = () => {
     }
 
     const highlightOnPieceClick: ChessboardProps['onSquareClick'] = (square) => {
-        socketRef.current?.emit("getPossibleMoves", square, (possibleMoves: string[]) => {
-            const highlightStyles = possibleMoves.reduce((styles, move) => {
-                return { 
-                    ...styles,
-                    [move]: {
-                        background: "radial-gradient(circle at center, rgba(255, 255, 0, 1) 25%, transparent 30%)",
-                        borderRadius: "50%",
-                    }
-                };
-            }, {});
-    
-            if(piece == null){
+        setSquareStyles({}) // Handle remove in a better way
+        console.log("Square pressed: " + square)
+        let piece : Piece | undefined = positions[square]
+        if(piece != undefined && piece[0] === color[0]){
+            socketRef.current?.emit("getPossibleMoves", square, (possibleMoves: string[]) => {
+                const highlightStyles = possibleMoves.reduce((styles, move) => {
+                    return { 
+                        ...styles,
+                        [move]: {
+                            background: "radial-gradient(circle at center, rgba(255, 255, 0, 1) 25%, transparent 30%)",
+                            borderRadius: "50%",
+                        }
+                    };
+                }, {});
+
                 setSquareStyles(highlightStyles);
-            } else {
-                
-            }
-        });
+                setPieceSquare(square)
+            });
+
+        } else {
+            const moved_pos = JSON.stringify({
+                from: pieceSquare?.toString(),
+                to: square.toString(),
+            });
+            console.log(`Moved piece from ${pieceSquare} to ${square}`);
+            console.log(`Sending message: ${moved_pos}`);
+            socketRef.current?.emit('move', moved_pos , (success: boolean) => {
+                if (success) {
+                    console.log("Move successful");
+                    return true;
+                }
+                console.log("Move unsuccessful");
+                return false;
+            });
+        }
+
     }
+
+    useEffect(() => {
+        console.log("Updated PieceSquare: " + pieceSquare);
+    }, [pieceSquare]); 
+
+    const getPositionObject: ChessboardProps['getPositionObject'] = (currentPosition) => {
+        console.log(currentPosition)
+        setPositions(currentPosition)
+    }
+    
     
     
     return (
@@ -165,6 +195,7 @@ const MultiPlayerGame = () => {
                     isDraggablePiece={IsDraggablePiece}
                     customSquareStyles={squareStyles}
                     onSquareClick={highlightOnPieceClick}
+                    getPositionObject={getPositionObject}
                 />
             </motion.div>
 
