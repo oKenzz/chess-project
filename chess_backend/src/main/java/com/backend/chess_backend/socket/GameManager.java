@@ -27,17 +27,27 @@ public class GameManager {
         return newGame;
     }
 
-    public synchronized Game join(String gameId, String clientId) {
-        Game game = games.get(gameId);
-        System.out.println(game);
-        System.out.println(game != null);
-        if (game != null) {
-            game.addPlayer(clientId);
-            playerGameMap.put(clientId, game.getId());
-            return game;
+    public synchronized void createGameWithId(String gameId, String clientId) {
+        Game newGame = new Game(gameId);
+        newGame.addPlayer(gameId);
+        games.put(gameId, newGame);
+        playerGameMap.put(clientId, gameId);
+    }
+
+    public synchronized boolean roomExist(String roomId){
+        return games.containsKey(roomId);
+    }
+
+    public synchronized boolean join(String gameId, String clientId) {
+        if(!playerGameMap.containsKey(clientId)){
+            Game game = games.get(gameId);
+            if (game != null && !game.isFull()) {
+                game.addPlayer(clientId);
+                playerGameMap.put(clientId, game.getId());
+                return true;
+            };
         }
-        ;
-        return null;
+        return false;
     }
 
     public synchronized Game joinRandomGame(String clientId) {

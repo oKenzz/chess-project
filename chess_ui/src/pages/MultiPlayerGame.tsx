@@ -10,7 +10,7 @@ import { Socket } from 'socket.io-client';
 import { Alert } from 'flowbite-react';
 import { HiInformationCircle } from 'react-icons/hi';
 import CloudAnimation from '../components/CloudAnimation';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Spinner } from 'flowbite-react';
 import Settings from '../components/Settings';
 import { alertMessage, FEN ,GameStateResponse} from '../constants/types';
@@ -31,19 +31,19 @@ const MultiPlayerGame = () => {
     const [showJoiningGame, setShowJoiningGame] = useState(true);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const [theme, setTheme] = useState<ChessTheme>( Theme.defaultTheme );
-    const location = useLocation();
+    const [searchParams] = useSearchParams();
  
     useEffect(() => {
-        const socketClient = SocketClient.getInstance();
+
+        const roomCodeFromURL = searchParams.get("room") || "";
+        setRoomCode(roomCodeFromURL);
+
+        // const socketClient = SocketClient.getInstance();
+        const socketClient = new SocketClient(roomCodeFromURL);
         socketClient.connect();
         socketRef.current = socketClient.getSocket();
-        const queryParams = new URLSearchParams(location.search);
-        const roomCodeFromURL = queryParams.get('roomCode');
-        if (roomCodeFromURL) {
-        setRoomCode(roomCodeFromURL);
-        // Emit an event to join the room
-        socketRef.current?.emit('joinRoom', roomCodeFromURL);
-        }
+        
+
         // Get the initial game state
 
         const chatListener = (data: string) => {

@@ -42,9 +42,16 @@ public class ChessHandler {
 
             // Attempt to retrieve the first 'room' parameter
             String room = params.containsKey("room") ? params.get("room").get(0) : null;
-            if (room != null && !room.isEmpty()) { // IF a room was specified
-                gameManager.join(room, sessionId);
-                client.joinRoom(room);
+            if (room != null && !room.isEmpty() && room != "") { // IF a room was specified
+                if(gameManager.roomExist(room)){
+                    if(gameManager.join(room, sessionId)){
+                        client.joinRoom(room);
+                    }
+                } else {
+                    gameManager.createGameWithId(room, sessionId);
+                    client.joinRoom(room);
+                }
+
             } else {
                 // Join a random room
                 Game joinedGame = gameManager.joinRandomGame(sessionId);

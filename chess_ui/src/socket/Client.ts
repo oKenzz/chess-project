@@ -5,12 +5,16 @@ const URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:15025';
 export class SocketClient {
     private static instance: SocketClient;
     private socket: Socket;
+    private roomCode: String;
 
-    private constructor() {
+    public constructor(roomCode: String) {
         this.socket = io(URL, {
             reconnection: true,
             reconnectionAttempts: 3,
             reconnectionDelay: 2000,
+            query: {
+                room: this.roomCode = roomCode
+            },
         });
 
         // Event listeners
@@ -33,12 +37,12 @@ export class SocketClient {
         });
     }
 
-    public static getInstance(): SocketClient {
-        if (!SocketClient.instance) {
-            SocketClient.instance = new SocketClient();
-        }
-        return SocketClient.instance;
-    }
+    // public static getInstance(): SocketClient {
+    //     if (!SocketClient.instance) {
+    //         SocketClient.instance = new SocketClient();
+    //     }
+    //     return SocketClient.instance;
+    // }
 
     public connect() {
         console.log('Initiating connection...');

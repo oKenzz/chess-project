@@ -3,15 +3,24 @@ import { ReactSVG } from "react-svg";
 import { motion, AnimatePresence } from "framer-motion";
 import PlayButton from "../components/PlayButton";
 import { backgroundVariants, itemVariants } from "../config/Animations";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const [isExiting, setExiting] = useState(false);
+  const [roomCode, setRoomCode] = useState("")
+  const navigate = useNavigate()
 
   const handleButtonClick = (link: string) => {
     setExiting(true);
     setTimeout(() => {
       window.location.href = link;
     }, 500);
+  };
+
+
+  const handleSubmit = (event : any) => {
+    event.preventDefault()
+    navigate(`/multiplayer?room=${roomCode}`);
   };
 
   return (
@@ -56,6 +65,16 @@ const LandingPage = () => {
                   text="Multiplayer"
                   onClick={() => handleButtonClick("/multiplayer")}
                 />
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    value={roomCode}
+                    onChange={(e) => setRoomCode(e.target.value)}
+                    placeholder="Enter Room Code"
+                  />
+                  <button type="submit">  Join Room</button>
+                </form>
+
               </div>
             </div>
             <div className="flex-[3]"></div>
