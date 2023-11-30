@@ -11,7 +11,7 @@ const CustomNavbar = (  { roomCode } : { roomCode: string } ) => {
         animate={{ y: 0, transition: { duration: 0.5, delay: 0.5 }}}
     >
 
-      <Navbar  fluid className="bg-gray-600 w-[100vw] py-auto" >
+      <Navbar  fluid className="bg-gray-600 w-[100vw] py-auto z-50" >
         {/*  Desktop */}
         <div className='hidden md:flex w-[100vw] items-center place-content-between  px-5 h-100'>
           <EscButton/>
@@ -38,9 +38,17 @@ const CustomNavbar = (  { roomCode } : { roomCode: string } ) => {
         </Navbar.Collapse>
 
       </Navbar>
-      <div className='w-[100vw] h-8 bg-white flex items-center justify-center'>
-        <p className='text-center text-gray-500'>Room Code: {roomCode}</p>
-      </div>
+      {
+        roomCode && (
+          <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.5, delay: 0.5 } }}
+                className='w-[100vw] h-8 bg-white flex items-center justify-center -z-50 '
+            >
+            <p className='text-center text-gray-500'>Room Code: {roomCode}</p>
+          </motion.div>
+        )
+      }
     </motion.div>
   );
 }

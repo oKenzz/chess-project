@@ -11,6 +11,18 @@ import { Socket } from 'socket.io-client';
 import { Alert } from 'flowbite-react';
 import { HiInformationCircle } from 'react-icons/hi';
 
+type Player = { 
+    timer: number;
+    uuid: string;
+}
+type GameStateResponse = {
+    id: string;
+    gameCreatedAt: number;
+    fen: string;
+    turn: string;
+    playerColor: BoardOrientation;
+    players:  Player[] | null[];
+}
 
 const MultiPlayerGame = () => {
     const [fen, setFen] = useState<FEN>('start');
@@ -38,8 +50,8 @@ const MultiPlayerGame = () => {
             setFen(fenString);
         }
         const gameStateListener = (gameState: string) => {
-            const JSONgameState = JSON.parse(gameState)
-            console.log(`Game Code: ${JSONgameState.id} \nGame State: ${JSONgameState.fen} \nPlayer Color: ${JSONgameState.playerColor}`);
+            const JSONgameState = JSON.parse(gameState) as GameStateResponse;
+            console.log(`Game ID is ${JSONgameState.id}\nGame was created at ${JSONgameState.gameCreatedAt}\nFEN is ${JSONgameState.fen}\nTurn is ${JSONgameState.turn}\nPlayer color is ${JSONgameState.playerColor}\nPlayers are ${JSONgameState.players ? JSONgameState.players.map((player) => player?.uuid) : null}`);
             setColor(JSONgameState.playerColor)
             setFen(JSONgameState.fen)
             setRoomCode(JSONgameState.id)
@@ -50,23 +62,24 @@ const MultiPlayerGame = () => {
             setWarning("Opponent disconnected ");
             setTimeout(() => {
                 setWarning(null);
-            }, 3000);
+            }, 5000);
         }
 
-        const opponentJoinedListener = () => {
+        const opponentJoinedListener = (hasJoined: boolean) => {
             console.log("Opponent joined");
             setSuccessMessage("Opponent joined");
             setTimeout(() => {
                 setSuccessMessage(null);
-            }, 3000);
+            }, 5000);
         }
 
         socketRef.current.emit('getGameState')
+
         socketRef.current.on('chat', chatListener);
         socketRef.current.on('gameState', gameStateListener);
         socketRef.current.on('boardState', boardListener);
-        socketRef.current.on('playerDisconnected', opponentDisconnectedListener);
         socketRef.current.on('playerJoined', opponentJoinedListener);
+        socketRef.current.on('playerDisconnected', opponentDisconnectedListener);
 
         return () => {
             socketClient.disconnect();
@@ -169,6 +182,7 @@ const MultiPlayerGame = () => {
                 <Chess 
                     color={color} 
                     position={fen}
+                    arePremovesAllowed={true}   
                     customSquareStyles={squareStyles}
                     onPieceDrop={movePiece}
                     onSquareClick={movePieceOnClick}

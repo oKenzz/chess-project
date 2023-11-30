@@ -45,20 +45,23 @@ public class ChessHandler {
             if (room != null && !room.isEmpty()) { // IF a room was specified
                 gameManager.join(room, sessionId);
                 client.joinRoom(room);
-                log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId, room);
-                server.getRoomOperations(room).sendEvent("playerJoined", sessionId);
             } else {
                 // Join a random room
                 Game joinedGame = gameManager.joinRandomGame(sessionId);
                 if (joinedGame != null) {
-                    String roomCode = joinedGame.getId();
-                    client.joinRoom(roomCode);
-                    log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId, roomCode);
-                    server.getRoomOperations(room).sendEvent("playerJoined", sessionId);
+                    room = joinedGame.getId();
+                    client.joinRoom(room);
                 } else {
-                    log.info("Socket ID[{}] - room[{}] - Connected to chess game", sessionId,
-                            gameManager.getGameIdByPlayerUuid(sessionId));
-                    server.getRoomOperations(room).sendEvent("playerJoined", sessionId);
+                    room = gameManager.getGameIdByPlayerUuid(sessionId);
+                }
+
+            }
+
+            log.info("Client connected: " + sessionId + " to room: " + room);
+            // send event to other clients in the room except the sender
+            for (SocketIOClient c : server.getRoomOperations(room).getClients()) {
+                if (!c.getSessionId().toString().equals(sessionId)) {
+                    c.sendEvent("playerJoined", sessionId);
                 }
             }
 
