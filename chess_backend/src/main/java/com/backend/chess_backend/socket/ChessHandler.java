@@ -68,6 +68,15 @@ public class ChessHandler {
         };
     }
 
+    public void joinRoomListener(SocketIOClient client, String roomCode, AckRequest ackRequest) {
+        String playerUuid = client.getSessionId().toString();
+        log.info("Client: " + playerUuid + "joined: " + roomCode);
+        if (roomCode != null && !roomCode.isEmpty()) {
+            gameManager.join(roomCode, playerUuid);
+            client.joinRoom(roomCode);
+        }
+    }
+
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
         log.info("Message: " + message + " From: " + client.getSessionId());
         // send message to global chat
@@ -79,8 +88,8 @@ public class ChessHandler {
     }
 
     public void getGameStateListener(SocketIOClient client, Void data, AckRequest ackRequest) {
-        String playerUUID = client.getSessionId().toString();
-        Map<String, Object> gameState = getGameState(playerUUID);
+        String playerUuid = client.getSessionId().toString();
+        Map<String, Object> gameState = getGameState(playerUuid);
         if (gameState == null) {
             return;
         }
@@ -91,8 +100,8 @@ public class ChessHandler {
     }
 
     // Get Game State
-    public Map<String, Object> getGameState(String playerUUID) {
-        Game game = gameManager.getGameByPlayerUuid(playerUUID);
+    public Map<String, Object> getGameState(String playerUuid) {
+        Game game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return null;
         }
@@ -102,7 +111,7 @@ public class ChessHandler {
         gameState.put("gameCreatedAt", game.getGameStartedTime());
         gameState.put("fen", Translator.translateBoard(game.getBoard(), game.getTurn()));
         gameState.put("turn", game.getTurn());
-        gameState.put("playerColor", game.getPlayerColor(playerUUID));
+        gameState.put("playerColor", game.getPlayerColor(playerUuid));
         gameState.put("players", game.getPlayers());
 
         return gameState;
@@ -122,6 +131,7 @@ public class ChessHandler {
 
         Game game = gameManager.getGameByPlayerUuid(playerUuID);
         Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
+
         if (hasMoved) {
             server.getRoomOperations(game.getId()).sendEvent("boardState",
                     Translator.translateBoard(game.getBoard(), game.getTurn()));

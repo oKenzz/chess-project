@@ -10,6 +10,9 @@ import { BoardPosition, type BoardOrientation, type ChessboardProps, type Piece,
 import { Socket } from 'socket.io-client';
 import { Alert } from 'flowbite-react';
 import { HiInformationCircle } from 'react-icons/hi';
+import CloudAnimation from '../components/CloudAnimation';
+import { useLocation } from 'react-router-dom';
+import { Spinner } from 'flowbite-react';
 
 type Player = { 
     timer: number;
@@ -34,13 +37,22 @@ const MultiPlayerGame = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [pieceSquare, setPieceSquare] = useState<Square | null>(null);
     const [positions, setPositions] = useState<BoardPosition>({});
+    const [opponentIsReady, setOpponentIsReady] = useState<boolean>(false); // TODO: Remove this state and use the socket to check if the opponent is ready
+    const location = useLocation();
 
     useEffect(() => {
         const socketClient = SocketClient.getInstance();
         socketClient.connect();
         socketRef.current = socketClient.getSocket();
+        const queryParams = new URLSearchParams(location.search);
+        const roomCodeFromURL = queryParams.get('roomCode');
+        if (roomCodeFromURL) {
+        setRoomCode(roomCodeFromURL);
+        // Emit an event to join the room
+        socketRef.current?.emit('joinRoom', roomCodeFromURL);
+        }
         // Get the initial game state
-        
+
         const chatListener = (data: string) => {
             console.log(`Received message: ${data}`);
         };
@@ -55,6 +67,9 @@ const MultiPlayerGame = () => {
             setColor(JSONgameState.playerColor)
             setFen(JSONgameState.fen)
             setRoomCode(JSONgameState.id)
+            if (JSONgameState.players && JSONgameState.players[0] && JSONgameState.players[1]) {
+                setOpponentIsReady(true);
+            }
         };
         const opponentDisconnectedListener = () => {
             console.log("Opponent disconnected");
@@ -68,6 +83,7 @@ const MultiPlayerGame = () => {
         const opponentJoinedListener = (hasJoined: boolean) => {
             console.log("Opponent joined");
             setSuccessMessage("Opponent joined");
+            setOpponentIsReady(true);
             setTimeout(() => {
                 setSuccessMessage(null);
             }, 5000);
@@ -97,7 +113,6 @@ const MultiPlayerGame = () => {
         if (square !== pieceSquare){
             setSquareStyles({}) // Handle remove in a better way
         }
-        console.log("Square pressed: " + square)
         const piece : Piece | undefined = positions[square]
         // Select Piece
         if(piece !== undefined && piece[0] === color[0]){
@@ -128,7 +143,6 @@ const MultiPlayerGame = () => {
 
 
     const getPositionObject: ChessboardProps['getPositionObject'] = (currentPosition) => {
-        console.log(currentPosition)
         setPositions(currentPosition)
     }
 
@@ -210,6 +224,34 @@ const MultiPlayerGame = () => {
             >
                 <span className="font-medium">{ successMessage } </span>
             </Alert>
+
+            {
+                opponentIsReady ? null : 
+                <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center '>
+                    <div  className='absolute top-0 left-0 w-full h-full bg-black opacity-50'
+                        style={{ zIndex: 999}}>
+                    </div>
+                    <div className='
+                    absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                    flex flex-col justify-center items-center gap-8
+                    '
+                        style={{ zIndex: 1000}}
+                    >   
+                        {
+                            roomCode ? 
+                            <p className='text-3xl text-white font-bold'>Room code: {roomCode}</p>
+                            : null
+                        }
+                        <p className='text-3xl text-white font-bold'>Waiting for opponent</p>
+                        <Spinner  
+                            className='w-36 h-36 ' 
+                        />
+                    </div>
+
+
+                    <CloudAnimation />
+                </div>
+            }
         </div>
     );
 };
