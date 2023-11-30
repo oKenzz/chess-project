@@ -1,16 +1,13 @@
 package com.backend.chess_backend;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.chess_backend.model.Board;
-import com.backend.chess_backend.model.Game;
-import com.backend.chess_backend.model.Translator;
 import com.backend.chess_backend.model.Pieces.Piece;
+import com.backend.chess_backend.model.Translator;
 
 @SpringBootTest
 
@@ -41,13 +38,16 @@ public class BoardTest {
     public void possiblemovetest() {
         Board board = new Board();
         board.reset();
-        Piece[][] tmp = board.getBoard();
-        // for (int i=0; i<7; i++){
-        Boolean[][] moves = board.getPossibleMoves(tmp[5][6]);
-        assertTrue(moves[5][5]);
-        assertTrue(moves[5][4]);
-        assertTrue(!moves[4][5]);
-        assertTrue(!moves[6][5]);
+        Piece[][] tmp=board.getBoard();
+        //for (int i=0; i<7; i++){
+        board.updateCoords(tmp[3][1], 3, 5);
+        Boolean[][] moves=board.getPossibleMoves(tmp[3][6]);
+        assertTrue(moves[3][4]==false);
+        Boolean[][] moves2=board.getPossibleMoves(tmp[0][0]);
+        assertTrue(moves2[7][0]==false);
+        Boolean[][] moves3=board.getPossibleMoves(tmp[3][0]);
+        assertTrue(moves2[3][7]==false);
+    
         // for (int x=0; x<8;x++){
         // Boolean[][] moves=board.getPossibleMoves(tmp[x][7]);
         // assertEquals("p", tmp[x][6].getPieceType());
