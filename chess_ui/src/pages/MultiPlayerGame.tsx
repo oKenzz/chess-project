@@ -250,6 +250,15 @@ const MultiPlayerGame = () => {
 
 
                     <CloudAnimation />
+                    <iframe 
+                             className='absolute bottom-0 right-0 z-0'
+                    
+                             style={{ zIndex: 999}}
+
+                            width="220" height="400" src="https://www.youtube.com/embed/Q5KtBKk4hC0?autoplay=1&si=gERS8wJaU8QpXzbq&amp;start=71" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    
+                    ></iframe>
+
                 </div>
             }
         </div>
