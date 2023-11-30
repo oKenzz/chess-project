@@ -29,7 +29,7 @@ public class GameManagerTest {
         playerTwo = new Player("uuid-player-2");
         playerThree = new Player("uuid-player-3");
         playerFour = new Player("uuid-player-4");
-        playerFive = new Player("uuid-player-4");
+        playerFive = new Player("uuid-player-5");
     }
 
     @Test
@@ -44,10 +44,12 @@ public class GameManagerTest {
     void testJoinGame() {
         Game firstGame = gameManager.createGame(playerOne.getUuid());
         String gameId = gameManager.getGameIdByPlayerUuid(playerOne.getUuid());
-        Game secondGame = gameManager.join(gameId, playerTwo.getUuid());
+        gameManager.join(gameId, playerTwo.getUuid());
+        String gameId2 = gameManager.getGameIdByPlayerUuid(playerTwo.getUuid());
 
-        assertEquals(firstGame, secondGame, "Both players should be in the same game");
-        assertTrue(secondGame.isFull(), "Game should be full after two players join");
+
+        assertEquals(gameId, gameId2, "Both players should be in the same game");
+        assertTrue(firstGame.isFull(), "Game should be full after two players join");
     }
 
     @Test
@@ -55,12 +57,12 @@ public class GameManagerTest {
         Game firstGame = gameManager.createGame(playerOne.getUuid());
         Game secondGame = gameManager.joinRandomGame(playerTwo.getUuid());
         Game thirdGame = gameManager.joinRandomGame(playerThree.getUuid());
-        Game fourthGame = gameManager.joinRandomGame(playerThree.getUuid());
-        Game fifthGame = gameManager.joinRandomGame(playerThree.getUuid());
-
+        Game fourthGame = gameManager.joinRandomGame(playerFour.getUuid());
+        Game fifthGame = gameManager.joinRandomGame(playerFive.getUuid());
 
         assertEquals(firstGame, secondGame, "Both players should be in the same game");
         assertEquals(thirdGame, fourthGame, "Should be the same game");
+        assertNotEquals(firstGame, thirdGame, "Should not be the same game");
         assertTrue(!fifthGame.isFull(), "Should not be full");
         assertTrue(secondGame.isFull(), "Game should be full after two players join");
 
