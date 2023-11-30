@@ -4,7 +4,14 @@ import { ReactSVG } from 'react-svg';
 import ButtonImg from './ButtonImg';
 import { motion } from 'framer-motion';
 
-const CustomNavbar = (  { roomCode } : { roomCode: string } ) => {
+const CustomNavbar = (  { 
+  roomCode, 
+  showSettings,
+} : { 
+  roomCode: string,
+  showSettings : (show: boolean) => void,
+} ) => {
+
   return (
     <motion.div
         initial={{ y: '-8vh' }}
@@ -18,7 +25,9 @@ const CustomNavbar = (  { roomCode } : { roomCode: string } ) => {
           <Navbar.Brand  href="/" >
               <ReactSVG src="/images/logo.svg"/>
           </Navbar.Brand>
-          <ButtonImg id="settings_button" img='/images/Settings.svg' alt='Settings' size={50} event={() => {}}/>
+          <ButtonImg id="settings_button" img='/images/Settings.svg' alt='Settings' size={50} 
+          event={() => {showSettings(true)}}
+          />
         </div>
 
         {/*  Mobile */}

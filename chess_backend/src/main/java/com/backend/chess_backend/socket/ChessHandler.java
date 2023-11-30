@@ -131,7 +131,16 @@ public class ChessHandler {
 
         Game game = gameManager.getGameByPlayerUuid(playerUuID);
         Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
-
+        log.info(game.checkGameOver());
+        // if (game.checkGameOver() != null) {
+        // String gameOverMsg = "Draw";
+        // if (game.checkGameOver().equals("w")) {
+        // gameOverMsg = "White wins";
+        // } else if (game.checkGameOver().equals("b")) {
+        // gameOverMsg = "Black wins";
+        // }
+        // server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverMsg);
+        // }
         if (hasMoved) {
             server.getRoomOperations(game.getId()).sendEvent("boardState",
                     Translator.translateBoard(game.getBoard(), game.getTurn()));

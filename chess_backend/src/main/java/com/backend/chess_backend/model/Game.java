@@ -1,4 +1,5 @@
 package com.backend.chess_backend.model;
+
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 
@@ -158,5 +159,9 @@ public class Game {
 
     public String getId() {
         return gameId;
+    }
+
+    public String checkGameOver() {
+        return board.gameOver;
     }
 }

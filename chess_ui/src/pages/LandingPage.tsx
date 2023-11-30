@@ -37,13 +37,13 @@ const LandingPage = () => {
             initial="hidden"
             animate="visible"
           >
-            <h1 className="font-roboto font-900 relative mt-10 text-center text-6xl text-[#7B61FF] md:text-[8rem]">
+            <h1 className="font-roboto font-900 relative mt-16 text-center text-9xl text-[#7B61FF] md:text-[12rem]">
               Simple <span className="text-[#34364C]">Chess</span> 
             </h1>
           </motion.div>
           <div className="relative flex h-full min-h-[inherit] flex-col p-8 md:flex-row ">
             <div className="min-height-[inherit] flex h-full flex-[3] flex-col justify-center md:items-end">
-              <div className="flex flex-col gap-8 pb-[50%]">
+              <div className="flex flex-col gap-6 pb-[50%]">
                 <PlayButton
                   link="/singleplayer"
                   text="Singleplayer"
