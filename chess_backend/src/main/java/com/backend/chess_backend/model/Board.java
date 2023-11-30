@@ -295,7 +295,6 @@ public class Board {
                     }
                     // checks if piece is on the same x-level
                     else if (piece.getX() == x) {
-                        // to the left
                         if (y < piece.getY()) {
                             while (tmpy >= 0) {
                                 possibleMoves[x][tmpy] = false;
@@ -303,7 +302,6 @@ public class Board {
                             }
 
                         }
-                        // to the right
                         else {
                             if (y > piece.getY()) {
                                 while (tmpy < board.length) {
@@ -317,7 +315,6 @@ public class Board {
                     }
                     // checks if piece is on the same y-level
                     else if (piece.getY() == y) {
-                        // above
                         if (x < piece.getX()) {
                             while (tmpx >= 0) {
                                 possibleMoves[tmpx][y] = false;
@@ -325,12 +322,9 @@ public class Board {
                             }
 
                         }
-                        // below
+
                         else {
                             while (tmpx < board.length) {
-                                if (possibleMoves[tmpx][y] == false) {
-                                    break;
-                                }
                                 possibleMoves[tmpx][y] = false;
                                 tmpx++;
                             }
