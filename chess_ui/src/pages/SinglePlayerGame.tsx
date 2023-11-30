@@ -11,7 +11,10 @@ const SinglePlayerGame = () => {
     return (
         <div className="game-grid" >
             {/* Headers */}
-            <CustomNavbar  />
+            <CustomNavbar  
+                roomCode={"Single Player :("}
+                showSettings={() => {}} 
+            />
             {/* <Header /> */}
             <motion.div
                 initial={{  opacity: 0}
@@ -19,7 +22,7 @@ const SinglePlayerGame = () => {
                 animate={{  opacity: 1 , transition: { duration: 1, delay: 0.5}}}
                 className="game-panel"
             >
-                <Chess color='white' />
+                {/* <Chess color='white' /> */}
             </motion.div>
 
             <motion.div className="left-panel">

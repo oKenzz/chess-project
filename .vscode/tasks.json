@@ -29,9 +29,6 @@
                 "panel": "new"
             },
             "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
         }
     ]
 }
