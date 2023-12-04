@@ -3,14 +3,17 @@ import { io, Socket } from 'socket.io-client';
 const URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:15025';
 
 export class SocketClient {
-    private static instance: SocketClient;
     private socket: Socket;
+    private roomCode: String | null;
 
-    private constructor() {
+    public constructor(roomCode: String | null) {
         this.socket = io(URL, {
             reconnection: true,
             reconnectionAttempts: 3,
             reconnectionDelay: 2000,
+            query: {
+                room: this.roomCode = roomCode
+            },
         });
 
         // Event listeners
@@ -31,13 +34,6 @@ export class SocketClient {
             console.error('Failed to reconnect to the server.');
             alert('Failed to reconnect to the server after multiple attempts.');
         });
-    }
-
-    public static getInstance(): SocketClient {
-        if (!SocketClient.instance) {
-            SocketClient.instance = new SocketClient();
-        }
-        return SocketClient.instance;
     }
 
     public connect() {

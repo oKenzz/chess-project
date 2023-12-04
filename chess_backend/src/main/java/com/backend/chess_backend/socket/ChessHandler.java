@@ -40,41 +40,80 @@ public class ChessHandler {
             String sessionId = client.getSessionId().toString();
             var params = client.getHandshakeData().getUrlParams();
 
+            // if client already exists
+            if (gameManager.getGameByPlayerUuid(sessionId) != null) {
+                log.info("Client: " + sessionId + " is already in a game.");
+                client.joinRoom(gameManager.getGameIdByPlayerUuid(sessionId));
+                return;
+            }
+
             // Attempt to retrieve the first 'room' parameter
             String room = params.containsKey("room") ? params.get("room").get(0) : null;
-            if (room != null && !room.isEmpty()) { // IF a room was specified
-                gameManager.join(room, sessionId);
-                client.joinRoom(room);
+            if (room != null && !room.isEmpty() && !room.equals("null")) {
+                switch (room) {
+                    case "quickPlay":
+                        room = quickPlay(client);
+                        client.joinRoom(room);
+                        log.info("QuickPlay | " + " Client:" + sessionId + " quick joined: " + room);
+                        break;
+                    case "create":
+                        Game newGame = gameManager.createGame(sessionId, true);
+                        room = newGame.getId();
+                        client.joinRoom(room);
+                        log.info("Create | " + " Client:" + sessionId + " created room: " + room);
+                        break;
+
+                    case "singlePlayer":
+                        // TODO: Implement single player
+                        break;
+                    default:
+                        if (room.length() != 4) {
+                            log.error("Room code must be 4 characters long.");
+                            return;
+                        }
+                        if (!room.matches("[a-zA-Z0-9]+")) {
+                            log.info("Room code must be alphanumeric.");
+                            return;
+                        }
+                        room = room.toUpperCase();
+                        if (gameManager.roomExist(room)) {
+                            Game joinedGame = gameManager.joinRoom(room, sessionId);
+                            if (joinedGame != null) {
+                                client.joinRoom(room);
+                                log.info("Join | " + " Client:" + sessionId + " joined room: " + room);
+                            } else {
+                                log.info("Join | " + " Client:" + sessionId + " failed to join room: " + room);
+                            }
+                        } else {
+                            log.info("Join | " + " Client:" + sessionId + " failed to join room: " + room);
+                        }
+                }
             } else {
                 // Join a random room
-                Game joinedGame = gameManager.joinRandomGame(sessionId);
-                if (joinedGame != null) {
-                    room = joinedGame.getId();
-                    client.joinRoom(room);
-                } else {
-                    room = gameManager.getGameIdByPlayerUuid(sessionId);
-                }
-
+                room = quickPlay(client);
             }
-
-            log.info("Client connected: " + sessionId + " to room: " + room);
-            // send event to other clients in the room except the sender
-            for (SocketIOClient c : server.getRoomOperations(room).getClients()) {
-                if (!c.getSessionId().toString().equals(sessionId)) {
-                    c.sendEvent("playerJoined", sessionId);
-                }
-            }
-
+            alertPlayerJoined(sessionId, room);
         };
     }
 
-    public void joinRoomListener(SocketIOClient client, String roomCode, AckRequest ackRequest) {
-        String playerUuid = client.getSessionId().toString();
-        log.info("Client: " + playerUuid + "joined: " + roomCode);
-        if (roomCode != null && !roomCode.isEmpty()) {
-            gameManager.join(roomCode, playerUuid);
-            client.joinRoom(roomCode);
+    private void alertPlayerJoined(String sessionId, String roomCode) {
+        Game game = gameManager.getGameByPlayerUuid(sessionId);
+        if (game == null) {
+            return;
         }
+        for (SocketIOClient c : server.getRoomOperations(roomCode).getClients()) {
+            if (!c.getSessionId().toString().equals(sessionId)) {
+                c.sendEvent("playerJoined", sessionId);
+            }
+        }
+    }
+
+    private String quickPlay(SocketIOClient client) {
+        String playerUuid = client.getSessionId().toString();
+        Game joinedGame = gameManager.joinRandomGame(playerUuid);
+        String room = joinedGame.getId();
+        client.joinRoom(room);
+        return room;
     }
 
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
@@ -83,7 +122,7 @@ public class ChessHandler {
         server.getBroadcastOperations().sendEvent("chat", message);
 
         if (ackRequest.isAckRequested()) {
-            ackRequest.sendAckData("Message has been receieved");
+            ackRequest.sendAckData("Message has been rFeceieved");
         }
     }
 

@@ -10,19 +10,18 @@ import { Socket } from 'socket.io-client';
 import { Alert } from 'flowbite-react';
 import { HiInformationCircle } from 'react-icons/hi';
 import CloudAnimation from '../components/CloudAnimation';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Spinner } from 'flowbite-react';
 import Settings from '../components/Settings';
 import { alertMessage, FEN ,GameStateResponse} from '../constants/types';
 import Theme, { ChessTheme, ThemeEnum } from '../constants/theme';
-import { clear } from 'console';
 
 const MultiPlayerGame = () => {
     const [fen, setFen] = useState<FEN>('start');
     const socketRef = useRef<Socket | null>(null); // Create a socket ref as a mutable variable
     const [color, setColor] = useState<BoardOrientation>('white'); // Create a state for the color of the player
     const [squareStyles, setSquareStyles] = useState({});
-    const [roomCode, setRoomCode] = useState<string>('');
+    const [roomCode, setRoomCode] = useState<string | null>('');
     const [alertMessage, setAlertMessage] = useState<alertMessage | null>(null);
 
     const [pieceSquare, setPieceSquare] = useState<Square | null>(null);
@@ -30,22 +29,20 @@ const MultiPlayerGame = () => {
     const [opponentIsReady, setOpponentIsReady] = useState<boolean>(false); // TODO: Remove this state and use the socket to check if the opponent is ready
     const [showJoiningGame, setShowJoiningGame] = useState(true);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+    const [showSubwaySurfers, setShowSubwaySurfers] = useState<boolean>(false); // TODO: Remove this state and use the socket to check if the opponent is ready
     const [theme, setTheme] = useState<ChessTheme>( Theme.defaultTheme );
-    const location = useLocation();
+    const [searchParams] = useSearchParams();
  
     useEffect(() => {
-        const socketClient = SocketClient.getInstance();
+        // Get the room code from the URL
+        const roomCodeFromURL = searchParams.get("room");
+
+        // const socketClient = SocketClient.getInstance();
+        const socketClient = new SocketClient(roomCodeFromURL);
         socketClient.connect();
         socketRef.current = socketClient.getSocket();
-        const queryParams = new URLSearchParams(location.search);
-        const roomCodeFromURL = queryParams.get('roomCode');
-        if (roomCodeFromURL) {
-        setRoomCode(roomCodeFromURL);
-        // Emit an event to join the room
-        socketRef.current?.emit('joinRoom', roomCodeFromURL);
-        }
+        
         // Get the initial game state
-
         const chatListener = (data: string) => {
             console.log(`Received message: ${data}`);
         };
@@ -91,6 +88,7 @@ const MultiPlayerGame = () => {
             }, 5000);
             clearInterval(interval);
         } 
+
 
         socketRef.current.emit('getGameState')
 
@@ -209,7 +207,7 @@ const MultiPlayerGame = () => {
         <div className="game-grid" >
             {/* Headers */}
             <CustomNavbar  
-                roomCode={roomCode}
+                roomCode={ roomCode }
                 showSettings={() => setIsSettingsModalOpen(true)}
             />
             {/* <Header /> */}
@@ -270,7 +268,18 @@ const MultiPlayerGame = () => {
                         />
                     </div>
                     <CloudAnimation />
-                    <iframe className='absolute bottom-0 right-0 z-0' style={{ zIndex: 999}}  width="300" height="530" src="https://www.youtube.com/embed/Q5KtBKk4hC0?si=gERS8wJaU8QpXzbq&amp;autoplay=1&mute=1&start=71" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+                    <button className='
+                    absolute bottom-5 right-5 z-0
+                    bg-white text-gray-700 font-bold rounded-lg p-2
+                    ' style={{ zIndex: 999}} onClick={() => setShowSubwaySurfers(true)}>Short attention span?</button>
+                    {
+                        showSubwaySurfers &&
+                        <>
+                            <iframe className='absolute bottom-0 right-0 z-0' style={{ zIndex: 999}}  width="730" height="415" src="https://www.youtube.com/embed/bXVcXbhhxcI?si=ZB1JEc8yGdHu6YoZ?rel=0&amp;autoplay=1&mute=1" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+
+                        </>
+                        
+                        }
                 </div>
             }
             {

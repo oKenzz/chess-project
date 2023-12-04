@@ -8,7 +8,7 @@ const CustomNavbar = (  {
   roomCode, 
   showSettings,
 } : { 
-  roomCode: string,
+  roomCode: string | null,
   showSettings : (show: boolean) => void,
 } ) => {
 
