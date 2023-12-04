@@ -13,9 +13,7 @@
                 "panel": "new"
             },
             "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
+
         },
         {
             "label": "Start Chess Backend",

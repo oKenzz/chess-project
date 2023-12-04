@@ -231,7 +231,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -245,7 +245,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -259,7 +259,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -273,7 +273,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -287,7 +287,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -301,7 +301,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -315,7 +315,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -329,7 +329,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -343,7 +343,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -357,7 +357,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="15s"
+        dur="23s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -371,7 +371,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -385,7 +385,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -399,7 +399,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -413,7 +413,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -427,7 +427,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -441,7 +441,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -455,7 +455,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -469,7 +469,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -483,7 +483,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="13s"
+        dur="19.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -497,7 +497,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -511,7 +511,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -525,7 +525,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -539,7 +539,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -553,7 +553,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -567,7 +567,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -581,7 +581,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -595,7 +595,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -609,7 +609,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"
@@ -623,7 +623,7 @@ const CloudAnimation = (props: any) => (
       />
       <animateTransform
         attributeName="transform"
-        dur="10s"
+        dur="16.5s"
         keyTimes="0;1"
         repeatCount="indefinite"
         type="translate"

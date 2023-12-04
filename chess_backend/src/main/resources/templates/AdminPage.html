@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    body{
+        background-color: #171B2D;
+        color: #fff;
+        font-family: "Inter";
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: scroll;
+    }
+    h1{
+        font-size: 50px;
+        font-family: "Inter", Inter !important;
+        color: #ADB3CC;
+        text-align: center;
+        font-weight: 800;
+        margin: 20px 0;
+    }
+    h3{
+        font-size: 20px;
+        font-family: "Inter", Inter !important;
+        color: #ADB3CC;
+        text-align: center; 
+        font-weight: 800;
+        margin: 20px 0;
+    }
+    .games{
+        width: 90%;
+        padding: 20px 30px;
+        display: flex;
+        border-radius: 8px;
+        background-color: #1A1E30;
+        gap: 20px;
+        color: #ADB3CC !important;
+        align-items: center;
+        margin: 20px 10px;
+    }
+    .game-id{
+        font-size: 40px;
+        font-weight: 800;
+        padding: 15px 30px;
+        background-color: #0329E8;
+        border-radius: 8px;
+        color: #fff;
+    }
+    .player-uuid{
+        font-size: 20px;
+        font-weight: 900;
+        padding: 0 20px;
+        color: #ADB3CC !important;
+    }
+    .kick-btn{
+        font-size: 20px;
+        font-weight: 900;
+        padding: 10px 20px;
+        background-color: #E80303;
+        border-radius: 8px;
+        color: #fff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin-left: 20px;
+    }
+    .player{
+        display: flex;
+        align-items: center;
+        background-color: #1A1E30;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 2px solid #adb3cc5e;
+    }
+    .reset-btn{
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 20px;
+        font-weight: 900;
+        padding: 10px 20px;
+        background-color: #E80303;
+        border-radius: 8px;
+        color: #fff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <h1>Admin Dashboard</h1>
+    <button class="reset-btn" onclick="reset()">Delete All Games</button>
+    <div th:if="${gameInfo.isEmpty()}">
+        <h3>No games found</h3>
+    </div>
+    <div th:each="game: ${gameInfo}" class="games">
+        <p th:text="${game.gameId}" class="game-id"/>
+        <div th:each="player: ${game.players}">
+            <div th:if="${player} != null" class="player">
+                <span th:text="${player.uuid}" class="player-uuid"/>
+                <button 
+                type="button" class="kick-btn" th:data-uuid="${player.uuid}" >Kick</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const kickBtns = document.querySelectorAll(".kick-btn");
+        kickBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const uuid = btn.dataset.uuid;
+                const queryParams = new URLSearchParams(window.location.search);
+                const pin = queryParams.get('pin');
+                if (!pin) {
+                    alert("No pin found");
+                    return;
+                }
+                fetch(`/admin/kick`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        uuid: uuid,
+                        pin: pin
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "success"){
+                        window.location.reload();
+                    }
+                })
+            })
+        })
+        function reset(){
+            const queryParams = new URLSearchParams(window.location.search);
+            const pin = queryParams.get('pin');
+            if (!pin) {
+                alert("No pin found");
+                return;
+            }
+            fetch(`/admin/reset`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    pin: pin
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success"){
+                    window.location.reload();
+                }
+            })
+        }
+    </script>
+</body>
+</html>
