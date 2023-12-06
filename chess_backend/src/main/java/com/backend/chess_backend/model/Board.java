@@ -210,9 +210,9 @@ public class Board {
                 board[x][7] = new King(PieceColor.BLACK, x, 7);
                 board[x][0] = new King(PieceColor.WHITE, x, 0);
                 bKingPosition[0] = x;
-                bKingPosition[1] = 0;
+                bKingPosition[1] = 7;
                 wKingPosition[0] = x;
-                wKingPosition[1] = 7;
+                wKingPosition[1] = 0;
                 
             }
         
