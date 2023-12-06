@@ -181,74 +181,73 @@ public class Board {
     }
 
     private void createStartingBoard() {
-
-        PieceColor currentColor = PieceColor.WHITE;
-        for (int y = 0; y < board[0].length; y++) {
-            if (y < 4) {
-                currentColor = PieceColor.WHITE;
-            } else {
-                currentColor = PieceColor.BLACK;
+        for (int x = 0; x < board.length; x++) {
+            //creates pawns at y=1 and 6
+            board[x][6] = new Pawn(PieceColor.BLACK, x, 6);
+            board[x][1] = new Pawn(PieceColor.WHITE, x, 1);
+            //creates rooks in the corners 
+            if (x == 0 || x == 7) {
+                board[x][7] = new Rook(PieceColor.BLACK, x, 7);
+                board[x][0] = new Rook(PieceColor.WHITE, x, 0);
+            } 
+            //creates knights
+            else if (x == 1 || x == 6) {
+                board[x][7] = new Knight(PieceColor.BLACK, x, 7);
+                board[x][0] = new Knight(PieceColor.WHITE, x, 0);
+            } 
+            //creates bishops
+            else if (x == 2 || x == 5) {
+                board[x][7] = new Bishop(PieceColor.BLACK, x, 7);
+                board[x][0] = new Bishop(PieceColor.WHITE, x, 0);
+            } 
+            //creates the queens 
+            else if (x == 3) {
+                board[x][7] = new Queen(PieceColor.BLACK, x, 7);
+                board[x][0] = new Queen(PieceColor.WHITE, x, 0);
+            } 
+            //creates the kings and saves their positions in variables
+            else if (x == 4) {
+                board[x][7] = new King(PieceColor.BLACK, x, 7);
+                board[x][0] = new King(PieceColor.WHITE, x, 0);
+                bKingPosition[0] = x;
+                bKingPosition[1] = 0;
+                wKingPosition[0] = x;
+                wKingPosition[1] = 7;
+                
             }
-            for (int x = 0; x < board.length; x++) {
-                if (y == 1 || y == 6) {
-                    board[x][y] = new Pawn(currentColor, x, y);
-                } else if (y == 0 || y == 7) {
-                    if (x == 0 || x == 7) {
-                        board[x][y] = new Rook(currentColor, x, y);
-                    } else if (x == 1 || x == 6) {
-                        board[x][y] = new Knight(currentColor, x, y);
-                    } else if (x == 2 || x == 5) {
-                        board[x][y] = new Bishop(currentColor, x, y);
-                    } else if (x == 3) {
-                        board[x][y] = new Queen(currentColor, x, y);
-                    } else if (x == 4) {
-                        board[x][y] = new King(currentColor, x, y);
-
-                    }
-                }
-            }
+        
         }
-        bKingPosition[0] = 4;
-        bKingPosition[1] = 0;
-        wKingPosition[0] = 4;
-        wKingPosition[1] = 7;
 
-        // // creates board
-        // for (int x = 0; x < board.length; x++) {
-        // //creates pawns at y=1 and 6
-        // board[x][1] = new Pawn(PieceColor.BLACK, x, 6);
-        // board[x][6] = new Pawn(PieceColor.WHITE, x, 1);
-        // //creates rooks in the corners
-        // if (x == 0 || x == 7) {
-        // board[x][0] = new Rook(PieceColor.BLACK, x, 7);
-        // board[x][7] = new Rook(PieceColor.WHITE, x, 0);
+        // PieceColor currentColor = PieceColor.WHITE;
+        // for (int y = 0; y < board[0].length; y++) {
+        //     if (y < 4) {
+        //         currentColor = PieceColor.WHITE;
+        //     } else {
+        //         currentColor = PieceColor.BLACK;
+        //     }
+        //     for (int x = 0; x < board.length; x++) {
+        //         if (y == 1 || y == 6) {
+        //             board[x][y] = new Pawn(currentColor, x, y);
+        //         } else if (y == 0 || y == 7) {
+        //             if (x == 0 || x == 7) {
+        //                 board[x][y] = new Rook(currentColor, x, y);
+        //             } else if (x == 1 || x == 6) {
+        //                 board[x][y] = new Knight(currentColor, x, y);
+        //             } else if (x == 2 || x == 5) {
+        //                 board[x][y] = new Bishop(currentColor, x, y);
+        //             } else if (x == 3) {
+        //                 board[x][y] = new Queen(currentColor, x, y);
+        //             } else if (x == 4) {
+        //                 board[x][y] = new King(currentColor, x, y);
+
+        //             }
+        //         }
+        //     }
         // }
-        // //creates knights
-        // else if (x == 1 || x == 6) {
-        // board[x][0] = new Knight(PieceColor.BLACK, x, 7);
-        // board[x][7] = new Knight(PieceColor.WHITE, x, 0);
-        // }
-        // //creates bishops
-        // else if (x == 2 || x == 5) {
-        // board[x][0] = new Bishop(PieceColor.BLACK, x, 7);
-        // board[x][7] = new Bishop(PieceColor.WHITE, x, 0);
-        // }
-        // //creates the queens
-        // else if (x == 3) {
-        // board[x][0] = new Queen(PieceColor.BLACK, x, 7);
-        // board[x][7] = new Queen(PieceColor.WHITE, x, 0);
-        // }
-        // //creates the kings and saves their positions in variables
-        // else if (x == 4) {
-        // board[x][0] = new King(PieceColor.BLACK, x, 7);
-        // board[x][7] = new King(PieceColor.WHITE, x, 0);
-        // bKingPosition[0] = x;
+        // bKingPosition[0] = 4;
         // bKingPosition[1] = 0;
-        // wKingPosition[0] = x;
+        // wKingPosition[0] = 4;
         // wKingPosition[1] = 7;
-        // }
-        //
-        // }
     }
 
     // removes moves that are false due to another piece being in the way
