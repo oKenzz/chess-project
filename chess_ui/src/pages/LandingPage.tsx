@@ -149,14 +149,10 @@ const LandingPage = () => {
             <div className="min-height-[inherit] flex h-full flex-[3] flex-col justify-center md:items-end">
               <div className="flex flex-col gap-6 pb-[50%]">
                 <PlayButton
-                  link="/singleplayer"
                   text="Singleplayer"
                   onClick={() =>  handleSingleplayerClick()}
-                  disabled = {true}
-
                 />
                 <PlayButton
-                  link="/multiplayer"
                   text="Multiplayer"
                   onClick={() =>  handleMutliplayerClick()}
                 />

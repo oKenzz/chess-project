@@ -1,23 +1,29 @@
-import { Button, Modal } from 'flowbite-react';
-import React, { useState } from 'react';
-import { ThemeEnum } from '../constants/theme';
-
+import { Modal } from 'flowbite-react';
+import React, { useEffect, useState } from 'react';
+import  {  ThemeEnum } from '../constants/theme';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThemeState, setTheme } from '../config/slice';
 const Settings = (
   { 
     showModal,
     setShowModal,
-    changeTheme,
+  
   } : { 
     showModal : boolean,
     setShowModal : (show: boolean) => void,
-    changeTheme : (theme: ThemeEnum) => void,
   }
 ) => {
-  const [theme, setTheme] = useState('light');
+  const [currentTheme, setCurrentTheme] = useState('default');
+  const dispatch = useDispatch();
+  const themeSettings =  useSelector((state: any) => state.theme) as ThemeState;
+  useEffect(() => {
+    setCurrentTheme( themeSettings.name );
+  }, [themeSettings]);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setTheme(event.target.value);
-    changeTheme(event.target.value as ThemeEnum);
+    const newTheme = event.target.value as ThemeEnum;
+    dispatch(setTheme(newTheme));
+    setCurrentTheme(newTheme);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +44,7 @@ const Settings = (
                 <label className='form-label mb-3 mr-6 text-gray-700'>
                     Theme:
                     <select  className='form-select ml-3'
-                      value={theme} onChange={handleThemeChange}>
+                      value={currentTheme} onChange={handleThemeChange}>
                         {Object.keys(ThemeEnum).map((theme) => (
                             <option key={theme} value={theme}>
                                 {theme.charAt(0).toUpperCase() + theme.slice(1)}

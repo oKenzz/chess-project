@@ -37,11 +37,16 @@ class Theme {
         customPremoveLightSquareStyle: '#eee',
     }
     public static setStorageTheme = ( theme: ThemeEnum ) => {
-        sessionStorage.setItem('theme', theme);
+        localStorage.setItem('theme', theme);
     }
     public static getStorageTheme = () : ThemeEnum => {
-        const theme = sessionStorage.getItem('theme') || ThemeEnum.default as ThemeEnum;
-        return theme as ThemeEnum;
+        try {
+            const  theme = localStorage.getItem('theme') || ThemeEnum.default as ThemeEnum;
+            return theme as ThemeEnum;
+        } catch (error) {
+            console.log(error);
+            return ThemeEnum.default;
+        }
     }
     public static getTheme = ( theme: ThemeEnum ) => {
         switch (theme) {

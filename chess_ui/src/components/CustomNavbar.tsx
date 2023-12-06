@@ -3,15 +3,12 @@ import EscButton from './EscButton';
 import { ReactSVG } from 'react-svg';
 import ButtonImg from './ButtonImg';
 import { motion } from 'framer-motion';
+import SettingsModal from './SettingsModal';
+import { useState } from 'react';
 
-const CustomNavbar = (  { 
-  roomCode, 
-  showSettings,
-} : { 
-  roomCode: string | null,
-  showSettings : (show: boolean) => void,
-} ) => {
-
+const CustomNavbar = (   { roomCode, disableRoomcode} : { roomCode: string | null  , disableRoomcode?: boolean} ) => {
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+ 
   return (
     <motion.div
         initial={{ y: '-8vh' }}
@@ -26,7 +23,7 @@ const CustomNavbar = (  {
               <ReactSVG src="/images/logo.svg"/>
           </Navbar.Brand>
           <ButtonImg id="settings_button" img='/images/Settings.svg' alt='Settings' size={50} 
-          event={() => {showSettings(true)}}
+          event={() => { setIsSettingsModalOpen(true) }}
           />
         </div>
 
@@ -47,19 +44,28 @@ const CustomNavbar = (  {
         </Navbar.Collapse>
 
       </Navbar>
-      {
-        roomCode && (
+      
+          {
+        roomCode && !disableRoomcode &&
+         (
           <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.5, delay: 0.5 } }}
                 className='w-[100vw] h-8 bg-white flex items-center justify-center -z-50 '
             >
-            <p className='text-center text-gray-500'>Room Code: {roomCode}</p>
+            <p className='text-center text-gray-500'>Room Code:  { roomCode }</p>
           </motion.div>
         )
       }
+    {/* Settings Modal */}
+    <SettingsModal 
+        isSettingsModalOpen={isSettingsModalOpen}
+        setIsSettingsModalOpen={setIsSettingsModalOpen}
+    />
     </motion.div>
   );
 }
 
 export default CustomNavbar;
+
+
