@@ -61,16 +61,17 @@ public class BoardTest {
     @Test
     public void updateGameOverTest() {
         Board board = new Board();
+        board.reset();
         Piece[][] tmp = board.getBoard();
         board.updateCoords(tmp[4][1], 4, 3); //e2 to e4
-        assertTrue(board.getGameOver() == null);
+        assertEquals(board.getGameOver(),null);
         board.updateCoords(tmp[5][6], 5, 4); //f7 to f5
-        assertTrue(board.getGameOver() == null);
+        assertEquals(board.getGameOver(),null);
         board.updateCoords(tmp[3][0], 7, 4); //d1 to h5
-        assertTrue(board.getGameOver() == null);
+        assertEquals(board.getGameOver(),null);
         board.updateCoords(tmp[4][6], 4, 5); //e7 to e6
-        assertTrue(board.getGameOver() == null);
+        assertEquals(board.getGameOver(),null);
         board.updateCoords(tmp[7][4], 4, 7); //h5 to e8
-        assertTrue(board.getGameOver().equals("w"));
+        assertEquals(board.getGameOver(),"w");
     }        
 }

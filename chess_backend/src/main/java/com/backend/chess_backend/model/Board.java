@@ -141,10 +141,10 @@ public class Board {
         lastMove[1][1] = newY;
         updateBoard(piece, newX, newY);
         piece.updateCoords(newX, newY);
-        if (piece.getPieceType().equals("k")) {
+        if (piece.getPieceType() == "k") {
             this.bKingPosition[0] = newX;
             this.bKingPosition[1] = newY;
-        } else if (piece.getPieceType().equals("K")) {
+        } else if (piece.getPieceType() == "K") {
             this.wKingPosition[0] = newX;
             this.wKingPosition[1] = newY;
         }
@@ -209,9 +209,9 @@ public class Board {
             }
         }
         bKingPosition[0] = 4;
-        bKingPosition[1] = 0;
+        bKingPosition[1] = 7;
         wKingPosition[0] = 4;
-        wKingPosition[1] = 7;
+        wKingPosition[1] = 0;
 
         // // creates board
         // for (int x = 0; x < board.length; x++) {
@@ -363,10 +363,10 @@ public class Board {
     }
 
     private void updateGameOver() {
-        if(!board[bKingPosition[0]][bKingPosition[1]].getPieceType().equals("k")){
+        if(board[this.bKingPosition[0]][this.bKingPosition[1]].getPieceType() != "k"){
             this.gameOver = "w";
         }
-        else if(!board[wKingPosition[0]][wKingPosition[1]].getPieceType().equals("K")){
+        else if(board[this.wKingPosition[0]][this.wKingPosition[1]].getPieceType() != "K"){
             this.gameOver = "b";
         }
         else{
@@ -377,5 +377,4 @@ public class Board {
     public String getGameOver() {
         return this.gameOver;
     }
-
 }
