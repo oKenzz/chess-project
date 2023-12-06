@@ -141,14 +141,15 @@ public class Board {
         lastMove[1][1] = newY;
         updateBoard(piece, newX, newY);
         piece.updateCoords(newX, newY);
-        if (piece.getPieceType() == "k") {
+        if (piece.getPieceType().equals("k")) {
             this.bKingPosition[0] = newX;
             this.bKingPosition[1] = newY;
-        } else if (piece.getPieceType() == "K") {
+        } else if (piece.getPieceType().equals("K")) {
             this.wKingPosition[0] = newX;
             this.wKingPosition[1] = newY;
         }
         piece.movesMade++;
+        updateGameOver();
     }
 
     private void updateBoard(Piece piece, int newX, int newY) {
@@ -172,7 +173,6 @@ public class Board {
             }
 
         }
-        updateGameOver();
     }
 
     // getter for the board itself
@@ -362,11 +362,15 @@ public class Board {
         return possibleMoves;
     }
 
-    public void updateGameOver() {
-        if (!board[bKingPosition[0]][bKingPosition[1]].getPieceType().equals("k")) {
+    private void updateGameOver() {
+        if(!board[bKingPosition[0]][bKingPosition[1]].getPieceType().equals("k")){
             this.gameOver = "w";
-        } else if (!board[wKingPosition[0]][wKingPosition[1]].getPieceType().equals("K")) {
+        }
+        else if(!board[wKingPosition[0]][wKingPosition[1]].getPieceType().equals("K")){
             this.gameOver = "b";
+        }
+        else{
+            this.gameOver = null;
         }
     }
 
