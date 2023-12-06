@@ -220,7 +220,9 @@ public class Board {
     public void undoMove() {
         board[lastMove[1][0]][lastMove[1][1]].updateCoords(lastMove[0][0], lastMove[0][1]);
         updateBoard(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
-        lastPiece.movesMade--;
+        if(lastPiece != null){
+            lastPiece.movesMade--;
+        }
         board[lastMove[1][0]][lastMove[1][1]] = lastPiece;
 
     }

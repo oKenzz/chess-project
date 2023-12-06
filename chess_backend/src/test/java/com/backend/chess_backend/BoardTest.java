@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.Pieces.Piece;
+import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Translator;
 
 @SpringBootTest
@@ -95,8 +96,10 @@ public class BoardTest {
         board.move(tmp[4][1], 4, 3); // e2 to e4
         board.move(tmp[5][6], 5, 4); // f7 to f5
         board.move(tmp[3][0], 7, 4); // d1 to h5
-        Boolean[][] posM = board.makePossibleMoves(tmp[7][4]);
-        posM = board.removeCheckMoves(tmp[7][4], posM);
+        Boolean[][] posM = board.makePossibleMoves(tmp[1][6]);
+        assertTrue(posM[1][5] == true);
+        assertTrue(posM[1][4] == true);
+        posM = board.removeCheckMoves(tmp[1][6], posM);
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 assertTrue(posM[x][y] == false);
@@ -104,4 +107,15 @@ public class BoardTest {
         }
     }
 
+    @Test
+    public void threatenedSquare() {
+        Board board = new Board();
+        board.reset();
+        Piece[][] tmp = board.getBoard();
+        board.move(tmp[4][1], 4, 3); // e2 to e4
+        board.move(tmp[5][6], 5, 4); // f7 to f5
+        board.move(tmp[3][0], 7, 4); // d1 to h5
+        assertEquals(board.threatenedSquare(4, 7, PieceColor.BLACK), true);
+        assertEquals(board.threatenedSquare(4, 0, PieceColor.WHITE), false);
+    }
 }
