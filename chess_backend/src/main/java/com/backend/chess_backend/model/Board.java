@@ -286,7 +286,7 @@ public class Board {
                 bKingPosition[1] = 7;
                 wKingPosition[0] = x;
                 wKingPosition[1] = 0;
-
+            }
         }
 
     }
