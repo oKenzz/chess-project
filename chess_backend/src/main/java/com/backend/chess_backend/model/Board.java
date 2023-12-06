@@ -218,36 +218,6 @@ public class Board {
         
         }
 
-        // PieceColor currentColor = PieceColor.WHITE;
-        // for (int y = 0; y < board[0].length; y++) {
-        //     if (y < 4) {
-        //         currentColor = PieceColor.WHITE;
-        //     } else {
-        //         currentColor = PieceColor.BLACK;
-        //     }
-        //     for (int x = 0; x < board.length; x++) {
-        //         if (y == 1 || y == 6) {
-        //             board[x][y] = new Pawn(currentColor, x, y);
-        //         } else if (y == 0 || y == 7) {
-        //             if (x == 0 || x == 7) {
-        //                 board[x][y] = new Rook(currentColor, x, y);
-        //             } else if (x == 1 || x == 6) {
-        //                 board[x][y] = new Knight(currentColor, x, y);
-        //             } else if (x == 2 || x == 5) {
-        //                 board[x][y] = new Bishop(currentColor, x, y);
-        //             } else if (x == 3) {
-        //                 board[x][y] = new Queen(currentColor, x, y);
-        //             } else if (x == 4) {
-        //                 board[x][y] = new King(currentColor, x, y);
-
-        //             }
-        //         }
-        //     }
-        // }
-        // bKingPosition[0] = 4;
-        // bKingPosition[1] = 0;
-        // wKingPosition[0] = 4;
-        // wKingPosition[1] = 7;
     }
 
     // removes moves that are false due to another piece being in the way
