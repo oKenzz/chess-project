@@ -1,5 +1,11 @@
 package com.backend.chess_backend.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import com.backend.chess_backend.model.Pieces.Bishop;
 import com.backend.chess_backend.model.Pieces.King;
 import com.backend.chess_backend.model.Pieces.Knight;
@@ -18,12 +24,15 @@ public class Board {
     int[][] lastMove = new int[2][2];
     int[] bKingPosition = new int[2];
     int[] wKingPosition = new int[2];
+    Boolean check;
+    Piece lastPiece;
     String gameOver;
 
     public Board() {
 
         createStartingBoard();
         this.gameOver = null;
+        this.check = false;
     }
 
     // returns the piece on that square (null if no piece there)
@@ -42,11 +51,46 @@ public class Board {
         }
     }
 
+    public Boolean[][] getPossibleMoves(Piece piece) {
+        Boolean[][] movelist = makePossibleMoves(piece);
+
+        if (piece.getColor() == PieceColor.BLACK
+                && threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)) {
+            movelist = removeCheckMoves(piece, movelist);
+            this.check = true;
+        } else if (piece.getColor() == PieceColor.WHITE
+                && threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)) {
+            movelist = removeCheckMoves(piece, movelist);
+            this.check = true;
+        } else {
+            this.check = false;
+        }
+        return movelist;
+    }
+
+    public Boolean threatenedSquare(int coordx, int coordy, PieceColor color) {
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board.length; y++) {
+                if (board[x][y] != null) {
+                    if (board[x][y].getColor() != color) {
+                        Boolean[][] posMoves = makePossibleMoves(board[x][y]);
+                        if (posMoves[coordx][coordy] == true) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     // moves a piece to a square using get possible moves. Returns true if move
     // successful, false if piece cant move there.
-    public Boolean[][] getPossibleMoves(Piece piece) {
+    public Boolean[][] makePossibleMoves(Piece piece) {
         Boolean[][] movelist = piece.getPossibleMoves(8, 8);
+
         // removes squares if pices are in the way
+
         movelist = removeExcess(piece, movelist);
         // checks if the piece is a black pawn
         if (piece.getPieceType() == "p") {
@@ -116,6 +160,27 @@ public class Board {
             }
 
         }
+
+        return movelist;
+    }
+
+    public Boolean[][] removeCheckMoves(Piece piece, Boolean[][] movelist) {
+        for (int x = 0; x < movelist.length; x++) {
+            for (int y = 0; y < movelist.length; y++) {
+                if (movelist[x][y] == true) {
+                    move(piece, x, y);
+                    if (piece.getColor() == PieceColor.BLACK
+                            && threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)) {
+                        movelist[x][y] = false;
+                    } else if (piece.getColor() == PieceColor.WHITE
+                            && threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)) {
+                        movelist[x][y] = false;
+                    }
+                    undoMove();
+                }
+            }
+        }
+
         return movelist;
     }
 
@@ -130,15 +195,15 @@ public class Board {
         } else {
             return false;
         }
-
     }
 
     // updates the
-    public void updateCoords(Piece piece, int newX, int newY) {
+    public void move(Piece piece, int newX, int newY) {
         lastMove[0][0] = piece.getX();
         lastMove[1][0] = newX;
         lastMove[0][1] = piece.getY();
         lastMove[1][1] = newY;
+        lastPiece = board[newX][newY];
         updateBoard(piece, newX, newY);
         piece.updateCoords(newX, newY);
         if (piece.getPieceType() == "k") {
@@ -150,6 +215,14 @@ public class Board {
         }
         piece.movesMade++;
         updateGameOver();
+    }
+
+    public void undoMove() {
+        board[lastMove[1][0]][lastMove[1][1]].updateCoords(lastMove[0][0], lastMove[0][1]);
+        updateBoard(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
+        lastPiece.movesMade--;
+        board[lastMove[1][0]][lastMove[1][1]] = lastPiece;
+
     }
 
     private void updateBoard(Piece piece, int newX, int newY) {
@@ -182,72 +255,42 @@ public class Board {
 
     private void createStartingBoard() {
         for (int x = 0; x < board.length; x++) {
-            //creates pawns at y=1 and 6
+            // creates pawns at y=1 and 6
             board[x][6] = new Pawn(PieceColor.BLACK, x, 6);
             board[x][1] = new Pawn(PieceColor.WHITE, x, 1);
-            //creates rooks in the corners 
+            // creates rooks in the corners
             if (x == 0 || x == 7) {
                 board[x][7] = new Rook(PieceColor.BLACK, x, 7);
                 board[x][0] = new Rook(PieceColor.WHITE, x, 0);
-            } 
-            //creates knights
+            }
+            // creates knights
             else if (x == 1 || x == 6) {
                 board[x][7] = new Knight(PieceColor.BLACK, x, 7);
                 board[x][0] = new Knight(PieceColor.WHITE, x, 0);
-            } 
-            //creates bishops
+            }
+            // creates bishops
             else if (x == 2 || x == 5) {
                 board[x][7] = new Bishop(PieceColor.BLACK, x, 7);
                 board[x][0] = new Bishop(PieceColor.WHITE, x, 0);
-            } 
-            //creates the queens 
+            }
+            // creates the queens
             else if (x == 3) {
                 board[x][7] = new Queen(PieceColor.BLACK, x, 7);
                 board[x][0] = new Queen(PieceColor.WHITE, x, 0);
-            } 
-            //creates the kings and saves their positions in variables
+            }
+            // creates the kings and saves their positions in variables
             else if (x == 4) {
                 board[x][7] = new King(PieceColor.BLACK, x, 7);
                 board[x][0] = new King(PieceColor.WHITE, x, 0);
                 bKingPosition[0] = x;
-                bKingPosition[1] = 0;
+                bKingPosition[1] = 7;
                 wKingPosition[0] = x;
-                wKingPosition[1] = 7;
-                
+                wKingPosition[1] = 0;
+
             }
-        
+
         }
 
-        // PieceColor currentColor = PieceColor.WHITE;
-        // for (int y = 0; y < board[0].length; y++) {
-        //     if (y < 4) {
-        //         currentColor = PieceColor.WHITE;
-        //     } else {
-        //         currentColor = PieceColor.BLACK;
-        //     }
-        //     for (int x = 0; x < board.length; x++) {
-        //         if (y == 1 || y == 6) {
-        //             board[x][y] = new Pawn(currentColor, x, y);
-        //         } else if (y == 0 || y == 7) {
-        //             if (x == 0 || x == 7) {
-        //                 board[x][y] = new Rook(currentColor, x, y);
-        //             } else if (x == 1 || x == 6) {
-        //                 board[x][y] = new Knight(currentColor, x, y);
-        //             } else if (x == 2 || x == 5) {
-        //                 board[x][y] = new Bishop(currentColor, x, y);
-        //             } else if (x == 3) {
-        //                 board[x][y] = new Queen(currentColor, x, y);
-        //             } else if (x == 4) {
-        //                 board[x][y] = new King(currentColor, x, y);
-
-        //             }
-        //         }
-        //     }
-        // }
-        // bKingPosition[0] = 4;
-        // bKingPosition[1] = 0;
-        // wKingPosition[0] = 4;
-        // wKingPosition[1] = 7;
     }
 
     // removes moves that are false due to another piece being in the way
@@ -361,19 +404,76 @@ public class Board {
         return possibleMoves;
     }
 
+    public Boolean ifCheck() {
+        return this.check;
+    }
+
     private void updateGameOver() {
-        if(board[this.bKingPosition[0]][this.bKingPosition[1]].getPieceType() != "k"){
+        if (board[this.bKingPosition[0]][this.bKingPosition[1]].getPieceType() != "k") {
             this.gameOver = "w";
-        }
-        else if(board[this.wKingPosition[0]][this.wKingPosition[1]].getPieceType() != "K"){
+        } else if (board[this.wKingPosition[0]][this.wKingPosition[1]].getPieceType() != "K") {
             this.gameOver = "b";
-        }
-        else{
+        } else {
             this.gameOver = null;
         }
     }
 
     public String getGameOver() {
         return this.gameOver;
+    }
+
+    public int[][] getRandomMove(PieceColor color) {
+        List<Piece> pieces = new ArrayList<>();
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                Piece piece = board[x][y];
+                if (piece != null && piece.getColor() == color) {
+                    pieces.add(piece);
+                }
+            }
+        }
+        Map<String, ArrayList<Integer>> moves = new HashMap<>();
+        /*
+         * {
+         * from: [x, y],
+         * to: [x, y]
+         * }
+         * 
+         */
+        for (Piece piece : pieces) {
+            Boolean[][] possibleMoves = getPossibleMoves(piece);
+            for (int x = 0; x < possibleMoves.length; x++) {
+                for (int y = 0; y < possibleMoves[x].length; y++) {
+                    if (possibleMoves[x][y]) {
+                        String from = piece.getX() + "," + piece.getY();
+                        String to = x + "," + y;
+                        if (moves.containsKey(from)) {
+                            moves.get(from).add(x);
+                            moves.get(from).add(y);
+                        } else {
+                            ArrayList<Integer> toList = new ArrayList<>();
+                            toList.add(x);
+                            toList.add(y);
+                            moves.put(from, toList);
+                        }
+                    }
+                }
+            }
+        }
+        // Get random move
+        if (moves.size() > 0) {
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(moves.size());
+            String from = (String) moves.keySet().toArray()[randomIndex];
+            ArrayList<Integer> to = moves.get(from);
+            int[] fromCoords = new int[2];
+            int[] toCoords = new int[2];
+            fromCoords[0] = Integer.parseInt(from.split(",")[0]);
+            fromCoords[1] = Integer.parseInt(from.split(",")[1]);
+            toCoords[0] = to.get(0);
+            toCoords[1] = to.get(1);
+            return new int[][] { fromCoords, toCoords };
+        }
+        return null; // No valid moves available
     }
 }

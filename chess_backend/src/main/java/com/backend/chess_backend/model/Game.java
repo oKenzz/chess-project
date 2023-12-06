@@ -37,18 +37,17 @@ public class Game {
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             return board.getPossibleMoves(currentPiece);
         }
-
-        return board.getPossibleMoves(currentPiece);
-
+        return emptyList;
     }
 
     public Boolean attemptMove(int x, int y, int newX, int newY) {
         Piece[][] currentBoard = board.getBoard();
-        Boolean[][] possibleM = board.getPossibleMoves(currentBoard[x][y]);
+        Piece piece = currentBoard[x][y];
+        Boolean[][] possibleM = board.getPossibleMoves(piece);
 
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.checkIfallowed(newX, newY, possibleM)) {
-                board.updateCoords(currentBoard[x][y], newX, newY);
+                board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
                 return true;
             }
@@ -68,6 +67,7 @@ public class Game {
 
     private Boolean attemptToMoveBlack(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
+
         if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
             return true;
         }
@@ -101,6 +101,10 @@ public class Game {
         }
     }
 
+    public Boolean getIfCheck() {
+        return board.ifCheck();
+    }
+
     public Piece[][] getBoard() {
         return board.getBoard();
     }
@@ -113,8 +117,8 @@ public class Game {
         turnsMade--;
     }
 
-    public void addPlayer(String clinetId) {
-        Player player = new Player(clinetId);
+    public void addPlayer(String clinetId, Boolean isBot) {
+        Player player = new Player(clinetId, isBot);
         if (playerWhite == null) {
             playerWhite = player;
         } else if (playerBlack == null) {
@@ -164,4 +168,13 @@ public class Game {
     public String checkGameOver() {
         return board.gameOver;
     }
+
+    public void makeRandomMove() {
+        PieceColor currentColor = isWhitesTurn() ? PieceColor.WHITE : PieceColor.BLACK;
+        int[][] move = board.getRandomMove(currentColor);
+        if (move != null) {
+            attemptMove(move[0][0], move[0][1], move[1][0], move[1][1]);
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.Player;
 import com.backend.chess_backend.model.Translator;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -64,7 +65,10 @@ public class ChessHandler {
                         break;
 
                     case "singlePlayer":
-                        // TODO: Implement single player
+                        Game singlePlayerGame = gameManager.createSoloGame(sessionId);
+                        room = singlePlayerGame.getId();
+                        client.joinRoom(room);
+                        log.info("SinglePlayer | " + " Client:" + sessionId + " created room: " + room);
                         break;
                     default:
                         if (room.length() != 4) {
@@ -114,6 +118,18 @@ public class ChessHandler {
         String room = joinedGame.getId();
         client.joinRoom(room);
         return room;
+    }
+
+    public void computerMoveListener(SocketIOClient client, Void data, AckRequest ackRequest) {
+        log.info("Computers turn");
+        String playerUuid = client.getSessionId().toString();
+        Game game = gameManager.getGameByPlayerUuid(playerUuid);
+        if (game == null) {
+            return;
+        }
+        game.makeRandomMove();
+        server.getRoomOperations(game.getId()).sendEvent("boardState",
+                Translator.translateBoard(game.getBoard(), game.getTurn()));
     }
 
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
@@ -170,6 +186,7 @@ public class ChessHandler {
 
         Game game = gameManager.getGameByPlayerUuid(playerUuID);
         Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
+
         log.info(game.checkGameOver());
         if (game.checkGameOver() != null) {
             String gameOverMsg = "Draw";
@@ -185,8 +202,16 @@ public class ChessHandler {
                     Translator.translateBoard(game.getBoard(), game.getTurn()));
         }
 
+        Boolean inCheck = game.getIfCheck();
+        if (inCheck) {
+            log.info("Check");
+        } else {
+            log.info("Not Check");
+        }
+
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(hasMoved);
+
         }
     }
 

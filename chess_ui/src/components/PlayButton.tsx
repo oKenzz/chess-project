@@ -2,9 +2,8 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "../config/Animations";
 
 type Props = {
-  link: string;
   text: string;
-  onClick: (link: string) => void;
+  onClick: () => void;
   disabled?: boolean;
 };
 const PlayIcon = () => {
@@ -24,7 +23,7 @@ const PlayIcon = () => {
   );
 };
 
-const PlayButton = ({ link, text, onClick , disabled}: Props) => {
+const PlayButton = ({ text, onClick , disabled}: Props) => {
   if (disabled){
     return (
       <motion.button
@@ -56,7 +55,7 @@ const PlayButton = ({ link, text, onClick , disabled}: Props) => {
         flex items-center justify-between gap-5 rounded-3xl border-[3px]
        border-[#7B61FF] bg-white p-3 px-5 text-3xl font-black 
        text-[#34364C] shadow-blue transition duration-200 ease-in-out  md:text-5xl"
-      onClick={() => onClick(link)}
+      onClick={() => onClick()}
     >
       <p>{text}</p>
       <PlayIcon />

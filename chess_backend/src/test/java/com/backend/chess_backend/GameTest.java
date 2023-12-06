@@ -11,7 +11,7 @@ import com.backend.chess_backend.model.Game;
 class GameTest {
 
     @Test
-    public void possibleMovesTest(){
+    public void possibleMovesTest() {
         String testId = "ABC1";
         Game game = new Game(testId);
 
@@ -21,22 +21,21 @@ class GameTest {
             for (int j = 0; j < 8; j++) {
                 BoardList[i][j] = false;
             }
-        } 
+        }
 
-        // testing knight 
+        // testing knight
         BoardList[0][2] = true;
         BoardList[2][2] = true;
 
         assertArrayEquals(game.possibleMoves(1, 0), BoardList);
 
-
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 BoardList[i][j] = false;
             }
-        } 
+        }
 
-        // testing pawn 
+        // testing pawn
         BoardList[0][2] = true;
         BoardList[0][3] = true;
 
@@ -45,7 +44,7 @@ class GameTest {
     }
 
     @Test
-    public void attemptMoveTest(){
+    public void attemptMoveTest() {
         String testId = "ABC1";
         Game game = new Game(testId);
 
@@ -54,8 +53,5 @@ class GameTest {
         assertEquals(game.attemptMove(0, 2, 0, 3), true);
 
     }
-
-
-
 
 }

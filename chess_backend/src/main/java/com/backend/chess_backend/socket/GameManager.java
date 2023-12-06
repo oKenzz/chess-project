@@ -1,6 +1,7 @@
 package com.backend.chess_backend.socket;
 
 import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +38,26 @@ public class GameManager {
         if (!playerGameMap.containsKey(clientId)) {
             String newGameId = generateID();
             ChessGame newGame = new ChessGame(newGameId, isPrivate);
-            newGame.addPlayer(clientId);
+            newGame.addPlayer(clientId, false);
             games.put(newGameId, newGame);
             playerGameMap.put(clientId, newGameId);
             return newGame;
         }
         return this.getGameByPlayerUuid(clientId);
+    }
+
+    public synchronized ChessGame createSoloGame(String clientId) {
+        String newGameId = generateID();
+        ChessGame newGame = new ChessGame(newGameId, true);
+        newGame.addPlayer(clientId, false);
+        games.put(newGameId, newGame);
+        playerGameMap.put(clientId, newGameId);
+
+        // Bot player
+        String botId = generateID();
+        newGame.addPlayer(botId, true);
+        playerGameMap.put(botId, newGameId);
+        return newGame;
     }
 
     public synchronized boolean roomExist(String roomId) {
@@ -56,7 +71,7 @@ public class GameManager {
 
         ChessGame game = games.get(gameId);
         if (game != null && !game.isFull()) {
-            game.addPlayer(clientId);
+            game.addPlayer(clientId, false);
             playerGameMap.put(clientId, gameId);
             return game;
         }
@@ -70,7 +85,7 @@ public class GameManager {
 
         for (ChessGame game : games.values()) {
             if (!game.isFull() && !game.isPrivate()) {
-                game.addPlayer(clientId);
+                game.addPlayer(clientId, false);
                 playerGameMap.put(clientId, game.getId());
                 return game;
             }
@@ -101,6 +116,19 @@ public class GameManager {
     public String getGameIdByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
         return gameId != null ? gameId : null;
+    }
+
+    public synchronized Player getBotPlayer(String gameId) {
+        ChessGame game = games.get(gameId);
+        if (game != null) {
+            Player[] players = game.getPlayers();
+            for (Player player : players) {
+                if (player.isBot()) {
+                    return player;
+                }
+            }
+        }
+        return null;
     }
 
     public List<String> getGames() {
