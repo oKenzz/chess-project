@@ -49,6 +49,10 @@ public class Game {
             if (board.checkIfallowed(newX, newY, possibleM)) {
                 board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
+                board.updateChecked();
+                if (board.ifCheck()){
+                    board.updateGameOver();
+                }
                 return true;
             }
         }

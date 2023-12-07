@@ -3,13 +3,11 @@ package com.backend.chess_backend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.Pieces.Piece;
+import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Translator;
-
-@SpringBootTest
 
 public class BoardTest {
     @Test
@@ -59,21 +57,45 @@ public class BoardTest {
         // }
     }
 
+
+    @Test
+    public void updateCheckedTest(){
+        Board board = new Board();
+        board.reset();
+        Piece[][] tmp = board.getBoard();
+        board.move(tmp[4][1], 4, 3); // e2 to e4
+        board.move(tmp[5][6], 5, 4); // f7 to f5
+        board.move(tmp[3][0], 7, 4); // d1 to h5
+        board.updateChecked();
+        assertEquals(true, board.ifCheck());
+        board.move(tmp[7][4], 6, 4); // h5 to g5
+        board.updateChecked();
+        assertEquals(false, board.ifCheck());
+    }
+
     @Test
     public void updateGameOverTest() {
         Board board = new Board();
         board.reset();
         Piece[][] tmp = board.getBoard();
+        board.move(tmp[5][1], 5, 2); // f2 to f3
+        assertEquals(null, board.getGameOver());
+        board.move(tmp[4][6], 4, 4); // e7 to e5
+        assertEquals(null, board.getGameOver());
+        board.move(tmp[6][1], 6, 3); // g2 to g4
+        assertEquals( null, board.getGameOver());
+        board.move(tmp[3][7], 7, 3); // d8 to h4
+        board.updateChecked();
+        assertEquals("b", board.getGameOver());
+
+        board.reset();
+        tmp = board.getBoard();
         board.move(tmp[4][1], 4, 3); // e2 to e4
-        assertEquals(board.getGameOver(), null);
         board.move(tmp[5][6], 5, 4); // f7 to f5
-        assertEquals(board.getGameOver(), null);
-        board.move(tmp[3][0], 7, 4); // d1 to h5
-        assertEquals(board.getGameOver(), null);
-        board.move(tmp[4][6], 4, 5); // e7 to e6
-        assertEquals(board.getGameOver(), null);
-        board.move(tmp[7][4], 4, 7); // h5 to e8
-        assertEquals(board.getGameOver(), "w");
+        board.move(tmp[3][0], 7,4); // d1 to h5
+        board.updateChecked();
+        assertEquals(null, board.getGameOver());
+
     }
 
     @Test
@@ -83,9 +105,15 @@ public class BoardTest {
         Piece[][] tmp = board.getBoard();
         board.move(tmp[4][1], 4, 3); // e2 to e4
         board.undoMove();
-        assertEquals(board.getBoard()[4][1], tmp[4][1]);
-        assertEquals(board.getBoard()[4][3], null);
-    }
+        assertEquals(tmp[4][1].getPieceType(), "P");
+        assertEquals(tmp[4][3], null);
+        board.move(tmp[4][1], 4, 3); // e2 to e4
+        board.move(tmp[5][6], 5, 4); // f7 to f5
+        board.move(tmp[4][3], 5, 4); // e4 to f5
+        board.undoMove();
+        assertEquals(tmp[4][3].getPieceType(), "P");
+        assertEquals(tmp[5][4].getPieceType(), "p");
+        }
 
     @Test
     public void removeCheckMovesTest() {
@@ -95,13 +123,29 @@ public class BoardTest {
         board.move(tmp[4][1], 4, 3); // e2 to e4
         board.move(tmp[5][6], 5, 4); // f7 to f5
         board.move(tmp[3][0], 7, 4); // d1 to h5
-        Boolean[][] posM = board.makePossibleMoves(tmp[7][4]);
-        posM = board.removeCheckMoves(tmp[7][4], posM);
+        Boolean[][] posM = board.makePossibleMoves(tmp[1][6]);
+        assertTrue(posM[1][5] == true);
+        assertTrue(posM[1][4] == true);
+        board.updateChecked();
+        posM = board.removeCheckMoves(tmp[1][6], posM);
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 assertTrue(posM[x][y] == false);
             }
         }
+    }
+
+    @Test
+    public void threatenedSquare() {
+        Board board = new Board();
+        board.reset();
+        Piece[][] tmp = board.getBoard();
+        board.move(tmp[4][1], 4, 3); // e2 to e4
+        board.move(tmp[5][6], 5, 4); // f7 to f5
+        board.move(tmp[3][0], 7, 4); // d1 to h5
+        assertEquals(board.threatenedSquare(4, 7, PieceColor.BLACK), true);
+        assertEquals(board.threatenedSquare(7, 6, PieceColor.BLACK), true);
+        assertEquals(board.threatenedSquare(4, 0, PieceColor.WHITE), false);
     }
 
 }
