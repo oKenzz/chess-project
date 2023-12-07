@@ -190,8 +190,8 @@ public class GameManager {
     public void removeInactiveGames() {
         for (ChessGame game : games.values()) {
             System.out.println(game.getGameTime());
-            System.out.println(game.getGameTime() > 10);
-            if (game.getGameTime() > 10) {
+            System.out.println(game.getGameTime() > 600);
+            if (game.getGameTime() > 600) {
                 removeGame(game.getId());
             }
         }
