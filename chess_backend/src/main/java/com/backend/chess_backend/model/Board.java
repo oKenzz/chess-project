@@ -24,7 +24,8 @@ public class Board {
     int[][] lastMove = new int[2][2];
     int[] bKingPosition = new int[2];
     int[] wKingPosition = new int[2];
-    Boolean check;
+    Boolean blackChecked;
+    Boolean whiteChecked;
     Piece lastPiece;
     String gameOver;
 
@@ -32,7 +33,9 @@ public class Board {
 
         createStartingBoard();
         this.gameOver = null;
-        this.check = false;
+        this.blackChecked = false;
+        this.whiteChecked = false;
+        this.lastPiece = null;
     }
 
     // returns the piece on that square (null if no piece there)
@@ -54,19 +57,24 @@ public class Board {
     public Boolean[][] getPossibleMoves(Piece piece) {
         Boolean[][] movelist = makePossibleMoves(piece);
 
-        if (piece.getColor() == PieceColor.BLACK
-                && threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)) {
+        if (ifCheck()) {
             movelist = removeCheckMoves(piece, movelist);
-            this.check = true;
-        } else if (piece.getColor() == PieceColor.WHITE
-                && threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)) {
-            movelist = removeCheckMoves(piece, movelist);
-            this.check = true;
-        } else {
-            this.check = false;
         }
+
         return movelist;
     }
+
+    public void updateChecked(){
+        if ( threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)){
+            this.whiteChecked = true;
+        }else if(threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)){
+            this.blackChecked = true;
+        }else{
+            this.whiteChecked = false;
+            this.blackChecked = false;
+        }
+    }
+    
 
     public Boolean threatenedSquare(int coordx, int coordy, PieceColor color) {
         for (int x = 0; x < board.length; x++) {
@@ -169,14 +177,14 @@ public class Board {
             for (int y = 0; y < movelist.length; y++) {
                 if (movelist[x][y] == true) {
                     move(piece, x, y);
-                    if (piece.getColor() == PieceColor.BLACK
-                            && threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)) {
+                    updateChecked();
+                    if (piece.getColor() == PieceColor.BLACK && this.blackChecked) {
                         movelist[x][y] = false;
-                    } else if (piece.getColor() == PieceColor.WHITE
-                            && threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)) {
+                    } else if (piece.getColor() == PieceColor.WHITE && this.whiteChecked) {
                         movelist[x][y] = false;
                     }
                     undoMove();
+                    updateChecked();
                 }
             }
         }
@@ -214,16 +222,22 @@ public class Board {
             this.wKingPosition[1] = newY;
         }
         piece.movesMade++;
-        updateGameOver();
     }
 
     public void undoMove() {
-        board[lastMove[1][0]][lastMove[1][1]].updateCoords(lastMove[0][0], lastMove[0][1]);
-        updateBoard(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
-        if(lastPiece != null){
-            lastPiece.movesMade--;
-        }
-        board[lastMove[1][0]][lastMove[1][1]] = lastPiece;
+        // board[lastMove[1][0]][lastMove[1][1]].updateCoords(lastMove[0][0], lastMove[0][1]);
+        // updateBoard(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
+        // if(lastPiece != null){
+        //     lastPiece.movesMade--;
+        // }
+        // board[lastMove[1][0]][lastMove[1][1]] = lastPiece;
+        int tmpx = lastMove[1][0];
+        int tmpy = lastMove[1][1];
+        Piece tmpp = lastPiece;
+        move(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
+        
+        board[tmpx][tmpy] = tmpp;
+        board[lastMove[1][0]][lastMove[1][1]].movesMade -= 2;
 
     }
 
@@ -405,24 +419,36 @@ public class Board {
     }
 
     public Boolean ifCheck() {
-        return this.check;
+        if(this.blackChecked || this.whiteChecked) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void updateGameOver() {
-        if (board[this.bKingPosition[0]][this.bKingPosition[1]].getPieceType() != "k") {
+    public void updateGameOver() {
+        
+        List<Piece> blackPieces = getAllPlayerPieces(PieceColor.BLACK);
+        Map<String, ArrayList<Integer>> blackMoves = getAllPossiblePlayerMoves(blackPieces);
+
+        List<Piece> whitePieces = getAllPlayerPieces(PieceColor.WHITE);
+        Map<String, ArrayList<Integer>> whiteMoves = getAllPossiblePlayerMoves(whitePieces);
+
+        if (blackMoves.isEmpty()) {
             this.gameOver = "w";
-        } else if (board[this.wKingPosition[0]][this.wKingPosition[1]].getPieceType() != "K") {
+        }else if(whiteMoves.isEmpty()){
             this.gameOver = "b";
-        } else {
+        }else{
             this.gameOver = null;
         }
     }
 
     public String getGameOver() {
+        updateGameOver();
         return this.gameOver;
     }
 
-    public int[][] getRandomMove(PieceColor color) {
+    public List<Piece> getAllPlayerPieces(PieceColor color){
         List<Piece> pieces = new ArrayList<>();
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[x].length; y++) {
@@ -432,6 +458,10 @@ public class Board {
                 }
             }
         }
+        return pieces;
+    }
+
+    public Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces){
         Map<String, ArrayList<Integer>> moves = new HashMap<>();
         /*
          * {
@@ -460,6 +490,14 @@ public class Board {
                 }
             }
         }
+        return moves;
+    }
+
+    public int[][] getRandomMove(PieceColor color) {
+
+        List<Piece> pieces = getAllPlayerPieces(color);
+        
+        Map<String, ArrayList<Integer>> moves = getAllPossiblePlayerMoves(pieces);
         // Get random move
         if (moves.size() > 0) {
             Random rand = new Random();
