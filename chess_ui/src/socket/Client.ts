@@ -43,6 +43,7 @@ export class SocketClient {
 
     public disconnect() {
         console.log('Disconnecting...');
+        this.socket.off();
         this.socket.disconnect();
     }
 

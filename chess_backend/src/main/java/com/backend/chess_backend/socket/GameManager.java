@@ -100,9 +100,18 @@ public class GameManager {
             if (game != null) {
                 game.removePlayer(clientId);
                 playerGameMap.remove(clientId);
+                removeGameIfEmpty(game);
                 return true;
             }
             playerGameMap.remove(clientId);
+            return true;
+        }
+        return false;
+    }
+
+    private synchronized boolean removeGameIfEmpty(Game game) {
+        if (game.isEmpty()) {
+            removeGame(game.getId());
             return true;
         }
         return false;
@@ -168,5 +177,23 @@ public class GameManager {
     public void reset() {
         games.clear();
         playerGameMap.clear();
+    }
+    
+    public void removeGame(String gameId) {
+        games.remove(gameId);
+    }
+
+    /**
+     * The function removes inactive chess games that have been running for more
+     * than 10 seconds.
+     */
+    public void removeInactiveGames() {
+        for (ChessGame game : games.values()) {
+            System.out.println(game.getGameTime());
+            System.out.println(game.getGameTime() > 10);
+            if (game.getGameTime() > 10) {
+                removeGame(game.getId());
+            }
+        }
     }
 }

@@ -28,6 +28,8 @@ public class SocketIOServerInitializer {
         server.addEventListener("getGameState", Void.class, chessHandler::getGameStateListener);
         server.addEventListener("getPossibleMoves", String.class, chessHandler::possibleMoveListener);
         server.addEventListener("computerMove", Void.class, chessHandler::computerMoveListener);
+        server.addEventListener("restart", Void.class, chessHandler::restartGameListener);
+        server.addEventListener("surrender", Void.class, chessHandler::surrenderListener);
         server.start();
     }
 

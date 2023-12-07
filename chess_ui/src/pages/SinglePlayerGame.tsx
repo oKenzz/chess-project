@@ -12,6 +12,7 @@ import { HiInformationCircle } from 'react-icons/hi';
 import { alertMessage, FEN } from '../constants/types';
 import GameOver from '../components/GameOver';
 import * as socketListeners from '../socket/socketListeners';
+import WaitingScreen from '../components/WatingScreen';
 
 const SinglePlayerGame = () => {
     const [fen, setFen] = useState<FEN>('start');
@@ -51,18 +52,23 @@ const SinglePlayerGame = () => {
             
             <motion.div initial={{ opacity: 0}} animate={{  opacity: 1 , transition: { duration: 1, delay: 0.5}}} className="game-panel">
                 {
-                    socketRef.current  &&
+                    socketRef.current &&
                     <Chess
                         isSinglePlayer={true}
                         fen={fen}
                         color={color} 
                         socket={socketRef.current}
+                        arePremovesAllowed={false}
                     />
                 }
+         
             </motion.div>
 
             <motion.div className="left-panel">
-                <LeftSidebar isMultiplayer={false}/>
+                <LeftSidebar 
+                    isMultiplayer={false}
+                    socket={socketRef.current}
+                />
             </motion.div>
             <motion.div className="right-panel"></motion.div>
 

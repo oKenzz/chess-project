@@ -47,7 +47,12 @@ const MultiPlayerGame = () => {
         socketRef.current.on('playerJoined', socketListeners.opponentJoinedListener({setAlertMessage}, setOpponentIsReady));
         socketRef.current.on('playerDisconnected', socketListeners.opponentDisconnectedListener({setAlertMessage}));
         socketRef.current.on('gameOver', socketListeners.gameOverListener(setIsGameOver, setGameOverMessage));
-   
+        
+        return () => {
+            // Cleanup socket listeners
+            socketRef.current?.emit('surrender');
+            socketClient.disconnect();
+        }
     }, []); // Empty dependency array for setup on mount and cleanup on unmount
     
     // Joining game animation
@@ -82,7 +87,10 @@ const MultiPlayerGame = () => {
             </motion.div>
 
             <motion.div className="left-panel">
-                <LeftSidebar  isMultiplayer={true}/>
+                <LeftSidebar  
+                    isMultiplayer={true}
+                    socket={socketRef.current}
+                />
             </motion.div>
             <motion.div className="right-panel"></motion.div>
 

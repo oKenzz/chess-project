@@ -161,12 +161,22 @@ public class Game {
         return playerWhite != null && playerBlack != null;
     }
 
+    public boolean isEmpty() {
+        return playerWhite == null && playerBlack == null;
+    }
+
     public String getId() {
         return gameId;
     }
 
     public String checkGameOver() {
         return board.gameOver;
+    }
+
+    public void restartGame() {
+        this.board = new Board();
+        this.turnsMade = 0;
+        this.gameStartedTime = System.currentTimeMillis() / 1000L;
     }
 
     public void makeRandomMove() {
@@ -177,4 +187,18 @@ public class Game {
         }
     }
 
+    public void surrender(String clientId) {
+        String playerColor = getPlayerColor(clientId);
+        if (playerColor != null) {
+            if (playerColor.equals("white")) {
+                board.gameOver = "black";
+            } else {
+                board.gameOver = "white";
+            }
+        }
+    }
+
+    public long getGameTime() {
+        return System.currentTimeMillis() / 1000L - gameStartedTime;
+    }
 }

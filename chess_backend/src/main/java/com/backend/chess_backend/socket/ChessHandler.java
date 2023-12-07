@@ -229,6 +229,37 @@ public class ChessHandler {
         }
     }
 
+    public void restartGameListener(SocketIOClient client, Void data, AckRequest ackRequest) {
+        String playerUuID = client.getSessionId().toString();
+        log.info("Restart Game From: " + playerUuID);
+        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        game.restartGame();
+        server.getRoomOperations(game.getId()).sendEvent("boardState",
+                Translator.translateBoard(game.getBoard(), game.getTurn()));
+    }
+
+    public void surrenderListener(SocketIOClient client, Void data, AckRequest ackRequest) {
+        String playerUuID = client.getSessionId().toString();
+        playerSurrender(playerUuID);
+    }
+
+    private void playerSurrender(String playerUuID) {
+        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        if (game == null) {
+            return;
+        }
+        game.surrender(playerUuID);
+        log.info("Surrender From: " + playerUuID);
+        String playerColor = game.getPlayerColor(playerUuID);
+        String winner = playerColor.equals("white") ? "b" : "w";
+        if (winner.equals("w")) {
+            server.getRoomOperations(game.getId()).sendEvent("gameOver", "White wins");
+        } else {
+            server.getRoomOperations(game.getId()).sendEvent("gameOver", "Black wins");
+        }
+        gameManager.removeGame(game.getId());
+    }
+
     // Listener for client disconnection events
     public DisconnectListener onDisconnected() {
         return client -> {
@@ -243,6 +274,7 @@ public class ChessHandler {
                 if (gameManager.disconnect(clientId)) {
                     log.info("Player disconnected from game: " + gameId);
                     server.getRoomOperations(gameId).sendEvent("playerDisconnected", clientId);
+
                 } else {
                     log.info("Player disconnected from game: " + gameId
                             + " but was not removed from the game successfully.");

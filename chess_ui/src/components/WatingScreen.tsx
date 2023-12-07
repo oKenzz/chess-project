@@ -3,7 +3,7 @@ import CloudAnimation from "./CloudAnimation";
 import { useState } from "react";
 
 type WaitingScreenProps = {
-    roomCode: string;
+    roomCode?: string;
 }
 const WaitingScreen = ({ roomCode }: WaitingScreenProps) =>{
     const [showEntertainment, setShowEntertainment] = useState(false);
