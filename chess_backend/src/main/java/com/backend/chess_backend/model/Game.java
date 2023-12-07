@@ -72,7 +72,7 @@ public class Game {
     private Boolean attemptToMoveBlack(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
 
-        if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
+        if(currentBoard[x][y].getColor() == PieceColor.BLACK) {
             return true;
         }
 
@@ -195,9 +195,9 @@ public class Game {
         String playerColor = getPlayerColor(clientId);
         if (playerColor != null) {
             if (playerColor.equals("white")) {
-                board.gameOver = "black";
+                board.gameOver = "b";
             } else {
-                board.gameOver = "white";
+                board.gameOver = "w";
             }
         }
     }
