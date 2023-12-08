@@ -57,9 +57,9 @@ public class Board {
     public Boolean[][] getPossibleMoves(Piece piece) {
         Boolean[][] movelist = makePossibleMoves(piece);
 
-        if (ifCheck()) {
-            movelist = removeCheckMoves(piece, movelist);
-        }
+        
+        movelist = removeCheckMoves(piece, movelist);
+        
 
         return movelist;
     }
