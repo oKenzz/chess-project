@@ -426,25 +426,33 @@ public class Board {
         }
     }
 
-    public void updateGameOver() {
-        
-        List<Piece> blackPieces = getAllPlayerPieces(PieceColor.BLACK);
-        Map<String, ArrayList<Integer>> blackMoves = getAllPossiblePlayerMoves(blackPieces);
-
+    public void updateGameOverWhite(){
         List<Piece> whitePieces = getAllPlayerPieces(PieceColor.WHITE);
         Map<String, ArrayList<Integer>> whiteMoves = getAllPossiblePlayerMoves(whitePieces);
 
-        if (blackMoves.isEmpty()) {
-            this.gameOver = "w";
-        }else if(whiteMoves.isEmpty()){
-            this.gameOver = "b";
-        }else{
-            this.gameOver = null;
+        if (whiteMoves.isEmpty()) {
+            if (this.whiteChecked) {
+                this.gameOver = "b";
+            }else {
+                this.gameOver = "s";
+            }
         }
     }
 
+    public void updateGameOverBlack(){
+        List<Piece> blackPieces = getAllPlayerPieces(PieceColor.BLACK);
+        Map<String, ArrayList<Integer>> blackMoves = getAllPossiblePlayerMoves(blackPieces);
+
+        if (blackMoves.isEmpty()) {
+            if (this.blackChecked) {
+                this.gameOver = "w";
+            }else {
+                this.gameOver = "s";
+            }
+        }
+    }   
+
     public String getGameOver() {
-        updateGameOver();
         return this.gameOver;
     }
 

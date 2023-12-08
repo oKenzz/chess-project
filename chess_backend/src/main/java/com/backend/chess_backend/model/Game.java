@@ -50,9 +50,12 @@ public class Game {
                 board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
                 board.updateChecked();
-                if (board.ifCheck()){
-                    board.updateGameOver();
+                if(isWhitesTurn()){
+                    board.updateGameOverWhite();
+                }else{
+                    board.updateGameOverBlack();
                 }
+                
                 return true;
             }
         }
