@@ -434,7 +434,7 @@ public class Board {
             if (this.whiteChecked) {
                 this.gameOver = "b";
             }else {
-                this.gameOver = "s";
+                this.gameOver = "d";
             }
         }
     }
@@ -447,7 +447,7 @@ public class Board {
             if (this.blackChecked) {
                 this.gameOver = "w";
             }else {
-                this.gameOver = "s";
+                this.gameOver = "d";
             }
         }
     }   

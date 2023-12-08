@@ -200,7 +200,7 @@ public class ChessHandler {
                 gameOverMsg = "White wins";
             } else if (game.checkGameOver().equals("b")) {
                 gameOverMsg = "Black wins";
-            }else if (game.checkGameOver().equals("s")){
+            }else if (game.checkGameOver().equals("d")){
                 gameOverMsg = "Draw";
             }
             server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverMsg);
