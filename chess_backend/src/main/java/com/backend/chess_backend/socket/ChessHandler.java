@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
 import com.backend.chess_backend.model.Translator;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -57,14 +57,14 @@ public class ChessHandler {
                         log.info("QuickPlay | " + " Client:" + sessionId + " quick joined: " + room);
                         break;
                     case "create":
-                        Game newGame = gameManager.createGame(sessionId, true);
+                        SimpleChessGame newGame = gameManager.createGame(sessionId, true);
                         room = newGame.getId();
                         client.joinRoom(room);
                         log.info("Create | " + " Client:" + sessionId + " created room: " + room);
                         break;
 
                     case "singlePlayer":
-                        Game singlePlayerGame = gameManager.createSoloGame(sessionId);
+                        SimpleChessGame singlePlayerGame = gameManager.createSoloGame(sessionId);
                         room = singlePlayerGame.getId();
                         client.joinRoom(room);
                         log.info("SinglePlayer | " + " Client:" + sessionId + " created room: " + room);
@@ -80,7 +80,7 @@ public class ChessHandler {
                         }
                         room = room.toUpperCase();
                         if (gameManager.roomExist(room)) {
-                            Game joinedGame = gameManager.joinRoom(room, sessionId);
+                            SimpleChessGame joinedGame = gameManager.joinRoom(room, sessionId);
                             if (joinedGame != null) {
                                 client.joinRoom(room);
                                 log.info("Join | " + " Client:" + sessionId + " joined room: " + room);
@@ -100,7 +100,7 @@ public class ChessHandler {
     }
 
     private void alertPlayerJoined(String sessionId, String roomCode) {
-        Game game = gameManager.getGameByPlayerUuid(sessionId);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(sessionId);
         if (game == null) {
             return;
         }
@@ -113,7 +113,7 @@ public class ChessHandler {
 
     private String quickPlay(SocketIOClient client) {
         String playerUuid = client.getSessionId().toString();
-        Game joinedGame = gameManager.joinRandomGame(playerUuid);
+        SimpleChessGame joinedGame = gameManager.joinRandomGame(playerUuid);
         String room = joinedGame.getId();
         client.joinRoom(room);
         return room;
@@ -122,7 +122,7 @@ public class ChessHandler {
     public void computerMoveListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         log.info("Computers turn");
         String playerUuid = client.getSessionId().toString();
-        Game game = gameManager.getGameByPlayerUuid(playerUuid);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return;
         }
@@ -155,7 +155,7 @@ public class ChessHandler {
 
     // Get Game State
     public Map<String, Object> getGameState(String playerUuid) {
-        Game game = gameManager.getGameByPlayerUuid(playerUuid);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return null;
         }
@@ -183,10 +183,10 @@ public class ChessHandler {
         ArrayList<Integer> newCord = coordinates.get(1);
         log.info("Translated to " + coordinates);
 
-        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
 
-        Boolean inCheck = game.getIfCheck();
+        Boolean inCheck = game.getCheck();
         if (inCheck) {
             log.info("Check");
         } else {
@@ -219,7 +219,7 @@ public class ChessHandler {
     public void possibleMoveListener(SocketIOClient client, String square, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
         log.info("Square: " + square + " From: " + playerUuID);
-        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         ArrayList<Integer> coords = Translator.translatePos(square);
         log.info("Translated to " + coords);
         ArrayList<String> coordinates = Translator
@@ -233,7 +233,7 @@ public class ChessHandler {
     public void restartGameListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
         log.info("Restart Game From: " + playerUuID);
-        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         game.restartGame();
         server.getRoomOperations(game.getId()).sendEvent("boardState",
                 Translator.translateBoard(game.getBoard(), game.getTurn()));
@@ -245,7 +245,7 @@ public class ChessHandler {
     }
 
     private void playerSurrender(String playerUuID) {
-        Game game = gameManager.getGameByPlayerUuid(playerUuID);
+        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         if (game == null) {
             return;
         }

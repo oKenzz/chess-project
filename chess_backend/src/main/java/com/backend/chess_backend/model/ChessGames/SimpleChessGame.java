@@ -1,9 +1,18 @@
-package com.backend.chess_backend.model;
+package com.backend.chess_backend.model.ChessGames;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import com.backend.chess_backend.model.Board;
+import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
+import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
+import com.backend.chess_backend.model.Player;
 
-public class Game {
+public class SimpleChessGame {
 
     private Board board;
     private Player playerWhite;
@@ -11,15 +20,18 @@ public class Game {
     private int turnsMade;
     private String gameId;
     private long gameStartedTime;
+    private String gameOver;
 
-    public Game(String gameid) {
+    public SimpleChessGame(String gameid) {
         this.gameId = gameid;
         this.turnsMade = 0;
-        this.board = new Board();
+        this.board = new Board(8, 8);
         this.playerWhite = null;
         this.playerBlack = null;
         this.gameStartedTime = System.currentTimeMillis() / 1000L;
+        this.gameOver = null;
     }
+
 
     public Boolean[][] possibleMoves(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
@@ -34,34 +46,78 @@ public class Game {
             }
         }
 
-        if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
-            return board.getPossibleMoves(currentPiece);
+        if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || (attemptToMoveBlack(x, y) && isBlacksTurn())) {
+            return MoveValidator.getPossibleMoves(currentPiece, board);
         }
+
         return emptyList;
+
     }
 
     public Boolean attemptMove(int x, int y, int newX, int newY) {
+
+
         Piece[][] currentBoard = board.getBoard();
-        Piece piece = currentBoard[x][y];
-        Boolean[][] possibleM = board.getPossibleMoves(piece);
+        Boolean[][] possibleM = MoveValidator.getPossibleMoves(currentBoard[x][y], board);
 
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
-            if (board.checkIfallowed(newX, newY, possibleM)) {
+            if (board.isMoveAllowed(newX, newY, possibleM)) {
                 board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
-                board.updateChecked();
-                if(isWhitesTurn()){
-                    board.updateGameOverWhite();
-                }else{
-                    board.updateGameOverBlack();
+                if (isWhitesTurn()) {
+                    updateGameOverWhite();
+                } else {
+                    updateGameOverBlack();
                 }
-                
                 return true;
             }
         }
 
         return false;
     }
+
+    public int[][] getRandomMove(PieceColor color) {
+
+        List<Piece> pieces = board.getAllPlayerPieces(color);
+        
+        Map<String, ArrayList<Integer>> moves = MoveValidator.getAllPossiblePlayerMoves(pieces, board);
+        // Get random move
+        if (moves.size() > 0) {
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(moves.size());
+            String from = (String) moves.keySet().toArray()[randomIndex];
+            ArrayList<Integer> to = moves.get(from);
+            int[] fromCoords = new int[2];
+            int[] toCoords = new int[2];
+            fromCoords[0] = Integer.parseInt(from.split(",")[0]);
+            fromCoords[1] = Integer.parseInt(from.split(",")[1]);
+            toCoords[0] = to.get(0);
+            toCoords[1] = to.get(1);
+            return new int[][] { fromCoords, toCoords };
+        }
+        return null; // No valid moves available
+    }
+
+    private void updateGameOverBlack() {
+        if (CheckGameState.blackCheckmated(board)){
+            gameOver = "w";
+        } else if (CheckGameState.blackStalemated(board)){
+            gameOver = "d";
+        }else{
+            gameOver = null;
+        }
+    }
+
+    private void updateGameOverWhite() {
+        if (CheckGameState.whiteCheckmated(board)){
+            gameOver = "b";
+        } else if (CheckGameState.whiteStalemated(board)){
+            gameOver = "d";
+        }else{
+            gameOver = null;
+        }
+    }
+
 
     private Boolean attemptToMoveWhite(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
@@ -74,12 +130,17 @@ public class Game {
 
     private Boolean attemptToMoveBlack(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
-
-        if(currentBoard[x][y].getColor() == PieceColor.BLACK) {
+        if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
             return true;
         }
 
         return false;
+    }
+
+    public void restartGame() {
+        this.board = new Board();
+        this.turnsMade = 0;
+        this.gameStartedTime = System.currentTimeMillis() / 1000L;
     }
 
     private Boolean isWhitesTurn() {
@@ -108,10 +169,6 @@ public class Game {
         }
     }
 
-    public Boolean getIfCheck() {
-        return board.ifCheck();
-    }
-
     public Piece[][] getBoard() {
         return board.getBoard();
     }
@@ -124,6 +181,17 @@ public class Game {
         turnsMade--;
     }
 
+    public void surrender(String clientId) {
+        String playerColor = getPlayerColor(clientId);
+        if (playerColor != null) {
+            if (playerColor.equals("white")) {
+                gameOver = "b";
+            } else {
+                gameOver = "w";
+            }
+        }
+    }
+
     public void addPlayer(String clinetId, Boolean isBot) {
         Player player = new Player(clinetId, isBot);
         if (playerWhite == null) {
@@ -131,6 +199,10 @@ public class Game {
         } else if (playerBlack == null) {
             playerBlack = player;
         }
+    }
+
+    public boolean isEmpty() {
+        return playerWhite == null && playerBlack == null;
     }
 
     public void removePlayer(String clientId) {
@@ -164,12 +236,12 @@ public class Game {
         return players;
     }
 
-    public boolean isFull() {
-        return playerWhite != null && playerBlack != null;
+    public Boolean getCheck() {
+        return CheckGameState.checked(board);
     }
 
-    public boolean isEmpty() {
-        return playerWhite == null && playerBlack == null;
+    public boolean isFull() {
+        return playerWhite != null && playerBlack != null;
     }
 
     public String getId() {
@@ -177,35 +249,18 @@ public class Game {
     }
 
     public String checkGameOver() {
-        return board.gameOver;
-    }
-
-    public void restartGame() {
-        this.board = new Board();
-        this.turnsMade = 0;
-        this.gameStartedTime = System.currentTimeMillis() / 1000L;
-    }
-
-    public void makeRandomMove() {
-        PieceColor currentColor = isWhitesTurn() ? PieceColor.WHITE : PieceColor.BLACK;
-        int[][] move = board.getRandomMove(currentColor);
-        if (move != null) {
-            attemptMove(move[0][0], move[0][1], move[1][0], move[1][1]);
-        }
-    }
-
-    public void surrender(String clientId) {
-        String playerColor = getPlayerColor(clientId);
-        if (playerColor != null) {
-            if (playerColor.equals("white")) {
-                board.gameOver = "b";
-            } else {
-                board.gameOver = "w";
-            }
-        }
+        return gameOver;
     }
 
     public long getGameTime() {
         return System.currentTimeMillis() / 1000L - gameStartedTime;
+    }
+
+    public void makeRandomMove() {
+        PieceColor currentColor = isWhitesTurn() ? PieceColor.WHITE : PieceColor.BLACK;
+        int[][] move = getRandomMove(currentColor);
+        if (move != null) {
+            attemptMove(move[0][0], move[0][1], move[1][0], move[1][1]);
+        }
     }
 }

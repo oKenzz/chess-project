@@ -1,10 +1,7 @@
 package com.backend.chess_backend.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import com.backend.chess_backend.model.Pieces.Bishop;
 import com.backend.chess_backend.model.Pieces.King;
@@ -20,22 +17,34 @@ public class Board {
     // Will swap "Object to Piece"
     // ArrayList<ArrayList<Object>> board = new ArrayList<ArrayList<Object>>();
 
-    Piece[][] board = new Piece[8][8];
+    Piece[][] board;
     int[][] lastMove = new int[2][2];
     int[] bKingPosition = new int[2];
     int[] wKingPosition = new int[2];
-    Boolean blackChecked;
-    Boolean whiteChecked;
     Piece lastPiece;
     String gameOver;
+    private int BoardHight;
+    private int BoardWidth;
 
     public Board() {
 
+        this.BoardHight = 8;
+        this.BoardWidth = 8;
+        this.board = new Piece[BoardHight][BoardWidth];
         createStartingBoard();
         this.gameOver = null;
-        this.blackChecked = false;
-        this.whiteChecked = false;
         this.lastPiece = null;
+        
+    }
+    public Board(int hight, int width) {
+
+        this.BoardHight = hight;
+        this.BoardWidth = width;
+        this.board = new Piece[BoardHight][BoardWidth];
+        createStartingBoard();
+        this.gameOver = null;
+        this.lastPiece = null;
+        
     }
 
     // returns the piece on that square (null if no piece there)
@@ -53,151 +62,14 @@ public class Board {
             return true;
         }
     }
-
-    public Boolean[][] getPossibleMoves(Piece piece) {
-        Boolean[][] movelist = makePossibleMoves(piece);
-
-        
-        movelist = removeCheckMoves(piece, movelist);
-        
-
-        return movelist;
-    }
-
-    public void updateChecked(){
-        if ( threatenedSquare(wKingPosition[0], wKingPosition[1], PieceColor.WHITE)){
-            this.whiteChecked = true;
-        }else if(threatenedSquare(bKingPosition[0], bKingPosition[1], PieceColor.BLACK)){
-            this.blackChecked = true;
-        }else{
-            this.whiteChecked = false;
-            this.blackChecked = false;
-        }
-    }
     
-
-    public Boolean threatenedSquare(int coordx, int coordy, PieceColor color) {
-        for (int x = 0; x < board.length; x++) {
-            for (int y = 0; y < board.length; y++) {
-                if (board[x][y] != null) {
-                    if (board[x][y].getColor() != color) {
-                        Boolean[][] posMoves = makePossibleMoves(board[x][y]);
-                        if (posMoves[coordx][coordy] == true) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // moves a piece to a square using get possible moves. Returns true if move
-    // successful, false if piece cant move there.
-    public Boolean[][] makePossibleMoves(Piece piece) {
-        Boolean[][] movelist = piece.getPossibleMoves(8, 8);
-
-        // removes squares if pices are in the way
-
-        movelist = removeExcess(piece, movelist);
-        // checks if the piece is a black pawn
-        if (piece.getPieceType() == "p") {
-            if (piece.getY() > 0 && board[piece.getX()][piece.getY() - 1] != null) {
-                movelist[piece.getX()][piece.getY() - 1] = false;
-                if (movelist[piece.getX()][piece.getY() - 2] == true) {
-                    movelist[piece.getX()][piece.getY() - 2] = false;
-                }
-
-            } else if (piece.getMovesMade() == 0 && board[piece.getX()][piece.getY() - 2] != null) {
-                movelist[piece.getX()][piece.getY() - 2] = false;
-            }
-            // removes the option from a black pawn to move diagonally down right when there
-            // is not black peice to take
-            if (piece.getX() != 7 && piece.getY() != 0 && board[piece.getX() + 1][piece.getY() - 1] == null) {
-                movelist[piece.getX() + 1][piece.getY() - 1] = false;
-            }
-            // removes the option from a black pawn to move diagonally down left when there
-            // is not black peice to take
-            if (piece.getX() != 0 && piece.getY() != 0 && board[piece.getX() - 1][piece.getY() - 1] == null) {
-                movelist[piece.getX() - 1][piece.getY() - 1] = false;
-            }
-            // adds en pessant moves to the left to possible moves
-            if (piece.getX() != 0 && piece.getY() != 0 && board[piece.getX() - 1][piece.getY()] != null
-                    && board[piece.getX() - 1][piece.getY()].getPieceType() == "P"
-                    && board[piece.getX() - 1][piece.getY()].getMovesMade() == 1) {
-                movelist[piece.getX() - 1][piece.getY() - 1] = true;
-            }
-            // adds enpessant move to the right to possible moves
-            if (piece.getX() != 7 && piece.getY() != 0 && board[piece.getX() + 1][piece.getY()] != null
-                    && board[piece.getX() + 1][piece.getY()].getPieceType() == "P"
-                    && board[piece.getX() + 1][piece.getY()].getMovesMade() == 1) {
-                movelist[piece.getX() + 1][piece.getY() - 1] = true;
-            }
-
-        } else if (piece.getPieceType() == "P") {
-            if (piece.getY() < 7 && board[piece.getX()][piece.getY() + 1] != null) {
-                movelist[piece.getX()][piece.getY() + 1] = false;
-                if (movelist[piece.getX()][piece.getY() + 2] == true) {
-                    movelist[piece.getX()][piece.getY() + 2] = false;
-                }
-
-            } else if (piece.getMovesMade() == 0 && board[piece.getX()][piece.getY() + 2] != null) {
-                movelist[piece.getX()][piece.getY() + 2] = false;
-            }
-            // removes the option from a white pawn to move diagonally up right when there
-            // is not black peice to take
-            if (piece.getX() != 7 && piece.getY() != 7 && board[piece.getX() + 1][piece.getY() + 1] == null) {
-                movelist[piece.getX() + 1][piece.getY() + 1] = false;
-            }
-            // removes the option from a white pawn to move diagonally up left when there is
-            // not black peice to take
-            if (piece.getX() != 0 && piece.getY() != 7 && board[piece.getX() - 1][piece.getY() + 1] == null) {
-                movelist[piece.getX() - 1][piece.getY() + 1] = false;
-            }
-            // enpessant to the left
-            if (piece.getX() != 0 && piece.getY() != 7 && board[piece.getX() - 1][piece.getY()] != null
-                    && board[piece.getX() - 1][piece.getY()].getPieceType() == "p"
-                    && board[piece.getX() - 1][piece.getY()].getMovesMade() == 1) {
-                movelist[piece.getX() - 1][piece.getY() + 1] = true;
-            }
-            // enpessant to the right
-            if (piece.getX() != 7 && piece.getY() != 7 && board[piece.getX() + 1][piece.getY()] != null
-                    && board[piece.getX() + 1][piece.getY()].getPieceType() == "p"
-                    && board[piece.getX() + 1][piece.getY()].getMovesMade() == 1) {
-                movelist[piece.getX() + 1][piece.getY() + 1] = true;
-            }
-
-        }
-
-        return movelist;
-    }
-
-    public Boolean[][] removeCheckMoves(Piece piece, Boolean[][] movelist) {
-        for (int x = 0; x < movelist.length; x++) {
-            for (int y = 0; y < movelist.length; y++) {
-                if (movelist[x][y] == true) {
-                    move(piece, x, y);
-                    updateChecked();
-                    if (piece.getColor() == PieceColor.BLACK && this.blackChecked) {
-                        movelist[x][y] = false;
-                    } else if (piece.getColor() == PieceColor.WHITE && this.whiteChecked) {
-                        movelist[x][y] = false;
-                    }
-                    undoMove();
-                    updateChecked();
-                }
-            }
-        }
-
-        return movelist;
-    }
 
     public void reset() {
         createStartingBoard();
     }
 
-    // checks if the move made is a move that is allowe for that piece
-    public boolean checkIfallowed(int newX, int newY, Boolean[][] moveList) {
+    // checks if the move made is a move that is allowed for that piece
+    public boolean isMoveAllowed(int newX, int newY, Boolean[][] moveList) {
         if (moveList[newX][newY] == true) {
             return true;
         } else {
@@ -225,12 +97,6 @@ public class Board {
     }
 
     public void undoMove() {
-        // board[lastMove[1][0]][lastMove[1][1]].updateCoords(lastMove[0][0], lastMove[0][1]);
-        // updateBoard(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
-        // if(lastPiece != null){
-        //     lastPiece.movesMade--;
-        // }
-        // board[lastMove[1][0]][lastMove[1][1]] = lastPiece;
         int tmpx = lastMove[1][0];
         int tmpy = lastMove[1][1];
         Piece tmpp = lastPiece;
@@ -418,43 +284,6 @@ public class Board {
         return possibleMoves;
     }
 
-    public Boolean ifCheck() {
-        if(this.blackChecked || this.whiteChecked) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void updateGameOverWhite(){
-        List<Piece> whitePieces = getAllPlayerPieces(PieceColor.WHITE);
-        Map<String, ArrayList<Integer>> whiteMoves = getAllPossiblePlayerMoves(whitePieces);
-
-        if (whiteMoves.isEmpty()) {
-            if (this.whiteChecked) {
-                this.gameOver = "b";
-            }else {
-                this.gameOver = "d";
-            }
-        }
-    }
-
-    public void updateGameOverBlack(){
-        List<Piece> blackPieces = getAllPlayerPieces(PieceColor.BLACK);
-        Map<String, ArrayList<Integer>> blackMoves = getAllPossiblePlayerMoves(blackPieces);
-
-        if (blackMoves.isEmpty()) {
-            if (this.blackChecked) {
-                this.gameOver = "w";
-            }else {
-                this.gameOver = "d";
-            }
-        }
-    }   
-
-    public String getGameOver() {
-        return this.gameOver;
-    }
 
     public List<Piece> getAllPlayerPieces(PieceColor color){
         List<Piece> pieces = new ArrayList<>();
@@ -468,58 +297,32 @@ public class Board {
         }
         return pieces;
     }
-
-    public Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces){
-        Map<String, ArrayList<Integer>> moves = new HashMap<>();
-        /*
-         * {
-         * from: [x, y],
-         * to: [x, y]
-         * }
-         * 
-         */
-        for (Piece piece : pieces) {
-            Boolean[][] possibleMoves = getPossibleMoves(piece);
-            for (int x = 0; x < possibleMoves.length; x++) {
-                for (int y = 0; y < possibleMoves[x].length; y++) {
-                    if (possibleMoves[x][y]) {
-                        String from = piece.getX() + "," + piece.getY();
-                        String to = x + "," + y;
-                        if (moves.containsKey(from)) {
-                            moves.get(from).add(x);
-                            moves.get(from).add(y);
-                        } else {
-                            ArrayList<Integer> toList = new ArrayList<>();
-                            toList.add(x);
-                            toList.add(y);
-                            moves.put(from, toList);
-                        }
-                    }
+    public List<Piece> getAllPieces(){
+        List<Piece> pieces = new ArrayList<>();
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                Piece piece = board[x][y];
+                if (piece != null) {
+                    pieces.add(piece);
                 }
             }
         }
-        return moves;
+        return pieces;
     }
 
-    public int[][] getRandomMove(PieceColor color) {
+    public int getBoardHeight() {
+        return BoardHight;
+    }
 
-        List<Piece> pieces = getAllPlayerPieces(color);
-        
-        Map<String, ArrayList<Integer>> moves = getAllPossiblePlayerMoves(pieces);
-        // Get random move
-        if (moves.size() > 0) {
-            Random rand = new Random();
-            int randomIndex = rand.nextInt(moves.size());
-            String from = (String) moves.keySet().toArray()[randomIndex];
-            ArrayList<Integer> to = moves.get(from);
-            int[] fromCoords = new int[2];
-            int[] toCoords = new int[2];
-            fromCoords[0] = Integer.parseInt(from.split(",")[0]);
-            fromCoords[1] = Integer.parseInt(from.split(",")[1]);
-            toCoords[0] = to.get(0);
-            toCoords[1] = to.get(1);
-            return new int[][] { fromCoords, toCoords };
-        }
-        return null; // No valid moves available
+    public int getBoardWidth() {
+        return BoardWidth;
+    }
+
+    public int[] getbKingPosition() {
+        return bKingPosition;
+    }
+
+    public int[] getwKingPosition() {
+        return wKingPosition;
     }
 }

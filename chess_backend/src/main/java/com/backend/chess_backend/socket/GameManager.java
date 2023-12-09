@@ -1,19 +1,20 @@
 package com.backend.chess_backend.socket;
 
-import com.backend.chess_backend.model.Game;
-import com.backend.chess_backend.model.Player;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.stereotype.Service;
+
+import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
+import com.backend.chess_backend.model.Player;
 
 @Service
 public class GameManager {
-    private class ChessGame extends Game {
+    private class ChessGame extends SimpleChessGame {
         private boolean isPrivate;
 
         public ChessGame(String gameId, boolean isPrivate) {
@@ -109,7 +110,7 @@ public class GameManager {
         return false;
     }
 
-    private synchronized boolean removeGameIfEmpty(Game game) {
+    private synchronized boolean removeGameIfEmpty(SimpleChessGame game) {
         if (game.isEmpty()) {
             removeGame(game.getId());
             return true;
@@ -165,7 +166,7 @@ public class GameManager {
     }
 
     public void kickPlayer(String uuid) {
-        Game game = games.get(playerGameMap.get(uuid));
+        SimpleChessGame game = games.get(playerGameMap.get(uuid));
         game.removePlayer(uuid);
         playerGameMap.remove(uuid);
     }

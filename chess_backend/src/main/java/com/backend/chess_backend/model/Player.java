@@ -1,7 +1,5 @@
 package com.backend.chess_backend.model;
 
-import com.backend.chess_backend.model.Pieces.PieceColor;
-
 import io.netty.util.Timer;
 
 public class Player {
@@ -13,6 +11,11 @@ public class Player {
     public Player(String clientUUID, Boolean isBot) {
         this.uuid = clientUUID;
         this.isBot = isBot;
+    }
+
+    public Player(String clientUUID) {
+        this.uuid = clientUUID;
+        this.isBot = false;
     }
 
     public void toggleTimer() {
