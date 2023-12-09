@@ -15,6 +15,7 @@ import GameOver from '../components/GameOver';
 import WaitingScreen from '../components/WatingScreen';
 import * as socketListeners from '../socket/socketListeners';
 import JoiningGameScreen from '../components/JoiningGameScreen';
+import RightSidebar from '../components/RightSidebar';
 
 const MultiPlayerGame = () => {
     const [fen, setFen] = useState<FEN>('start');
@@ -92,7 +93,10 @@ const MultiPlayerGame = () => {
                     socket={socketRef.current}
                 />
             </motion.div>
-            <motion.div className="right-panel"></motion.div>
+            <RightSidebar 
+                isMyTurnProp={true}
+                switchTurn={() => {}}
+            />
 
             <Alert color={alertMessage?.type}
                  icon={HiInformationCircle} 

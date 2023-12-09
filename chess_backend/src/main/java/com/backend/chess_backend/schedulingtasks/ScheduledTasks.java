@@ -16,7 +16,8 @@ public class ScheduledTasks {
         this.gameManager = GameManager;
     }
 
-    @Scheduled(fixedRate = 10000)
+    // Remove inactive games every hour
+    @Scheduled(fixedRate = 1000 * 60 * 60)
     public void removeInactiveGames() {
         gameManager.removeInactiveGames();
     }

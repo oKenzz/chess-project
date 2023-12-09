@@ -178,7 +178,7 @@ public class GameManager {
         games.clear();
         playerGameMap.clear();
     }
-    
+
     public void removeGame(String gameId) {
         games.remove(gameId);
     }
@@ -190,8 +190,8 @@ public class GameManager {
     public void removeInactiveGames() {
         for (ChessGame game : games.values()) {
             System.out.println(game.getGameTime());
-            System.out.println(game.getGameTime() > 600);
-            if (game.getGameTime() > 600) {
+            System.out.println(game.getGameTime() > 1800);
+            if (game.getGameTime() > 1800) {
                 removeGame(game.getId());
             }
         }
