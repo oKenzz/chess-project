@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.Move;
+import com.backend.chess_backend.model.Pieces.King;
 import com.backend.chess_backend.model.Pieces.Pawn;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
@@ -19,13 +20,14 @@ public class MoveValidator {
     }
 
     public static Boolean[][] getPossibleMoves(Piece piece, Board currentBoard) {
+
+
         Boolean[][] movelist = primitivePossibleMoves(piece, currentBoard);
         
-        
-        removeCheckMoves(piece, movelist, currentBoard);   
-        if (piece instanceof King && CheckGameState.isChecked(currentBoard) == false){
+        if (piece instanceof King && CheckGameState.checked(currentBoard) == false && piece.getMovesMade() == 0){
             CastlingMoveHandler.validateCastlingMoves(piece, movelist, currentBoard);
         } 
+        removeCheckMoves(piece, movelist, currentBoard);   
         
         return movelist;
     }
@@ -48,6 +50,7 @@ public class MoveValidator {
     }
 
     public static Boolean[][] primitivePossibleMoves(Piece piece, Board currentBoard) {
+        
         Boolean[][] movelist = piece.getPossibleMoves(currentBoard.getBoardWidth(), currentBoard.getBoardHeight());
         removeBlockedMoves(piece, movelist, currentBoard);
         if (piece instanceof Pawn) {
@@ -64,7 +67,12 @@ public class MoveValidator {
             for (int y = 0; y < board.getBoardHeight(); y++) {
                 if (currentBoard[x][y] != null) {
                     if (currentBoard[x][y].getColor() != color) {
-                        Boolean[][] posMoves = getPossibleMoves(currentBoard[x][y], board);
+                        Boolean[][] posMoves = null;
+                        if (currentBoard[x][y] instanceof King){
+                            posMoves = primitivePossibleMoves(currentBoard[x][y], board);
+                        }else{
+                            posMoves = getPossibleMoves(currentBoard[x][y], board);
+                        }
                         if (posMoves[coordx][coordy] == true) {
                             return true;
                         }
@@ -152,6 +160,13 @@ public class MoveValidator {
                 && board[piece.getX() + 1][piece.getY()].getMovesMade() == 1) {
             movelist[piece.getX() + 1][piece.getY() + 1] = true;
         }
+    }
+
+    public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
+        if(piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
+            return true;
+        }
+        return false;
     }
 
     private static void handleBlackPawnMoves(Piece piece, Boolean[][] movelist, Piece[][] board) {

@@ -11,7 +11,7 @@ public class CastlingMoveHandler {
     public static void validateCastlingMoves(Piece king, Boolean[][] movelist, Board board){
     
         Piece[][] currentBoard = board.getBoard();
-        if(king.getColor() == PieceColor.BLACK && king.getMovesMade() == 0){
+        if(king.getColor() == PieceColor.BLACK){
             
             if(currentBoard[0][7] instanceof Rook && currentBoard[0][7].getMovesMade() == 0){
                 if(!ThreatenedAndPiece(currentBoard[1][7], board) && !ThreatenedAndPiece(currentBoard[2][7], board) && !ThreatenedAndPiece(currentBoard[3][7], board)){
@@ -30,7 +30,7 @@ public class CastlingMoveHandler {
                 }
             }
         }
-        else if(king.getColor() == PieceColor.WHITE && king.getMovesMade() == 0){
+        else if(king.getColor() == PieceColor.WHITE){
             if(currentBoard[0][0] instanceof Rook && currentBoard[0][0].getMovesMade() == 0){
                 if(!ThreatenedAndPiece(currentBoard[1][0], board) && !ThreatenedAndPiece(currentBoard[2][0], board) && !ThreatenedAndPiece(currentBoard[3][0], board)){
                     
@@ -49,6 +49,24 @@ public class CastlingMoveHandler {
             }
         }
     }
+
+    public static void makeCastleMove(int x, int y, int newX, int newY, Board board) {
+        Piece[][] currentBoard = board.getBoard();
+        
+        if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
+            if (newX == 2 && newY == 7) {
+                board.move(currentBoard[0][7], 3, 7);
+            } else if (newX == 6 && newY == 7) {
+                board.move(currentBoard[7][7], 5, 7);
+            }
+        } else if (currentBoard[x][y].getColor() == PieceColor.WHITE) {
+            if (newX == 2 && newY == 0) {
+                board.move(currentBoard[0][0], 3, 0);
+            } else if (newX == 6 && newY == 0) {
+                board.move(currentBoard[7][0], 5, 0);
+            }
+        }
+    }
     
 
 
@@ -60,7 +78,4 @@ public class CastlingMoveHandler {
         return false;
 
     }
-
-
-
 }

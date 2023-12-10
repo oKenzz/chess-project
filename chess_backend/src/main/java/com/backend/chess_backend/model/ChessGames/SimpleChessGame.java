@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.backend.chess_backend.model.Board;
+import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
 import com.backend.chess_backend.model.Pieces.Piece;
@@ -58,10 +59,14 @@ public class SimpleChessGame {
 
 
         Piece[][] currentBoard = board.getBoard();
-        Boolean[][] possibleM = MoveValidator.getPossibleMoves(currentBoard[x][y], board);
+        Boolean[][] possibleM = possibleMoves(x, y);
 
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.isMoveAllowed(newX, newY, possibleM)) {
+
+                if (MoveValidator.isCastleMove(currentBoard[x][y], newX, newY, board)) {
+                    CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
+                }
                 board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
                 if (isWhitesTurn()) {
@@ -75,6 +80,8 @@ public class SimpleChessGame {
 
         return false;
     }
+
+    
 
     public int[][] getRandomMove(PieceColor color) {
 
@@ -121,7 +128,7 @@ public class SimpleChessGame {
 
     private Boolean attemptToMoveWhite(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
-        if (currentBoard[x][y].getColor() == PieceColor.WHITE) {
+        if (currentBoard[x][y] != null && currentBoard[x][y].getColor() == PieceColor.WHITE) {
             return true;
         }
 
@@ -130,7 +137,7 @@ public class SimpleChessGame {
 
     private Boolean attemptToMoveBlack(int x, int y) {
         Piece[][] currentBoard = board.getBoard();
-        if (currentBoard[x][y].getColor() == PieceColor.BLACK) {
+        if (currentBoard[x][y] != null && currentBoard[x][y].getColor() == PieceColor.BLACK) {
             return true;
         }
 

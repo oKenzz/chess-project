@@ -86,10 +86,10 @@ public class Board {
         lastPiece = board[newX][newY];
         updateBoard(piece, newX, newY);
         piece.updateCoords(newX, newY);
-        if (piece.getPieceType() == "k") {
+        if (piece instanceof King && piece.getColor() == PieceColor.BLACK) {
             this.bKingPosition[0] = newX;
             this.bKingPosition[1] = newY;
-        } else if (piece.getPieceType() == "K") {
+        } else if (piece instanceof King && piece.getColor() == PieceColor.WHITE) {
             this.wKingPosition[0] = newX;
             this.wKingPosition[1] = newY;
         }
