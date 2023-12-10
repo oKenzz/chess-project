@@ -20,8 +20,13 @@ public class MoveValidator {
 
     public static Boolean[][] getPossibleMoves(Piece piece, Board currentBoard) {
         Boolean[][] movelist = primitivePossibleMoves(piece, currentBoard);
-        removeCheckMoves(piece, movelist, currentBoard);    
-
+        
+        
+        removeCheckMoves(piece, movelist, currentBoard);   
+        if (piece instanceof King && CheckGameState.isChecked(currentBoard) == false){
+            CastlingMoveHandler.validateCastlingMoves(piece, movelist, currentBoard);
+        } 
+        
         return movelist;
     }
 
@@ -52,7 +57,7 @@ public class MoveValidator {
 
     }
 
-    public Boolean threatenedSquare(int coordx, int coordy, PieceColor color, Board board) {
+    public static Boolean threatenedSquare(int coordx, int coordy, PieceColor color, Board board) {
 
         Piece[][] currentBoard = board.getBoard();
         for (int x = 0; x < board.getBoardWidth(); x++) {
@@ -69,6 +74,7 @@ public class MoveValidator {
         }
         return false;
     }
+
 
     public static Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces, Board board){
         Map<String, ArrayList<Integer>> moves = new HashMap<>();

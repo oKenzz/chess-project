@@ -107,19 +107,19 @@ public class Board {
 
     }
 
-    private void updateBoard(Piece piece, int newX, int newY) {
+    private void updateBoard(Piece  piece, int newX, int newY) {
         // sets teh new position in board to the piece and changes the old one to null
         board[newX][newY] = piece;
         board[piece.getX()][piece.getY()] = null;
         // if the move made is an enpessant from a white piece it removes the piece that
         // was taken
-        if (piece.getPieceType() == "P") {
+        if (piece instanceof Pawn && piece.getColor() == PieceColor.WHITE) {
             if (Math.abs(piece.getX() - newX) == 1 && board[newX][piece.getY()] != null
                     && board[newX][piece.getY()].movesMade == 1 && board[newX][piece.getY()].getPieceType() == "p") {
                 board[newX][newY - 1] = null;
             }
             // removes the piece that was taken by enpessant from a black piece
-            else if (piece.getPieceType() == "p") {
+            else if (piece instanceof Pawn && piece.getColor() == PieceColor.BLACK) {
                 if (Math.abs(piece.getX() - newX) == 1 && board[newX][piece.getY()] != null
                         && board[newX][piece.getY()].movesMade == 1
                         && board[newX][piece.getY()].getPieceType() == "P") {
