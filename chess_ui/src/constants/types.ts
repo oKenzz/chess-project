@@ -26,3 +26,8 @@ export type alertMessage = {
 
 
 
+export type Message = {
+    message: string;
+    sentAt: string;
+    sender: Player;
+}

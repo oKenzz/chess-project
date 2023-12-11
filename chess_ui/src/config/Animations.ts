@@ -94,3 +94,15 @@ export const pageTransition = {
     ease: "anticipate",
     duration: 0.5
 };
+
+
+export const chatBoxVariants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: "100%" },
+};
+export const chatButtonVariants = {
+    open: { scale: 1, opacity: 1 },
+    closed: { scale: 0, opacity: 0 },
+};
+
+export const chatTransition = { type: "easeInOut", duration: 0.4 };

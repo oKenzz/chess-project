@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.backend.chess_backend.model.ChessGames.ModifiedChessGame;
 import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
 import com.backend.chess_backend.model.Constants.GameOverEnum;
 import com.backend.chess_backend.model.Translator;
@@ -40,10 +41,36 @@ public class ChessHandler {
                 Translator.translateBoard(game.getBoard(), game.getTurn()));
     }
 
-    public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
-        server.getBroadcastOperations().sendEvent("chat", message);
+    public void getChatMessagesListener(SocketIOClient client, Void data, AckRequest ackRequest) {
+        String playerUuid = client.getSessionId().toString();
+        ModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        if (game == null) {
+            return;
+        }
+        String response = new Gson().toJson(game.getChat().getMessages());
         if (ackRequest.isAckRequested()) {
-            ackRequest.sendAckData("Message has been rFeceieved");
+            ackRequest.sendAckData(response);
+        }
+    }
+
+    public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
+        String playerUuid = client.getSessionId().toString();
+        ModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        if (game == null) {
+            return;
+        }
+        if (message.equals("surrender")) {
+            playerSurrender(playerUuid);
+            return;
+        }
+        if (message.length() > 100 || message.length() < 1) {
+            return;
+        }
+        game.getChat().postMessage(message, game.getPlayer(playerUuid));
+        String response = new Gson().toJson(game.getChat().getMessages());
+        server.getRoomOperations(game.getId()).sendEvent("chatMessage", response);
+        if (ackRequest.isAckRequested()) {
+            ackRequest.sendAckData("Message has been receieved");
         }
     }
 

@@ -322,4 +322,12 @@ public class SimpleChessGame {
         return timers;
     }
 
+    public Player getWhitePlayer() {
+        return this.playerWhite;
+    }
+
+    public Player getBlackPlayer() {
+        return this.playerBlack;
+    }
+
 }
