@@ -95,7 +95,6 @@ public class Board {
             this.wKingPosition[1] = newY;
         }
         piece.IncrementMovesMade();
-        ;
     }
 
     public void undoMove() {
@@ -113,7 +112,20 @@ public class Board {
         // sets teh new position in board to the piece and changes the old one to null
         board[newX][newY] = piece;
         board[piece.getX()][piece.getY()] = null;
+
+        // //if the move made is an enpessant from a white piece it removes the piece that was taken
+        // if (piece.getPieceType()=="P"){
+        //     if(Math.abs(piece.getX()-newX)==1 && board[newX][piece.getY()]!=null&& board[newX][piece.getY()].movesMade==1&&board[newX][piece.getY()].getPieceType() =="p"){
+        //         board[newX][newY-1]=null;
+        //     }
+        // //removes the piece that was taken by enpessant from a black piece
+        // else if (piece.getPieceType()=="p"){
+        //     if(Math.abs(piece.getX()-newX)==1 && board[newX][piece.getY()]!=null&& board[newX][piece.getY()].movesMade==1&&board[newX][piece.getY()].getPieceType()=="P"){
+        //         board[newX][newY+1]=null;
+        //     }
+        // }
     }
+
 
     // getter for the board itself
     public Piece[][] getBoard() {

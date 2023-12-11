@@ -47,12 +47,12 @@ public class EnPassantMoveHandler {
 
         if (piece.getColor() == PieceColor.WHITE && adjacentPiece.getColor() == PieceColor.BLACK) {
             if (newY == piece.getY() - 1) {
-                currentBoard.move(piece, newX, newY);
+                //currentBoard.move(piece, newX, newY);
                 board[newX][piece.getY()] = null;
             }
         } else if (piece.getColor() == PieceColor.BLACK && adjacentPiece.getColor() == PieceColor.WHITE) {
             if (newY == piece.getY() + 1) {
-                currentBoard.move(piece, newX, newY);
+                //currentBoard.move(piece, newX, newY);
                 board[newX][piece.getY()] = null;
             }
         }
