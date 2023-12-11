@@ -55,7 +55,9 @@
     }
 }
 
-
+.chat-card:first-child{
+    margin-top: auto !important;
+}
 /* Left panel */
 .left-panel { 
     display: flex;

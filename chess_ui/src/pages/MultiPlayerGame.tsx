@@ -122,7 +122,10 @@ const MultiPlayerGame = () => {
                     />
                 }
 
-                <Chat />
+               {
+                     socketRef.current &&
+                     <Chat socket={socketRef.current} />
+                }
 
                 <Alert color={alertMessage?.type}
                     icon={HiInformationCircle} 
