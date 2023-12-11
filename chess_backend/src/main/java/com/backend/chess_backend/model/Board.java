@@ -34,8 +34,9 @@ public class Board {
         createStartingBoard();
         this.gameOver = null;
         this.lastPiece = null;
-        
+
     }
+
     public Board(int hight, int width) {
 
         this.BoardHight = hight;
@@ -44,7 +45,7 @@ public class Board {
         createStartingBoard();
         this.gameOver = null;
         this.lastPiece = null;
-        
+
     }
 
     // returns the piece on that square (null if no piece there)
@@ -62,7 +63,6 @@ public class Board {
             return true;
         }
     }
-    
 
     public void reset() {
         createStartingBoard();
@@ -101,33 +101,17 @@ public class Board {
         int tmpy = lastMove[1][1];
         Piece tmpp = lastPiece;
         move(board[lastMove[1][0]][lastMove[1][1]], lastMove[0][0], lastMove[0][1]);
-        
+
         board[tmpx][tmpy] = tmpp;
         board[lastMove[1][0]][lastMove[1][1]].movesMade -= 2;
 
     }
 
-    private void updateBoard(Piece  piece, int newX, int newY) {
+    private void updateBoard(Piece piece, int newX, int newY) {
         // sets teh new position in board to the piece and changes the old one to null
         board[newX][newY] = piece;
         board[piece.getX()][piece.getY()] = null;
-        // if the move made is an enpessant from a white piece it removes the piece that
-        // was taken
-        if (piece instanceof Pawn && piece.getColor() == PieceColor.WHITE) {
-            if (Math.abs(piece.getX() - newX) == 1 && board[newX][piece.getY()] != null
-                    && board[newX][piece.getY()].movesMade == 1 && board[newX][piece.getY()].getPieceType() == "p") {
-                board[newX][newY - 1] = null;
-            }
-            // removes the piece that was taken by enpessant from a black piece
-            else if (piece instanceof Pawn && piece.getColor() == PieceColor.BLACK) {
-                if (Math.abs(piece.getX() - newX) == 1 && board[newX][piece.getY()] != null
-                        && board[newX][piece.getY()].movesMade == 1
-                        && board[newX][piece.getY()].getPieceType() == "P") {
-                    board[newX][newY + 1] = null;
-                }
-            }
 
-        }
     }
 
     // getter for the board itself
@@ -284,8 +268,7 @@ public class Board {
         return possibleMoves;
     }
 
-
-    public List<Piece> getAllPlayerPieces(PieceColor color){
+    public List<Piece> getAllPlayerPieces(PieceColor color) {
         List<Piece> pieces = new ArrayList<>();
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[x].length; y++) {
@@ -297,7 +280,8 @@ public class Board {
         }
         return pieces;
     }
-    public List<Piece> getAllPieces(){
+
+    public List<Piece> getAllPieces() {
         List<Piece> pieces = new ArrayList<>();
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[x].length; y++) {

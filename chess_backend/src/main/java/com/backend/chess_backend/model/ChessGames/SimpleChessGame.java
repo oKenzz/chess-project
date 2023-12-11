@@ -8,20 +8,22 @@ import java.util.Random;
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
+import com.backend.chess_backend.model.MoveHandlers.EnpessantMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
+import com.backend.chess_backend.model.MoveHandlers.PromotionMoveHandler;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Player;
+import com.backend.chess_backend.model.Constants.GameOverEnum;
 
 public class SimpleChessGame {
-
     private Board board;
     private Player playerWhite;
     private Player playerBlack;
     private int turnsMade;
     private String gameId;
     private long gameStartedTime;
-    private String gameOver;
+    private GameOverEnum gameOver;
     private Integer defaultChessTime = 600;
 
     public SimpleChessGame(String gameid) {
@@ -31,7 +33,7 @@ public class SimpleChessGame {
         this.playerWhite = new Player(false, defaultChessTime);
         this.playerBlack = new Player(false, defaultChessTime);
         this.gameStartedTime = System.currentTimeMillis() / 1000L;
-        this.gameOver = null;
+        this.gameOver = GameOverEnum.NOT_OVER;
     }
 
     public Boolean[][] possibleMoves(int x, int y) {
@@ -65,8 +67,18 @@ public class SimpleChessGame {
 
                 if (MoveValidator.isCastleMove(currentBoard[x][y], newX, newY, board)) {
                     CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
+                    board.move(currentBoard[x][y], newX, newY);
+                } else if (PromotionMoveHandler.isPromotionMove(currentBoard[x][y], newX, newY)) {
+                    board.move(currentBoard[x][y], newX, newY);
+                    PromotionMoveHandler.promoteToQueen(currentBoard[newX][newY], newX, newY, board);
+                } else if (EnpessantMoveHandler.isEnpessantMove(currentBoard[x][y], newX, newY, board)) {
+                    board.move(currentBoard[x][y], newX, newY);
+                    EnpessantMoveHandler.makeEnpessantMove(currentBoard[newX][newY].getColor(), newX, newY, board);
                 }
-                board.move(currentBoard[x][y], newX, newY);
+
+                else {
+                    board.move(currentBoard[x][y], newX, newY);
+                }
                 toggleTimer();
                 IncrementTurn();
                 if (isWhitesTurn()) {
@@ -105,9 +117,9 @@ public class SimpleChessGame {
 
     private void updateGameOverBlack() {
         if (CheckGameState.blackCheckmated(board)) {
-            gameOver = "w";
+            gameOver = GameOverEnum.BLACK;
         } else if (CheckGameState.blackStalemated(board)) {
-            gameOver = "d";
+            gameOver = GameOverEnum.DRAW;
         } else {
             gameOver = null;
         }
@@ -115,9 +127,9 @@ public class SimpleChessGame {
 
     private void updateGameOverWhite() {
         if (CheckGameState.whiteCheckmated(board)) {
-            gameOver = "b";
+            gameOver = GameOverEnum.WHITE;
         } else if (CheckGameState.whiteStalemated(board)) {
-            gameOver = "d";
+            gameOver = GameOverEnum.DRAW;
         } else {
             gameOver = null;
         }
@@ -189,9 +201,9 @@ public class SimpleChessGame {
         String playerColor = getPlayerColor(clientId);
         if (playerColor != null) {
             if (playerColor.equals("white")) {
-                gameOver = "b";
+                gameOver = GameOverEnum.BLACK;
             } else {
-                gameOver = "w";
+                gameOver = GameOverEnum.WHITE;
             }
         }
     }
@@ -233,6 +245,19 @@ public class SimpleChessGame {
         return null;
     }
 
+    public Boolean attemptUndo(String clientId) {
+        if (playerWhite.isOccupied() && playerWhite.getUuid().equals(clientId)) {
+            board.undoMove();
+            subtractTurn();
+            return true;
+        } else if (playerBlack.isOccupied() && playerBlack.getUuid().equals(clientId)) {
+            board.undoMove();
+            subtractTurn();
+            return true;
+        }
+        return false;
+    }
+
     public Player getPlayer(String clinetId) {
         if (playerWhite.isOccupied() && playerWhite.getUuid().equals(clinetId)) {
             return playerWhite;
@@ -266,7 +291,7 @@ public class SimpleChessGame {
         return gameId;
     }
 
-    public String checkGameOver() {
+    public GameOverEnum checkGameOver() {
         return gameOver;
     }
 

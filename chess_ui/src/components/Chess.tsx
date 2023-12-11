@@ -124,6 +124,7 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
             isDraggablePiece={IsDraggablePiece}
             getPositionObject={getPositionObject}
             customSquareStyles={squareStyles}
+            autoPromoteToQueen={true}
             {...otherProps}
         />
     );

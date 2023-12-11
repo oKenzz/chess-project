@@ -21,17 +21,15 @@ public class MoveValidator {
 
     public static Boolean[][] getPossibleMoves(Piece piece, Board currentBoard) {
 
-
         Boolean[][] movelist = primitivePossibleMoves(piece, currentBoard);
-        
-        if (piece instanceof King && CheckGameState.checked(currentBoard) == false && piece.getMovesMade() == 0){
+
+        if (piece instanceof King && CheckGameState.checked(currentBoard) == false && piece.getMovesMade() == 0) {
             CastlingMoveHandler.validateCastlingMoves(piece, movelist, currentBoard);
-        } 
-        removeCheckMoves(piece, movelist, currentBoard);   
-        
+        }
+        removeCheckMoves(piece, movelist, currentBoard);
+
         return movelist;
     }
-
 
     public static void removeCheckMoves(Piece piece, Boolean[][] movelist, Board board) {
         for (int x = 0; x < board.getBoardWidth(); x++) {
@@ -50,7 +48,7 @@ public class MoveValidator {
     }
 
     public static Boolean[][] primitivePossibleMoves(Piece piece, Board currentBoard) {
-        
+
         Boolean[][] movelist = piece.getPossibleMoves(currentBoard.getBoardWidth(), currentBoard.getBoardHeight());
         removeBlockedMoves(piece, movelist, currentBoard);
         if (piece instanceof Pawn) {
@@ -68,9 +66,9 @@ public class MoveValidator {
                 if (currentBoard[x][y] != null) {
                     if (currentBoard[x][y].getColor() != color) {
                         Boolean[][] posMoves = null;
-                        if (currentBoard[x][y] instanceof King){
+                        if (currentBoard[x][y] instanceof King) {
                             posMoves = primitivePossibleMoves(currentBoard[x][y], board);
-                        }else{
+                        } else {
                             posMoves = getPossibleMoves(currentBoard[x][y], board);
                         }
                         if (posMoves[coordx][coordy] == true) {
@@ -83,8 +81,7 @@ public class MoveValidator {
         return false;
     }
 
-
-    public static Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces, Board board){
+    public static Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces, Board board) {
         Map<String, ArrayList<Integer>> moves = new HashMap<>();
         /*
          * {
@@ -122,8 +119,7 @@ public class MoveValidator {
         // checks if the piece is a black pawn
         if (piece.getColor() == PieceColor.BLACK) {
             handleBlackPawnMoves(piece, movelist, board);
-        }
-        else if(piece.getColor() == PieceColor.WHITE){
+        } else if (piece.getColor() == PieceColor.WHITE) {
             handleWhitePawnMoves(piece, movelist, board);
         }
     }
@@ -163,7 +159,7 @@ public class MoveValidator {
     }
 
     public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
-        if(piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
+        if (piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
             return true;
         }
         return false;
@@ -214,7 +210,8 @@ public class MoveValidator {
         }
     }
 
-    private static void updateMoveListForBlockedPath(Piece piece, Boolean[][] movelist, int x, int y, Board currentBoard) {
+    private static void updateMoveListForBlockedPath(Piece piece, Boolean[][] movelist, int x, int y,
+            Board currentBoard) {
         if (isBlockAtDiagonalDirection(piece, x, y)) {
             handleDiagonalBlockage(piece, movelist, x, y, currentBoard);
         } else if (isBlockAtStraightDirection(piece, x, y)) {
