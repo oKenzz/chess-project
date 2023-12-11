@@ -42,7 +42,6 @@ public class ChessHandler {
 
             // if client already exists
             if (gameManager.getGameByPlayerUuid(sessionId) != null) {
-                log.info("Client: " + sessionId + " is already in a game.");
                 client.joinRoom(gameManager.getGameIdByPlayerUuid(sessionId));
                 return;
             }
@@ -54,28 +53,28 @@ public class ChessHandler {
                     case "quickPlay":
                         room = quickPlay(client);
                         client.joinRoom(room);
-                        log.info("QuickPlay | " + " Client:" + sessionId + " quick joined: " + room);
+                        // make green text but for room code make it blue
+                        log.info("\u001B[32m" + "[CONNECTED] Quickplay, joined room (\u001B[34m" + room + "\u001B[0m"
+                                + ")");
                         break;
                     case "create":
                         SimpleChessGame newGame = gameManager.createGame(sessionId, true);
                         room = newGame.getId();
                         client.joinRoom(room);
-                        log.info("Create | " + " Client:" + sessionId + " created room: " + room);
+                        log.info("\u001B[32m" + "[CONNECTED]  Created room (\u001B[34m" + room + "\u001B[0m" + ")");
                         break;
 
                     case "singlePlayer":
                         SimpleChessGame singlePlayerGame = gameManager.createSoloGame(sessionId);
                         room = singlePlayerGame.getId();
                         client.joinRoom(room);
-                        log.info("SinglePlayer | " + " Client:" + sessionId + " created room: " + room);
+                        log.info("\u001B[32m" + "[CONNECTED]  SinglePlayer at (\u001B[34m" + room + "\u001B[0m" + ")");
                         break;
                     default:
                         if (room.length() != 4) {
-                            log.error("Room code must be 4 characters long.");
                             return;
                         }
                         if (!room.matches("[a-zA-Z0-9]+")) {
-                            log.info("Room code must be alphanumeric.");
                             return;
                         }
                         room = room.toUpperCase();
@@ -83,12 +82,16 @@ public class ChessHandler {
                             SimpleChessGame joinedGame = gameManager.joinRoom(room, sessionId);
                             if (joinedGame != null) {
                                 client.joinRoom(room);
-                                log.info("Join | " + " Client:" + sessionId + " joined room: " + room);
+                                log.info("\u001B[32m" + "[CONNECTED] Joined room (\u001B[34m" + room + "\u001B[0m"
+                                        + ")");
                             } else {
-                                log.info("Join | " + " Client:" + sessionId + " failed to join room: " + room);
+                                log.error("\u001B[31m" + "Join |  Client:" + sessionId + " failed to join room: "
+                                        + room + "\u001B[0m");
                             }
                         } else {
-                            log.info("Join | " + " Client:" + sessionId + " failed to join room: " + room);
+                            log.error("\u001B[31m" + "Join | " + " Client:" + sessionId + " failed to join room: "
+                                    + room
+                                    + "\u001B[0m");
                         }
                 }
             } else {
@@ -120,7 +123,6 @@ public class ChessHandler {
     }
 
     public void computerMoveListener(SocketIOClient client, Void data, AckRequest ackRequest) {
-        log.info("Computers turn");
         String playerUuid = client.getSessionId().toString();
         SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
@@ -132,7 +134,6 @@ public class ChessHandler {
     }
 
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
-        log.info("Message: " + message + " From: " + client.getSessionId());
         // send message to global chat
         server.getBroadcastOperations().sendEvent("chat", message);
 
@@ -172,59 +173,52 @@ public class ChessHandler {
     }
 
     public void moveListener(SocketIOClient client, String move, AckRequest ackRequest) {
-        String playerUuID = client.getSessionId().toString();
-        JSONObject jsonObject = new JSONObject(move);
-        String sourceSquare = jsonObject.getString("from");
-        String targetSquare = jsonObject.getString("to");
-        log.info("Move: " + sourceSquare + " to " + targetSquare + " From: " + client.getSessionId());
+        try {
 
-        ArrayList<ArrayList<Integer>> coordinates = Translator.translatePos(sourceSquare, targetSquare);
-        ArrayList<Integer> oldCord = coordinates.get(0);
-        ArrayList<Integer> newCord = coordinates.get(1);
-        log.info("Translated to " + coordinates);
+            String playerUuID = client.getSessionId().toString();
+            JSONObject jsonObject = new JSONObject(move);
+            String sourceSquare = jsonObject.getString("from");
+            String targetSquare = jsonObject.getString("to");
 
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
-        Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
+            ArrayList<ArrayList<Integer>> coordinates = Translator.translatePos(sourceSquare, targetSquare);
+            ArrayList<Integer> oldCord = coordinates.get(0);
+            ArrayList<Integer> newCord = coordinates.get(1);
 
-        Boolean inCheck = game.getCheck();
-        if (inCheck) {
-            log.info("Check");
-        } else {
-            log.info("Not Check");
-        }
+            SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
+            Boolean hasMoved = game.attemptMove(oldCord.get(0), oldCord.get(1), newCord.get(0), newCord.get(1));
 
-        log.info(game.checkGameOver());
-        if (game.checkGameOver() != null) {
-            String gameOverMsg = "Chesshandler error";
-            if (game.checkGameOver().equals("w")) {
-                gameOverMsg = "White wins";
-            } else if (game.checkGameOver().equals("b")) {
-                gameOverMsg = "Black wins";
-            }else if (game.checkGameOver().equals("d")){
-                gameOverMsg = "Draw";
+            if (game.checkGameOver() != null) {
+                String gameOverMsg = "Chesshandler error";
+                if (game.checkGameOver().equals("w")) {
+                    gameOverMsg = "White wins";
+                } else if (game.checkGameOver().equals("b")) {
+                    gameOverMsg = "Black wins";
+                } else if (game.checkGameOver().equals("d")) {
+                    gameOverMsg = "Draw";
+                }
+                server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverMsg);
             }
-            server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverMsg);
-        }
-        if (hasMoved) {
-            server.getRoomOperations(game.getId()).sendEvent("boardState",
-                    Translator.translateBoard(game.getBoard(), game.getTurn()));
-        }
+            if (hasMoved) {
+                server.getRoomOperations(game.getId()).sendEvent("boardState",
+                        Translator.translateBoard(game.getBoard(), game.getTurn()));
+            }
 
-        // gameManager.syncGameTimer(game, playerUuID);
-        server.getRoomOperations(game.getId()).sendEvent("syncTimers", game.getPlayerTimes());
+            // gameManager.syncGameTimer(game, playerUuID);
+            server.getRoomOperations(game.getId()).sendEvent("syncTimers", game.getPlayerTimes());
 
-        if (ackRequest.isAckRequested()) {
-            ackRequest.sendAckData(hasMoved);
+            if (ackRequest.isAckRequested()) {
+                ackRequest.sendAckData(hasMoved);
 
+            }
+        } catch (Exception e) {
+            return;
         }
     }
 
     public void possibleMoveListener(SocketIOClient client, String square, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
-        log.info("Square: " + square + " From: " + playerUuID);
         SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         ArrayList<Integer> coords = Translator.translatePos(square);
-        log.info("Translated to " + coords);
         ArrayList<String> coordinates = Translator
                 .translatePossibleMoves(game.possibleMoves(coords.get(0), coords.get(1)));
 
@@ -235,7 +229,6 @@ public class ChessHandler {
 
     public void restartGameListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
-        log.info("Restart Game From: " + playerUuID);
         SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         game.restartGame();
         server.getRoomOperations(game.getId()).sendEvent("boardState",
@@ -253,7 +246,6 @@ public class ChessHandler {
             return;
         }
         game.surrender(playerUuID);
-        log.info("Surrender From: " + playerUuID);
         String playerColor = game.getPlayerColor(playerUuID);
         String winner = playerColor.equals("white") ? "b" : "w";
         if (winner.equals("w")) {
@@ -269,22 +261,23 @@ public class ChessHandler {
         return client -> {
             UUID sessionId = client.getSessionId(); // getSessionId() returns a UUID
             String clientId = sessionId.toString(); // Convert UUID to String
-            log.info("Client disconnected: " + clientId);
 
             // Retrieve the game ID associated with this player
             String gameId = gameManager.getGameIdByPlayerUuid(clientId);
             if (gameId != null) {
                 // Broadcast to the room that the player has disconnected
                 if (gameManager.disconnect(clientId)) {
-                    log.info("Player disconnected from game: " + gameId);
+                    log.info(
+                            "\u001B[31m" + "[DISCONNECTED] | Client: " +
+                                    (clientId.length() > 5 ? clientId.substring(0, 5) : clientId) + "..."
+                                    + " disconnected from game: " + gameId
+                                    + "\u001B[0m");
                     server.getRoomOperations(gameId).sendEvent("playerDisconnected", clientId);
 
                 } else {
-                    log.info("Player disconnected from game: " + gameId
+                    log.error("Player disconnected from game: " + gameId
                             + " but was not removed from the game successfully.");
                 }
-            } else {
-                log.info("Player: " + clientId + " disconnected from the server but was not in a game.");
             }
 
         };

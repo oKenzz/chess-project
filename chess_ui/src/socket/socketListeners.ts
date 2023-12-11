@@ -19,17 +19,19 @@ type GameStateProp = {
     setRoomCode: (roomCode: string) => void;
     setOpponentIsReady?: (opponentIsReady: boolean) => void;
     setLoading: (loading: boolean) => void;
+    setInitialTime?: (initialTime: { white: number, black: number}) => void;
 }
-export const gameStateListener = ({setColor, setFen, setRoomCode, setOpponentIsReady, setLoading}: GameStateProp) => {
+export const gameStateListener = ({setColor, setFen, setRoomCode, setOpponentIsReady, setLoading, setInitialTime}: GameStateProp) => {
     return (gameState: string)=> {
         const JSONgameState = JSON.parse(gameState) as GameStateResponse;
         console.log(`Game ID is ${JSONgameState.id}\nGame was created at ${JSONgameState.gameCreatedAt}\nFEN is ${JSONgameState.fen}\nTurn is ${JSONgameState.turn}\nPlayer color is ${JSONgameState.playerColor}\nPlayers are ${JSONgameState.players ? JSONgameState.players.map((player) => player?.uuid) : null}`);
         setColor(JSONgameState.playerColor)
         setFen(JSONgameState.fen)
         setRoomCode(JSONgameState.id)
-        if (JSONgameState.players && JSONgameState.players[0] && JSONgameState.players[1]) {
+        if (JSONgameState.players[0].isOccupied && JSONgameState.players[1].isOccupied) {
             setOpponentIsReady && setOpponentIsReady(true);
         }
+        setInitialTime && setInitialTime({white: JSONgameState.players[0].timeLeft, black: JSONgameState.players[1].timeLeft});
         setLoading(false);
     }   
 };

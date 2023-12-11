@@ -6,12 +6,31 @@ public class Player {
     private String uuid;
     private Boolean isBot;
     private boolean isTimerRunning;
+    private boolean isOccupied;
 
-    public Player(String clientUUID, Boolean isBot, int intialTime) {
-        this.uuid = clientUUID;
+    public Player(Boolean isBot, int intialTime) {
         this.isBot = isBot;
         this.timeLeft = intialTime;
         this.isTimerRunning = false;
+        this.isOccupied = false;
+    }
+
+    public void setPlayerID(String uuid) {
+        this.uuid = uuid;
+        this.isOccupied = true;
+    }
+
+    public void emptyPlayer() {
+        this.uuid = null;
+        this.isOccupied = false;
+    }
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setBot(Boolean isBot) {
+        this.isBot = isBot;
     }
 
     public void startTimer() {
@@ -19,15 +38,6 @@ public class Player {
             this.startTime = System.currentTimeMillis() / 1000L;
             isTimerRunning = true;
         }
-    }
-
-    public Player(String clientUUID) {
-        this.uuid = clientUUID;
-        this.isBot = false;
-    }
-
-    public void toggleTimer() {
-
     }
 
     public void pauseTimer() {

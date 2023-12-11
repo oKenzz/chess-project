@@ -3,7 +3,11 @@ import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 export type FEN = string;
 export type move = string; 
 export type Player = { 
-    timer: number;
+    isBot: boolean;
+    isOccupied: boolean;
+    isTimerRunning: boolean;
+    startTime: number; // in milliseconds
+    timeLeft: number;
     uuid: string;
 }
 export type GameStateResponse = {
@@ -12,7 +16,7 @@ export type GameStateResponse = {
     fen: string;
     turn: string;
     playerColor: BoardOrientation;
-    players:  Player[] | null[];
+    players:  Player[];
     gameOver: boolean;
 }
 export type alertMessage = {

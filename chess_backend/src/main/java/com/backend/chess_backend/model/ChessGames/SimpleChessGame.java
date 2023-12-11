@@ -22,13 +22,14 @@ public class SimpleChessGame {
     private String gameId;
     private long gameStartedTime;
     private String gameOver;
+    private Integer defaultChessTime = 600;
 
     public SimpleChessGame(String gameid) {
         this.gameId = gameid;
         this.turnsMade = 0;
         this.board = new Board(8, 8);
-        this.playerWhite = null;
-        this.playerBlack = null;
+        this.playerWhite = new Player(false, defaultChessTime);
+        this.playerBlack = new Player(false, defaultChessTime);
         this.gameStartedTime = System.currentTimeMillis() / 1000L;
         this.gameOver = null;
     }
@@ -66,6 +67,7 @@ public class SimpleChessGame {
                     CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
                 }
                 board.move(currentBoard[x][y], newX, newY);
+                toggleTimer();
                 IncrementTurn();
                 if (isWhitesTurn()) {
                     updateGameOverWhite();
@@ -195,55 +197,69 @@ public class SimpleChessGame {
     }
 
     public void addPlayer(String clinetId, Boolean isBot) {
-        Player player = new Player(clinetId, isBot);
-        if (playerWhite == null) {
-            playerWhite = player;
-        } else if (playerBlack == null) {
-            playerBlack = player;
+
+        if (!playerWhite.isOccupied()) {
+            playerWhite.setPlayerID(clinetId);
+        } else if (!playerBlack.isOccupied()) {
+            playerBlack.setPlayerID(clinetId);
+        }
+        if (isBot) {
+            playerBlack.setBot(isBot);
+        }
+        ;
+        if (isFull()) {
+            playerWhite.startTimer();
         }
     }
 
     public boolean isEmpty() {
-        return playerWhite == null && playerBlack == null;
+        return !playerWhite.isOccupied() && !playerBlack.isOccupied();
     }
 
     public void removePlayer(String clientId) {
-        if (playerWhite != null && playerWhite.getUuid().equals(clientId)) {
-            playerWhite = null;
-        } else if (playerBlack != null && playerBlack.getUuid().equals(clientId)) {
-            playerBlack = null;
+        if (playerWhite.getUuid().equals(clientId)) {
+            playerWhite.emptyPlayer();
+        } else if (playerBlack.getUuid().equals(clientId)) {
+            playerBlack.emptyPlayer();
         }
     }
 
     public String getPlayerColor(String clinetId) {
-        if (playerWhite.getUuid().equals(clinetId)) {
+        if (playerWhite.isOccupied() && playerWhite.getUuid().equals(clinetId)) {
             return "white";
-        } else if (playerBlack.getUuid().equals(clinetId)) {
+        } else if (playerBlack.isOccupied() && playerBlack.getUuid().equals(clinetId)) {
             return "black";
         }
         return null;
     }
 
     public Player getPlayer(String clinetId) {
-        if (playerWhite.getUuid().equals(clinetId)) {
+        if (playerWhite.isOccupied() && playerWhite.getUuid().equals(clinetId)) {
             return playerWhite;
-        } else if (playerBlack.getUuid().equals(clinetId)) {
+        } else if (playerBlack.isOccupied() && playerBlack.getUuid().equals(clinetId)) {
             return playerBlack;
         }
         return null;
     }
 
     public Player[] getPlayers() {
-        Player[] players = { playerWhite, playerBlack };
-        return players;
+        return new Player[] { playerWhite, playerBlack };
     }
 
     public Boolean getCheck() {
         return CheckGameState.checked(board);
     }
 
+    public Boolean getWhiteCheck() {
+        return CheckGameState.whiteChecked(board);
+    }
+
+    public Boolean getBlackCheck() {
+        return CheckGameState.blackChecked(board);
+    }
+
     public boolean isFull() {
-        return playerWhite != null && playerBlack != null;
+        return playerWhite.isOccupied() && playerBlack.isOccupied();
     }
 
     public String getId() {
@@ -265,4 +281,20 @@ public class SimpleChessGame {
             attemptMove(move[0][0], move[0][1], move[1][0], move[1][1]);
         }
     }
+
+    private void toggleTimer() {
+        if (isWhitesTurn()) {
+            playerWhite.pauseTimer(); // Pause white's timer
+            playerBlack.startTimer(); // Resume black's timer
+        } else {
+            playerBlack.pauseTimer(); // Pause black's timer
+            playerWhite.startTimer(); // Resume white's timer
+        }
+    }
+
+    public int[] getPlayerTimes() {
+        int[] timers = { playerWhite.getTimeLeft(), playerBlack.getTimeLeft() };
+        return timers;
+    }
+
 }

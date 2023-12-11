@@ -29,7 +29,8 @@ const MultiPlayerGame = () => {
     const [gameOverMessage, setGameOverMessage] = useState<string>("");
     const [searchParams] = useSearchParams();
     const [isLoading, setLoading] = useState<boolean>(true);
-    const [initialTime, setInitialTime] = useState<number>(600);
+    const [initialTime, setInitialTime] = useState<{ white: number, black: number}>( { white: 600, black: 600} );
+
 
     useEffect(() => {
         // Get the room code from the URL
@@ -40,12 +41,12 @@ const MultiPlayerGame = () => {
         socketClient.connect();
         socketRef.current = socketClient.getSocket();
         
-        // Get game state from server
+
         socketRef.current.emit('getGameState')
 
         // Setup socket listeners
         socketRef.current.on('chat', socketListeners.chatListener);
-        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode, setOpponentIsReady,setLoading}));
+        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode, setOpponentIsReady,setLoading, setInitialTime}));
         socketRef.current.on('boardState', socketListeners.boardListener(setFen));
         socketRef.current.on('playerJoined', socketListeners.opponentJoinedListener({setAlertMessage}, setOpponentIsReady));
         socketRef.current.on('playerDisconnected', socketListeners.opponentDisconnectedListener({setAlertMessage}));
@@ -57,6 +58,17 @@ const MultiPlayerGame = () => {
             socketClient.disconnect();
         }
     }, []); // Empty dependency array for setup on mount and cleanup on unmount
+
+    useEffect(() => {
+        if (isLoading && !opponentIsReady && !socketRef.current) {
+            // Only set up polling if necessary (i.e., loading and opponent not ready, and no socket connection)
+            const gameStateInterval = setInterval(() => {
+                socketRef.current?.emit('getGameState');
+            }, 3000); // Adjust interval as needed
+    
+            return () => clearInterval(gameStateInterval); // Clear interval on cleanup
+        }
+    }, [isLoading, opponentIsReady, socketRef.current]); // Dependencies to control the effect
     
     // Joining game animation
     useEffect(() => {
@@ -65,7 +77,6 @@ const MultiPlayerGame = () => {
             const timer = setTimeout(() => {
                 setShowJoiningGame(false);
             }, 2000); // Hide message after 3 seconds
-    
             return () => clearTimeout(timer); // Clear timer on cleanup
         }
     }, [opponentIsReady]); // Effect runs when opponentIsReady changes
@@ -105,7 +116,7 @@ const MultiPlayerGame = () => {
                     <RightSidebar 
                         color={color}
                         turn={fen[fen.length - 1]}
-                        intialTime={initialTime}
+                        initTime={initialTime}
                         socket={socketRef.current}
                     />
                 }
@@ -118,13 +129,11 @@ const MultiPlayerGame = () => {
                 >
                     <span className="font-medium">{ alertMessage?.message } </span>
                 </Alert>
-
                 {
-                    /* Waiting screen */
-                    opponentIsReady ? null : 
+                    /* Waiting for opponent screen */
+                    !opponentIsReady &&
                     <WaitingScreen roomCode={roomCode || ""} />
                 }
-
                 {
                     /* Joining game screen */
                     showJoiningGame &&

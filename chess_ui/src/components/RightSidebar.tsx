@@ -4,28 +4,27 @@ import { useEffect, useState } from "react";
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 import { Socket } from "socket.io-client";
 
+
 const RightSidebar = (
     {
+        initTime,
         color,
         turn,
-        intialTime,
         socket
     } : {
+        initTime: { white: number, black: number}
         color: BoardOrientation,
         turn: string,
-        intialTime: number
         socket: Socket
     }
 
 ) => {
-    // const [myTime, setMyTime] = useState(color[0] === "w" ? timers[0] : timers[1]);
-    // const [opponentTime, setOpponentTime] = useState(color[0] === "w" ? timers[1] : timers[0]);
-    const [myTime, setMyTime] = useState(intialTime);
-    const [opponentTime, setOpponentTime] = useState(intialTime);
+    const [myTime, setMyTime] = useState( initTime[color] );
+    const [opponentTime, setOpponentTime] =  useState( initTime[color === "white" ? "black" : "white"] );
 
     useEffect(() => {
         // Listen to timer updates from the server
-        socket.on("syncTimers", (updatedTimers) => {
+        socket.on("syncTimers", (updatedTimers:  number[]) => {
             if (color === "white") {
                 setMyTime(updatedTimers[0]);
                 setOpponentTime(updatedTimers[1]);
@@ -65,12 +64,12 @@ const RightSidebar = (
 
             <div>
                 <p className="text-gray-800">Opponent:</p>
-                <ChessTimer  time={opponentTime} />
+                <ChessTimer  time={opponentTime} isActive={turn !== color[0]} />
             </div>
 
             <div>
                 <p className="text-gray-800">You:</p>
-                <ChessTimer time={myTime} />
+                <ChessTimer time={myTime} isActive={turn === color[0]} />
             </div>
 
         </motion.div>

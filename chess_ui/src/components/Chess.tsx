@@ -27,10 +27,12 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
         // Use the socket ref here
         sendPieceMovement(sourceSquare, targetSquare).then((hasPiecesMoved) => {
             if (hasPiecesMoved && isSinglePlayer) {
-                console.log("Computer Move");
+
+                // random delay to simulate computer thinking
+                const delay = Math.floor(Math.random() * 1000) + 600;
                 setTimeout(() => {
                     socket?.emit('computerMove');
-                }, 700);
+                }, delay);
             }
             return hasPiecesMoved;
         });
@@ -79,7 +81,7 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
                 return { 
                     ...styles,
                     [move]: {
-                        background: "radial-gradient(circle at center, rgba(255, 255, 0, 1) 25%, transparent 30%)",
+                        background: "radial-gradient(circle at center, rgba(255, 255, 0, 0.9) 26%, transparent 35%)",
                         borderRadius: "50%",
                     }
                 };

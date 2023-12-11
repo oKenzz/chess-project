@@ -69,7 +69,6 @@ public class GameManager {
         if (playerGameMap.containsKey(clientId)) {
             return this.getGameByPlayerUuid(clientId);
         }
-
         ChessGame game = games.get(gameId);
         if (game != null && !game.isFull()) {
             game.addPlayer(clientId, false);
@@ -111,6 +110,13 @@ public class GameManager {
     }
 
     private synchronized boolean removeGameIfEmpty(SimpleChessGame game) {
+        // if singile player game
+        for (Player player : game.getPlayers()) {
+            if (player.isBot()) {
+                removeGame(game.getId());
+                return true;
+            }
+        }
         if (game.isEmpty()) {
             removeGame(game.getId());
             return true;
@@ -180,7 +186,7 @@ public class GameManager {
         playerGameMap.clear();
     }
 
-    public void removeGame(String gameId) {
+    public synchronized void removeGame(String gameId) {
         games.remove(gameId);
     }
 
