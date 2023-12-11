@@ -1,7 +1,5 @@
 package com.backend.chess_backend.model;
 
-import com.backend.chess_backend.model.Pieces.PieceColor;
-
 public class Player {
     private long startTime;
     private int timeLeft;
@@ -21,6 +19,15 @@ public class Player {
             this.startTime = System.currentTimeMillis() / 1000L;
             isTimerRunning = true;
         }
+    }
+
+    public Player(String clientUUID) {
+        this.uuid = clientUUID;
+        this.isBot = false;
+    }
+
+    public void toggleTimer() {
+
     }
 
     public void pauseTimer() {

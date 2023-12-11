@@ -5,15 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.backend.chess_backend.model.Game;
+import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
 
 @SpringBootTest
-class GameTest {
+class SimpleChessGameTest {
 
     @Test
     public void possibleMovesTest() {
         String testId = "ABC1";
-        Game game = new Game(testId);
+        SimpleChessGame game = new SimpleChessGame(testId);
 
         Boolean[][] BoardList = new Boolean[8][8];
 
@@ -46,7 +46,7 @@ class GameTest {
     @Test
     public void attemptMoveTest() {
         String testId = "ABC1";
-        Game game = new Game(testId);
+        SimpleChessGame game = new SimpleChessGame(testId);
 
         assertEquals(game.attemptMove(0, 1, 0, 2), true);
         assertEquals(game.attemptMove(0, 6, 0, 5), true);

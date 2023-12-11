@@ -30,6 +30,15 @@ public class King extends Piece {
                 moves[newX][newY] = true;
             }
         }
+
+        // if (this.getColor() == PieceColor.WHITE && this.getMovesMade() == 0) {
+        //     moves[2][0] = true;
+        //     moves[6][0] = true;
+        // } else if (this.getColor() == PieceColor.BLACK && this.getMovesMade() == 0) {
+        //     moves[2][7] = true;
+        //     moves[6][7] = true;
+
+        // }
     
         return moves;
     }
