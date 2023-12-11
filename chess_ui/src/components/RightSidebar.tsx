@@ -1,38 +1,59 @@
 import { motion } from "framer-motion";
 import ChessTimer from "./ChessTimer";
 import { useEffect, useState } from "react";
-
-
+import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
+import { Socket } from "socket.io-client";
 
 const RightSidebar = (
     {
-        isMyTurnProp,
-        switchTurn,
+        color,
+        turn,
+        intialTime,
+        socket
     } : {
-        isMyTurnProp: boolean,
-        switchTurn: () => void,
+        color: BoardOrientation,
+        turn: string,
+        intialTime: number
+        socket: Socket
     }
 
 ) => {
-    const [opponentTime, setOpponentTime] = useState(60 * 10);
-    const [myTime, setMyTime] = useState( 60 * 10);
-    const [isMyTurn, setIsMyTurn] = useState( isMyTurnProp );
+    // const [myTime, setMyTime] = useState(color[0] === "w" ? timers[0] : timers[1]);
+    // const [opponentTime, setOpponentTime] = useState(color[0] === "w" ? timers[1] : timers[0]);
+    const [myTime, setMyTime] = useState(intialTime);
+    const [opponentTime, setOpponentTime] = useState(intialTime);
+
+    useEffect(() => {
+        // Listen to timer updates from the server
+        socket.on("syncTimers", (updatedTimers) => {
+            if (color === "white") {
+                setMyTime(updatedTimers[0]);
+                setOpponentTime(updatedTimers[1]);
+            } else {
+                setMyTime(updatedTimers[1]);
+                setOpponentTime(updatedTimers[0]);
+            }
+        });
+
+        return () => {
+            // Cleanup
+            socket.off("timerUpdate");
+        };
+    }, [color]); 
+
 
     const handleTimer = () => {
-        if (isMyTurn) {
+        if (turn === color[0]) {
             setMyTime(myTime - 1);
         } else {
             setOpponentTime(opponentTime - 1);
         }
     }
 
-    switchTurn = () => {
-        setIsMyTurn(!isMyTurn);
-    }
     useEffect(() => {
         const timer = setInterval(handleTimer, 1000);
         return () => clearInterval(timer);
-    } , [isMyTurn, myTime, opponentTime]);
+    } , [myTime, opponentTime]);
 
     return (
         <motion.div 

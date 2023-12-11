@@ -210,6 +210,9 @@ public class ChessHandler {
                     Translator.translateBoard(game.getBoard(), game.getTurn()));
         }
 
+        // gameManager.syncGameTimer(game, playerUuID);
+        server.getRoomOperations(game.getId()).sendEvent("syncTimers", game.getPlayerTimes());
+
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(hasMoved);
 

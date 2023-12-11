@@ -24,10 +24,12 @@ const MultiPlayerGame = () => {
     const [roomCode, setRoomCode] = useState<string | null>('');
     const [alertMessage, setAlertMessage] = useState<alertMessage | null>(null);
     const [opponentIsReady, setOpponentIsReady] = useState<boolean>(false); 
-    const [showJoiningGame, setShowJoiningGame] = useState(true);
+    const [showJoiningGame, setShowJoiningGame] = useState<boolean>(true);
     const [isGameOver, setIsGameOver] = useState<boolean>(false); 
     const [gameOverMessage, setGameOverMessage] = useState<string>("");
     const [searchParams] = useSearchParams();
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [initialTime, setInitialTime] = useState<number>(600);
 
     useEffect(() => {
         // Get the room code from the URL
@@ -43,7 +45,7 @@ const MultiPlayerGame = () => {
 
         // Setup socket listeners
         socketRef.current.on('chat', socketListeners.chatListener);
-        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode, setOpponentIsReady}));
+        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode, setOpponentIsReady,setLoading}));
         socketRef.current.on('boardState', socketListeners.boardListener(setFen));
         socketRef.current.on('playerJoined', socketListeners.opponentJoinedListener({setAlertMessage}, setOpponentIsReady));
         socketRef.current.on('playerDisconnected', socketListeners.opponentDisconnectedListener({setAlertMessage}));
@@ -69,61 +71,73 @@ const MultiPlayerGame = () => {
     }, [opponentIsReady]); // Effect runs when opponentIsReady changes
 
     return (
-        <div className="game-grid" >
-            {/* Headers */}
-            <CustomNavbar  
-                roomCode={ roomCode }
-            />
+        isLoading && !opponentIsReady ? (
+            <WaitingScreen roomCode={roomCode || ""} />
+        ) : (
+            <div className="game-grid" >
+                {/* Headers */}
+                <CustomNavbar  
+                    roomCode={ roomCode }
+                />
             
-            <motion.div initial={{ opacity: 0}} animate={{  opacity: 1 , transition: { duration: 1, delay: 0.5}}} className="game-panel">
+                
+                <motion.div initial={{ opacity: 0}} animate={{  opacity: 1 , transition: { duration: 1, delay: 0.5}}} className="game-panel">
+                    {
+                        socketRef.current  &&
+                        <Chess
+                            fen={fen}
+                            color={color} 
+                            socket={socketRef.current}
+                        />
+                    }
+            
+                </motion.div>
+
+                <motion.div className="left-panel">
+                    <LeftSidebar  
+                        isMultiplayer={true}
+                        socket={socketRef.current}
+                    />
+                </motion.div>
+                
                 {
                     socketRef.current  &&
-                    <Chess
-                        fen={fen}
-                        color={color} 
+                    <RightSidebar 
+                        color={color}
+                        turn={fen[fen.length - 1]}
+                        intialTime={initialTime}
                         socket={socketRef.current}
                     />
                 }
-           
-            </motion.div>
+                
 
-            <motion.div className="left-panel">
-                <LeftSidebar  
-                    isMultiplayer={true}
-                    socket={socketRef.current}
-                />
-            </motion.div>
-            <RightSidebar 
-                isMyTurnProp={true}
-                switchTurn={() => {}}
-            />
+                <Alert color={alertMessage?.type}
+                    icon={HiInformationCircle} 
+                    style={{display: alertMessage ? 'block' : 'none', position: "absolute", bottom: 10, right: 10}}
+                    onDismiss={() =>  setAlertMessage(null)}
+                >
+                    <span className="font-medium">{ alertMessage?.message } </span>
+                </Alert>
 
-            <Alert color={alertMessage?.type}
-                 icon={HiInformationCircle} 
-                style={{display: alertMessage ? 'block' : 'none', position: "absolute", bottom: 10, right: 10}}
-                onDismiss={() =>  setAlertMessage(null)}
-            >
-                <span className="font-medium">{ alertMessage?.message } </span>
-            </Alert>
+                {
+                    /* Waiting screen */
+                    opponentIsReady ? null : 
+                    <WaitingScreen roomCode={roomCode || ""} />
+                }
 
-            {
-                /* Waiting screen */
-                opponentIsReady ? null : 
-                <WaitingScreen roomCode={roomCode || ""} />
-            }
+                {
+                    /* Joining game screen */
+                    showJoiningGame &&
+                    <JoiningGameScreen />
+                }
 
-            {
-                /* Joining game screen */
-                showJoiningGame &&
-                <JoiningGameScreen />
-            }
-
-            {
-                /* Gameover screen */
-                isGameOver &&
-                <GameOver gameOverMessage={gameOverMessage}/>
-            }
-        </div>
+                {
+                    /* Gameover screen */
+                    isGameOver &&
+                    <GameOver gameOverMessage={gameOverMessage}/>
+                }
+            </div>
+        )
     );
 };
 

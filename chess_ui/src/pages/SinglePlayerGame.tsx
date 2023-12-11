@@ -22,6 +22,7 @@ const SinglePlayerGame = () => {
     const [alertMessage, setAlertMessage] = useState<alertMessage | null>(null);
     const [isGameOver, setIsGameOver] = useState<boolean>(false); 
     const [gameOverMessage, setGameOverMessage] = useState<string>("");
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         // Get the room code from the URL
@@ -34,7 +35,7 @@ const SinglePlayerGame = () => {
 
         // Setup socket listeners
         socketRef.current.on('chat', socketListeners.chatListener);
-        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode}));
+        socketRef.current.on('gameState', socketListeners.gameStateListener({setColor, setFen, setRoomCode, setLoading}));
         socketRef.current.on('boardState', socketListeners.boardListener(setFen));
         socketRef.current.on('playerJoined', socketListeners.opponentJoinedListener({setAlertMessage}));
         socketRef.current.on('playerDisconnected', socketListeners.opponentDisconnectedListener({setAlertMessage}));

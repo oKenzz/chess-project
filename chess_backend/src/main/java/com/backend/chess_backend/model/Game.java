@@ -11,6 +11,7 @@ public class Game {
     private int turnsMade;
     private String gameId;
     private long gameStartedTime;
+    private int intialTime;
 
     public Game(String gameid) {
         this.gameId = gameid;
@@ -19,6 +20,7 @@ public class Game {
         this.playerWhite = null;
         this.playerBlack = null;
         this.gameStartedTime = System.currentTimeMillis() / 1000L;
+        intialTime = 600;
     }
 
     public Boolean[][] possibleMoves(int x, int y) {
@@ -48,6 +50,7 @@ public class Game {
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.checkIfallowed(newX, newY, possibleM)) {
                 board.move(currentBoard[x][y], newX, newY);
+                toggleTimer();
                 IncrementTurn();
                 board.updateChecked();
                 if(isWhitesTurn()){
@@ -125,11 +128,14 @@ public class Game {
     }
 
     public void addPlayer(String clinetId, Boolean isBot) {
-        Player player = new Player(clinetId, isBot);
+        Player player = new Player(clinetId, isBot, intialTime);
         if (playerWhite == null) {
             playerWhite = player;
         } else if (playerBlack == null) {
             playerBlack = player;
+        }
+        if(isFull()){
+            playerWhite.startTimer();
         }
     }
 
@@ -207,5 +213,20 @@ public class Game {
 
     public long getGameTime() {
         return System.currentTimeMillis() / 1000L - gameStartedTime;
+    }
+
+    private void toggleTimer() {
+        if (isWhitesTurn()) {
+            playerWhite.pauseTimer(); // Pause white's timer
+            playerBlack.startTimer(); // Resume black's timer
+        } else {
+            playerBlack.pauseTimer(); // Pause black's timer
+            playerWhite.startTimer(); // Resume white's timer
+        }
+    }
+
+    public int[] getPlayerTimes() {
+        int[] timers = { playerWhite.getTimeLeft(), playerBlack.getTimeLeft() };
+        return timers;
     }
 }

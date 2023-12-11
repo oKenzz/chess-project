@@ -18,8 +18,9 @@ type GameStateProp = {
     setFen: (fen: string) => void;
     setRoomCode: (roomCode: string) => void;
     setOpponentIsReady?: (opponentIsReady: boolean) => void;
+    setLoading: (loading: boolean) => void;
 }
-export const gameStateListener = ({setColor, setFen, setRoomCode, setOpponentIsReady}: GameStateProp) => {
+export const gameStateListener = ({setColor, setFen, setRoomCode, setOpponentIsReady, setLoading}: GameStateProp) => {
     return (gameState: string)=> {
         const JSONgameState = JSON.parse(gameState) as GameStateResponse;
         console.log(`Game ID is ${JSONgameState.id}\nGame was created at ${JSONgameState.gameCreatedAt}\nFEN is ${JSONgameState.fen}\nTurn is ${JSONgameState.turn}\nPlayer color is ${JSONgameState.playerColor}\nPlayers are ${JSONgameState.players ? JSONgameState.players.map((player) => player?.uuid) : null}`);
@@ -29,6 +30,7 @@ export const gameStateListener = ({setColor, setFen, setRoomCode, setOpponentIsR
         if (JSONgameState.players && JSONgameState.players[0] && JSONgameState.players[1]) {
             setOpponentIsReady && setOpponentIsReady(true);
         }
+        setLoading(false);
     }   
 };
 
