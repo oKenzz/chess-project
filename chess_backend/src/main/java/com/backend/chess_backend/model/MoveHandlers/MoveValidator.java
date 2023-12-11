@@ -21,17 +21,15 @@ public class MoveValidator {
 
     public static Boolean[][] getPossibleMoves(Piece piece, Board currentBoard) {
 
-
         Boolean[][] movelist = primitivePossibleMoves(piece, currentBoard);
-        
-        if (piece instanceof King && CheckGameState.checked(currentBoard) == false && piece.getMovesMade() == 0){
+
+        if (piece instanceof King && CheckGameState.checked(currentBoard) == false && piece.getMovesMade() == 0) {
             CastlingMoveHandler.validateCastlingMoves(piece, movelist, currentBoard);
-        } 
-        removeCheckMoves(piece, movelist, currentBoard);   
-        
+        }
+        removeCheckMoves(piece, movelist, currentBoard);
+
         return movelist;
     }
-
 
     public static void removeCheckMoves(Piece piece, Boolean[][] movelist, Board board) {
         for (int x = 0; x < board.getBoardWidth(); x++) {
@@ -50,14 +48,14 @@ public class MoveValidator {
     }
 
     public static Boolean[][] primitivePossibleMoves(Piece piece, Board currentBoard) {
-        
+
         Boolean[][] movelist = piece.getPossibleMoves(currentBoard.getBoardWidth(), currentBoard.getBoardHeight());
         removeBlockedMoves(piece, movelist, currentBoard);
         if (piece instanceof Pawn) {
             handlePawnMoves(piece, movelist, currentBoard);
+            EnPassantMoveHandler.validateMoves(piece, movelist, currentBoard.getBoard());
         }
         return movelist;
-
     }
 
     public static Boolean threatenedSquare(int coordx, int coordy, PieceColor color, Board board) {
@@ -68,9 +66,9 @@ public class MoveValidator {
                 if (currentBoard[x][y] != null) {
                     if (currentBoard[x][y].getColor() != color) {
                         Boolean[][] posMoves = null;
-                        if (currentBoard[x][y] instanceof King){
+                        if (currentBoard[x][y] instanceof King) {
                             posMoves = primitivePossibleMoves(currentBoard[x][y], board);
-                        }else{
+                        } else {
                             posMoves = getPossibleMoves(currentBoard[x][y], board);
                         }
                         if (posMoves[coordx][coordy] == true) {
@@ -83,8 +81,7 @@ public class MoveValidator {
         return false;
     }
 
-
-    public static Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces, Board board){
+    public static Map<String, ArrayList<Integer>> getAllPossiblePlayerMoves(List<Piece> pieces, Board board) {
         Map<String, ArrayList<Integer>> moves = new HashMap<>();
         /*
          * {
@@ -119,11 +116,9 @@ public class MoveValidator {
     private static void handlePawnMoves(Piece piece, Boolean[][] movelist, Board currentBoard) {
         Piece[][] board = currentBoard.getBoard();
 
-        // checks if the piece is a black pawn
         if (piece.getColor() == PieceColor.BLACK) {
             handleBlackPawnMoves(piece, movelist, board);
-        }
-        else if(piece.getColor() == PieceColor.WHITE){
+        } else if (piece.getColor() == PieceColor.WHITE) {
             handleWhitePawnMoves(piece, movelist, board);
         }
     }
@@ -148,24 +143,37 @@ public class MoveValidator {
         if (piece.getX() != 0 && piece.getY() != 7 && board[piece.getX() - 1][piece.getY() + 1] == null) {
             movelist[piece.getX() - 1][piece.getY() + 1] = false;
         }
-        // enpessant to the left
-        if (piece.getX() != 0 && piece.getY() != 7 && board[piece.getX() - 1][piece.getY()] != null
-                && board[piece.getX() - 1][piece.getY()].getColor() == PieceColor.BLACK
-                && board[piece.getX() - 1][piece.getY()].getMovesMade() == 1) {
-            movelist[piece.getX() - 1][piece.getY() + 1] = true;
-        }
-        // enpessant to the right
-        if (piece.getX() != 7 && piece.getY() != 7 && board[piece.getX() + 1][piece.getY()] != null
-                && board[piece.getX() + 1][piece.getY()].getColor() == PieceColor.BLACK
-                && board[piece.getX() + 1][piece.getY()].getMovesMade() == 1) {
-            movelist[piece.getX() + 1][piece.getY() + 1] = true;
-        }
     }
 
     public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
-        if(piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
+        if (piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
             return true;
         }
+        return false;
+    }
+
+    public static Boolean isEnPassantMove(Piece piece, int newX, int newY, Board currentBoard) {
+
+        if (piece == null || !(piece instanceof Pawn)) {
+            return false;
+        }
+
+        Piece[][] board = currentBoard.getBoard();
+        int deltaX = Math.abs(piece.getX() - newX);
+        Piece adjacentPiece = board[newX][piece.getY()];
+
+        if (deltaX == 1 && adjacentPiece != null && adjacentPiece instanceof Pawn && adjacentPiece.movesMade == 1) {
+            if (piece.getColor() == PieceColor.WHITE && adjacentPiece.getColor() == PieceColor.BLACK) {
+                if (newY == piece.getY() - 1) {
+                    return true;
+                }
+            } else if (piece.getColor() == PieceColor.BLACK && adjacentPiece.getColor() == PieceColor.WHITE) {
+                if (newY == piece.getY() + 1) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -189,18 +197,6 @@ public class MoveValidator {
         if (piece.getX() != 0 && piece.getY() != 0 && board[piece.getX() - 1][piece.getY() - 1] == null) {
             movelist[piece.getX() - 1][piece.getY() - 1] = false;
         }
-        // adds en pessant moves to the left to possible moves
-        if (piece.getX() != 0 && piece.getY() != 0 && board[piece.getX() - 1][piece.getY()] != null
-                && board[piece.getX() - 1][piece.getY()].getColor() == PieceColor.WHITE
-                && board[piece.getX() - 1][piece.getY()].getMovesMade() == 1) {
-            movelist[piece.getX() - 1][piece.getY() - 1] = true;
-        }
-        // adds enpessant move to the right to possible moves
-        if (piece.getX() != 7 && piece.getY() != 0 && board[piece.getX() + 1][piece.getY()] != null
-                && board[piece.getX() + 1][piece.getY()].getColor() == PieceColor.WHITE
-                && board[piece.getX() + 1][piece.getY()].getMovesMade() == 1) {
-            movelist[piece.getX() + 1][piece.getY() - 1] = true;
-        }
     }
 
     private static void removeBlockedMoves(Piece piece, Boolean[][] movelist, Board currentBoard) {
@@ -214,7 +210,8 @@ public class MoveValidator {
         }
     }
 
-    private static void updateMoveListForBlockedPath(Piece piece, Boolean[][] movelist, int x, int y, Board currentBoard) {
+    private static void updateMoveListForBlockedPath(Piece piece, Boolean[][] movelist, int x, int y,
+            Board currentBoard) {
         if (isBlockAtDiagonalDirection(piece, x, y)) {
             handleDiagonalBlockage(piece, movelist, x, y, currentBoard);
         } else if (isBlockAtStraightDirection(piece, x, y)) {

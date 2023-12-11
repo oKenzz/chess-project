@@ -76,6 +76,5 @@ public class CastlingMoveHandler {
             return true;
         }
         return false;
-
     }
 }

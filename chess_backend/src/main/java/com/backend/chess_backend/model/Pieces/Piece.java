@@ -37,6 +37,10 @@ public abstract class Piece {
         return movesMade;
     }
 
+    public void IncrementMovesMade(){
+        this.movesMade++;
+    }
+
     //forcefully updates the coordinates, should only be called right before move returns true
     public void updateCoords(int newX, int newY){
         this.xCoord = newX;

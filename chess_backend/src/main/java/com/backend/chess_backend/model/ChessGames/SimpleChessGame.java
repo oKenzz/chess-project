@@ -8,6 +8,7 @@ import java.util.Random;
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
+import com.backend.chess_backend.model.MoveHandlers.EnPassantMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
@@ -66,6 +67,9 @@ public class SimpleChessGame {
 
                 if (MoveValidator.isCastleMove(currentBoard[x][y], newX, newY, board)) {
                     CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
+                }
+                else if (MoveValidator.isEnPassantMove(currentBoard[x][y], newX, newY, board)){
+                    EnPassantMoveHandler.makeEnPassantMove(currentBoard[x][y], newX, newY, board);
                 }
                 board.move(currentBoard[x][y], newX, newY);
                 IncrementTurn();
