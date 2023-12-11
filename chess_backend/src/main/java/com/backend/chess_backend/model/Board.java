@@ -109,8 +109,6 @@ public class Board {
     }
 
     private void updateBoard(Piece piece, int newX, int newY) {
-
-    private void updateBoard(Piece piece, int newX, int newY) {
         // sets teh new position in board to the piece and changes the old one to null
         board[newX][newY] = piece;
         board[piece.getX()][piece.getY()] = null;
@@ -158,8 +156,6 @@ public class Board {
             }
         }
     }
-
-    public List<Piece> getAllPlayerPieces(PieceColor color) {
 
     public List<Piece> getAllPlayerPieces(PieceColor color) {
         List<Piece> pieces = new ArrayList<>();
