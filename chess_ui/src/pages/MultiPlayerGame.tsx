@@ -16,6 +16,7 @@ import WaitingScreen from '../components/WatingScreen';
 import * as socketListeners from '../socket/socketListeners';
 import JoiningGameScreen from '../components/JoiningGameScreen';
 import RightSidebar from '../components/RightSidebar';
+import Chat from '../components/chat/Chat';
 
 const MultiPlayerGame = () => {
     const [fen, setFen] = useState<FEN>('start');
@@ -57,7 +58,7 @@ const MultiPlayerGame = () => {
             socketRef.current?.emit('surrender');
             socketClient.disconnect();
         }
-    }, []); // Empty dependency array for setup on mount and cleanup on unmount
+    }, [searchParams]); // Empty dependency array for setup on mount and cleanup on unmount
 
     useEffect(() => {
         if (isLoading && !opponentIsReady && !socketRef.current) {
@@ -68,7 +69,7 @@ const MultiPlayerGame = () => {
     
             return () => clearInterval(gameStateInterval); // Clear interval on cleanup
         }
-    }, [isLoading, opponentIsReady, socketRef.current]); // Dependencies to control the effect
+    }, [isLoading, opponentIsReady]); // Dependencies to control the effect
     
     // Joining game animation
     useEffect(() => {
@@ -120,7 +121,8 @@ const MultiPlayerGame = () => {
                         socket={socketRef.current}
                     />
                 }
-                
+
+                <Chat />
 
                 <Alert color={alertMessage?.type}
                     icon={HiInformationCircle} 

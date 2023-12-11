@@ -26,12 +26,11 @@ public class Pawn extends Piece {
         }
 
         // Determine the direction of movement based on the color of the pawn
-       // int direction = (this.getColor() == PieceColor.WHITE) ? -1 : 1;
+        // int direction = (this.getColor() == PieceColor.WHITE) ? -1 : 1;
         int direction = 0;
-        if (this.getColor() == PieceColor.WHITE){
+        if (this.getColor() == PieceColor.WHITE) {
             direction = 1;
-        }
-        else if (this.getColor() == PieceColor.BLACK){
+        } else if (this.getColor() == PieceColor.BLACK) {
             direction = -1;
         }
 

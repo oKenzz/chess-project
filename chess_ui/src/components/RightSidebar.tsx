@@ -36,7 +36,7 @@ const RightSidebar = (
 
         return () => {
             // Cleanup
-            socket.off("timerUpdate");
+            socket.off("syncTimers");
         };
     }, [color]); 
 

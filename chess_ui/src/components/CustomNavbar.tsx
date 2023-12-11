@@ -33,10 +33,7 @@ const CustomNavbar = (   { roomCode, disableRoomcode} : { roomCode: string | nul
           </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className='md:hidden bg-white'>
-            {/* <div className='flex w-100 p-2'>
-                <ButtonImg id="settings_button" img='/images/Settings.svg' alt='Settings' size={20} event={() => {}}/>
-                <p className='color-gray-500'>Settings</p>
-            </div> */}
+
             <div className='w-100 p-3'>
               <EscButton  style={{'width': '100%'}}/>
             </div>

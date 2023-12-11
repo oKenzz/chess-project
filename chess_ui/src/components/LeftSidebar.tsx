@@ -22,6 +22,10 @@ const LeftSidebar = (
         console.log("surrender");
         socket?.emit('surrender');
     }
+    const undo = () => {
+        console.log("undo");
+        socket?.emit('undo');
+    }
      
     return (
         <motion.div 
@@ -35,7 +39,7 @@ const LeftSidebar = (
                 !isMultiplayer &&
                 <>
                     <ButtonImg img="/images/Restart.png" alt="Restart" size={50} event={() => {restart()}}/>
-                    <ButtonImg img="/images/back.png" alt="Undo" size={50} event={() => {console.log("test")}} />
+                    <ButtonImg img="/images/back.png" alt="Undo" size={50} event={() => { undo() }}/>
                 </>            
             }
         </motion.div>

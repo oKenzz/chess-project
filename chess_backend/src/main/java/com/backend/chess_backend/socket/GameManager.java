@@ -14,7 +14,7 @@ import com.backend.chess_backend.model.Player;
 
 @Service
 public class GameManager {
-    private class ChessGame extends SimpleChessGame {
+    class ChessGame extends SimpleChessGame {
         private boolean isPrivate;
 
         public ChessGame(String gameId, boolean isPrivate) {
