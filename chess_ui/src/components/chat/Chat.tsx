@@ -112,7 +112,7 @@ const Chat = ({ socket}:{ socket: Socket;}) => {
                                             messageContent={message.message}
                                             messageTime={message.sentAt}
                                             you={
-                                                message.sender.uuid === socket.id
+                                                message.sender === socket.id
                                             }
                                         />
                                     ))

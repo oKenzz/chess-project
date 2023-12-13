@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.backend.chess_backend.model.ChessGames.ModifiedChessGame;
 import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
-import com.backend.chess_backend.model.Player;
 
 @Service
 public class GameManager {
@@ -99,14 +98,8 @@ public class GameManager {
     }
 
     private synchronized boolean removeGameIfEmpty(SimpleChessGame game) {
-        // if singile player game
-        for (Player player : game.getPlayers()) {
-            if (player.isBot()) {
-                removeGame(game.getId());
-                return true;
-            }
-        }
-        if (game.isEmpty()) {
+        // if single player or game is empty
+        if (game.hasBotPlayer() || game.isEmpty()) {
             removeGame(game.getId());
             return true;
         }
@@ -121,19 +114,6 @@ public class GameManager {
     public String getGameIdByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
         return gameId != null ? gameId : null;
-    }
-
-    public synchronized Player getBotPlayer(String gameId) {
-        ModifiedChessGame game = games.get(gameId);
-        if (game != null) {
-            Player[] players = game.getPlayers();
-            for (Player player : players) {
-                if (player.isBot()) {
-                    return player;
-                }
-            }
-        }
-        return null;
     }
 
     public List<String> getGames() {

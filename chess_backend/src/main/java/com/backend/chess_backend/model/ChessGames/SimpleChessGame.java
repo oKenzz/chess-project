@@ -8,13 +8,13 @@ import java.util.Random;
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
-import com.backend.chess_backend.model.MoveHandlers.EnPassantMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.EnpessantMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
 import com.backend.chess_backend.model.MoveHandlers.PromotionMoveHandler;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Player;
+import com.backend.chess_backend.model.Square;
 import com.backend.chess_backend.model.Constants.GameOverEnum;
 
 public class SimpleChessGame {
@@ -38,8 +38,8 @@ public class SimpleChessGame {
     }
 
     public Boolean[][] possibleMoves(int x, int y) {
-        Piece[][] currentBoard = board.getBoard();
-        Piece currentPiece = currentBoard[x][y];
+        Square[][] currentBoard = board.getBoard();
+        Piece currentPiece = currentBoard[x][y].getPiece();
         int boardW = currentBoard.length;
         int boardH = currentBoard[0].length;
         Boolean[][] emptyList = new Boolean[boardW][boardH];
@@ -60,25 +60,29 @@ public class SimpleChessGame {
 
     public Boolean attemptMove(int x, int y, int newX, int newY) {
 
-        Piece[][] currentBoard = board.getBoard();
+        Square[][] currentBoard = board.getBoard();
         Boolean[][] possibleM = possibleMoves(x, y);
 
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.isMoveAllowed(newX, newY, possibleM)) {
 
-                if (MoveValidator.isCastleMove(currentBoard[x][y], newX, newY, board)) {
+                if (MoveValidator.isCastleMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
                     CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
-                    board.move(currentBoard[x][y], newX, newY);
-                } else if (PromotionMoveHandler.isPromotionMove(currentBoard[x][y], newX, newY)) {
-                    board.move(currentBoard[x][y], newX, newY);
-                    PromotionMoveHandler.promoteToQueen(currentBoard[newX][newY], newX, newY, board);
-                } else if (EnpessantMoveHandler.isEnpessantMove(currentBoard[x][y], newX, newY, board)) {
-                    board.move(currentBoard[x][y], newX, newY);
-                    EnpessantMoveHandler.makeEnpessantMove(currentBoard[newX][newY].getColor(), newX, newY, board);
-                } else if (MoveValidator.isEnPassantMove(currentBoard[x][y], newX, newY, board)) {
-                    EnPassantMoveHandler.makeEnPassantMove(currentBoard[x][y], newX, newY, board);
+                    board.move(currentBoard[x][y].getPiece(), newX, newY);
+                } else if (PromotionMoveHandler.isPromotionMove(currentBoard[x][y].getPiece(), newX, newY)) {
+                    board.move(currentBoard[x][y].getPiece(), newX, newY);
+                    PromotionMoveHandler.promoteToQueen(currentBoard[newX][newY].getPiece(), newX, newY, board);
+                } else if (EnpessantMoveHandler.isEnpessantMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
+                    board.move(currentBoard[x][y].getPiece(), newX, newY);
+                    EnpessantMoveHandler.makeEnpessantMove(currentBoard[newX][newY].getPiece().getColor(), newX, newY,
+                            board);
                 }
-                board.move(currentBoard[x][y], newX, newY);
+                // } else if (MoveValidator.isEnPassantMove(currentBoard[x][y].getPiece(), newX,
+                // newY, board)) {
+                // EnPassantMoveHandler.makeEnPassantMove(currentBoard[x][y].getPiece(), newX,
+                // newY, board);
+                // }
+                board.move(currentBoard[x][y].getPiece(), newX, newY);
                 toggleTimer();
                 IncrementTurn();
                 if (isWhitesTurn()) {
@@ -136,8 +140,8 @@ public class SimpleChessGame {
     }
 
     private Boolean attemptToMoveWhite(int x, int y) {
-        Piece[][] currentBoard = board.getBoard();
-        if (currentBoard[x][y] != null && currentBoard[x][y].getColor() == PieceColor.WHITE) {
+        Square[][] currentBoard = board.getBoard();
+        if (!currentBoard[x][y].isEmpty() && currentBoard[x][y].getPiece().getColor() == PieceColor.WHITE) {
             return true;
         }
 
@@ -145,8 +149,8 @@ public class SimpleChessGame {
     }
 
     private Boolean attemptToMoveBlack(int x, int y) {
-        Piece[][] currentBoard = board.getBoard();
-        if (currentBoard[x][y] != null && currentBoard[x][y].getColor() == PieceColor.BLACK) {
+        Square[][] currentBoard = board.getBoard();
+        if (!currentBoard[x][y].isEmpty() && currentBoard[x][y].getPiece().getColor() == PieceColor.BLACK) {
             return true;
         }
 
@@ -185,7 +189,7 @@ public class SimpleChessGame {
         }
     }
 
-    public Piece[][] getBoard() {
+    public Square[][] getBoard() {
         return board.getBoard();
     }
 
@@ -328,6 +332,15 @@ public class SimpleChessGame {
 
     public Player getBlackPlayer() {
         return this.playerBlack;
+    }
+
+    public Boolean hasBotPlayer() {
+        for (Player player : this.getPlayers()) {
+            if (player.isBot()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

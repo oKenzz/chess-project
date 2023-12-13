@@ -2,8 +2,10 @@ package com.backend.chess_backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.backend.chess_backend.model.Board;
+import com.backend.chess_backend.model.Square;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Translator;
 
@@ -23,10 +25,9 @@ public class BoardTest {
     @Test
     public void createBoardTest() {
         Board board = new Board();
-        Piece[][] tmp = board.getBoard();
+        Square[][] tmp = board.getBoard();
         board.reset();
-        Translator translator = new Translator();
-        String fen = translator.translateBoard(tmp, "w");
+        String fen = Translator.translateBoard(tmp, "w");
         assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w", fen);
     }
 
@@ -100,17 +101,17 @@ public class BoardTest {
     public void undoMoveTest() {
         Board board = new Board();
         board.reset();
-        Piece[][] tmp = board.getBoard();
-        board.move(tmp[4][1], 4, 3); // e2 to e4
+        Square[][] tmp = board.getBoard();
+        board.move(tmp[4][1].getPiece(), 4, 3); // e2 to e4
         board.undoMove();
-        assertEquals(tmp[4][1].getPieceType(), "P");
+        assertEquals(tmp[4][1].getPiece().getPieceType(), "P");
         assertEquals(tmp[4][3], null);
-        board.move(tmp[4][1], 4, 3); // e2 to e4
-        board.move(tmp[5][6], 5, 4); // f7 to f5
-        board.move(tmp[4][3], 5, 4); // e4 to f5
+        board.move(tmp[4][1].getPiece(), 4, 3); // e2 to e4
+        board.move(tmp[5][6].getPiece(), 5, 4); // f7 to f5
+        board.move(tmp[4][3].getPiece(), 5, 4); // e4 to f5
         board.undoMove();
-        assertEquals(tmp[4][3].getPieceType(), "P");
-        assertEquals(tmp[5][4].getPieceType(), "p");
+        assertEquals(tmp[4][3].getPiece().getPieceType(), "P");
+        assertEquals(tmp[5][4].getPiece().getPieceType(), "p");
         }
 
     // @Test

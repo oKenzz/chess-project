@@ -1,11 +1,6 @@
 package com.backend.chess_backend.model.Pieces;
 
 public class Queen extends Piece{
-    
-    private boolean dead;
-    private PieceColor color;
-    private int xCoord;
-    private int yCoord;
 
 
     public Queen(PieceColor color, int xCoord, int yCoord){

@@ -1,6 +1,7 @@
 package com.backend.chess_backend.model.MoveHandlers;
 
 import com.backend.chess_backend.model.Board;
+import com.backend.chess_backend.model.Square;
 import com.backend.chess_backend.model.Pieces.Pawn;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
@@ -20,9 +21,9 @@ public class PromotionMoveHandler {
     }
 
     public static void promoteToQueen(Piece piece, int x, int y, Board board) {
-        Piece[][] currentBoard = board.getBoard();
+        Square[][] currentBoard = board.getBoard();
 
-        currentBoard[x][y] = PieceFactory.makeQueen(piece.getColor(), x, y);
-        currentBoard[x][y].movesMade = piece.movesMade;
+        currentBoard[x][y].setPiece(PieceFactory.makeQueen(piece.getColor(), x, y));
+        currentBoard[x][y].getPiece().movesMade = piece.movesMade;
     }
 }

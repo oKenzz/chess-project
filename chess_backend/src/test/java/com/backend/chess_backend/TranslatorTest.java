@@ -14,8 +14,10 @@ import com.backend.chess_backend.model.Pieces.Knight;
 import com.backend.chess_backend.model.Pieces.Pawn;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
+import com.backend.chess_backend.model.Pieces.PieceFactory;
 import com.backend.chess_backend.model.Pieces.Queen;
 import com.backend.chess_backend.model.Pieces.Rook;
+import com.backend.chess_backend.model.Square;
 import com.backend.chess_backend.model.Translator;
 
 @SpringBootTest
@@ -26,7 +28,7 @@ class TranslatorTest {
     @Test
     public void translateBoardTest() {
 
-        Piece[][] board = new Piece[8][8];
+        Square[][] board = new Square[8][8];
 
         PieceColor currentColor = PieceColor.WHITE;
         for (int y = 0; y < board[0].length; y++) {
@@ -37,18 +39,18 @@ class TranslatorTest {
             }
             for (int x = 0; x < board.length; x++) {
                 if (y == 1 || y == 6) {
-                    board[x][y] = new Pawn(currentColor, x, y);
+                    board[x][y].setPiece(PieceFactory.makePawn(currentColor, x, y));
                 } else if (y == 0 || y == 7) {
                     if (x == 0 || x == 7) {
-                        board[x][y] = new Rook(currentColor, x, y);
+                        board[x][y].setPiece(PieceFactory.makeRook(currentColor, x, y));
                     } else if (x == 1 || x == 6) {
-                        board[x][y] = new Knight(currentColor, x, y);
+                        board[x][y].setPiece(PieceFactory.makeKnight(currentColor, x, y)); 
                     } else if (x == 2 || x == 5) {
-                        board[x][y] = new Bishop(currentColor, x, y);
+                        board[x][y].setPiece(PieceFactory.makeBishop(currentColor, x, y)); 
                     } else if (x == 3) {
-                        board[x][y] = new Queen(currentColor, x, y);
+                        board[x][y].setPiece(PieceFactory.makeQueen(currentColor, x, y));
                     } else if (x == 4) {
-                        board[x][y] = new King(currentColor, x, y);
+                        board[x][y].setPiece(PieceFactory.makeKing(currentColor, x, y));
                     }
                 }
             }

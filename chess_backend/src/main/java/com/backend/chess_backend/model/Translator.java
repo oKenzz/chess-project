@@ -2,7 +2,6 @@ package com.backend.chess_backend.model;
 
 import java.util.ArrayList;
 
-import com.backend.chess_backend.model.Pieces.Piece;
 
 public class Translator {
 
@@ -40,20 +39,20 @@ public class Translator {
         return allCoordinates;
     }
 
-    public static String translateBoard(Piece[][] board, String color) {
+    public static String translateBoard(Square[][] board, String color) {
         String boardString = "";
         int emptyCount = 0;
         String rowStr = "";
 
         for (int y = board[0].length - 1; y > -1; y--) {
             for (int x = 0; x < board.length; x++) {
-                if (board[x][y] == null) {
+                if (board[x][y].isEmpty()) {
                     emptyCount++;
                 } else {
                     if (emptyCount != 0) {
-                        rowStr += emptyCount + board[x][y].getPieceType();
+                        rowStr += emptyCount + board[x][y].getPiece().getPieceType();
                     } else {
-                        rowStr += board[x][y].getPieceType();
+                        rowStr += board[x][y].getPiece().getPieceType();
                     }
                     emptyCount = 0;
                 }

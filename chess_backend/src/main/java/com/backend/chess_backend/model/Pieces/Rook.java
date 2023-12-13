@@ -1,11 +1,6 @@
 package com.backend.chess_backend.model.Pieces;
 
 public class Rook extends Piece{
-    
-    private boolean dead;
-    private PieceColor color;
-    private int xCoord;
-    private int yCoord;
 
     int x = 0;
 

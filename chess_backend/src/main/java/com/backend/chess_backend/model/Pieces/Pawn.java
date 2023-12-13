@@ -1,11 +1,6 @@
 package com.backend.chess_backend.model.Pieces;
 
 public class Pawn extends Piece {
-    private boolean dead;
-    private PieceColor color;
-    private int xCoord;
-    private int yCoord;
-    private int hasmoved;
 
     public Pawn(PieceColor color, int xCoord, int yCoord) {
         super(color, xCoord, yCoord);
@@ -24,6 +19,7 @@ public class Pawn extends Piece {
                 moves[i][j] = false;
             }
         }
+        
 
         // Determine the direction of movement based on the color of the pawn
         // int direction = (this.getColor() == PieceColor.WHITE) ? -1 : 1;

@@ -35,9 +35,7 @@ public class BishopTest {
 
         ArrayList<String> expected = new ArrayList<String>(Arrays.asList( "a7","c7","d6","e5","f4","g3","h2"));
 
-        Translator translator = new Translator();
-
-        ArrayList<String> actual = translator.translatePossibleMoves(posMoves);
+        ArrayList<String> actual = Translator.translatePossibleMoves(posMoves);
 
         assertEquals(expected, actual);
 

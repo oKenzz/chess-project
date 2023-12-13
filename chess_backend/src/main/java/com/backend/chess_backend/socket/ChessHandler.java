@@ -47,7 +47,7 @@ public class ChessHandler {
         if (game == null) {
             return;
         }
-        String response = new Gson().toJson(game.getChat().getMessages());
+        String response = new Gson().toJson(game.chat.getMessages());
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(response);
         }
@@ -66,8 +66,8 @@ public class ChessHandler {
         if (message.length() > 100 || message.length() < 1) {
             return;
         }
-        game.getChat().postMessage(message, game.getPlayer(playerUuid));
-        String response = new Gson().toJson(game.getChat().getMessages());
+        game.chat.postMessage(message, playerUuid);
+        String response = new Gson().toJson(game.chat.getMessages());
         server.getRoomOperations(game.getId()).sendEvent("chatMessage", response);
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData("Message has been receieved");
