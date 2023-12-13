@@ -21,10 +21,10 @@ const WaitingScreen = ({ roomCode }: WaitingScreenProps) =>{
                 >  
                     {
                         roomCode ? 
-                        <p className='text-3xl text-white font-bold'>Room code: {roomCode}</p>
+                        <p className='text-3xl text-white font-bold text-center'>Room code: {roomCode}</p>
                         : null
                     }
-                    <p className='text-3xl text-white font-bold'>Waiting for opponent</p>
+                    <p className='text-3xl text-white font-bold text-center'>Waiting for opponent</p>
                     <Spinner  
                         className='w-36 h-36 ' 
                     />
@@ -37,7 +37,11 @@ const WaitingScreen = ({ roomCode }: WaitingScreenProps) =>{
 
             {
                 showEntertainment &&
-                <iframe className='absolute bottom-0 right-0 z-0' style={{ zIndex: 999}}  width="730" height="415" src="https://www.youtube.com/embed/bXVcXbhhxcI?si=ZB1JEc8yGdHu6YoZ?rel=0&amp;autoplay=1&mute=1" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+                <iframe className='
+                absolute bottom-0 right-0 z-0
+                sm:w-[730px] sm:h-[415px] w-[100vw] h-[56.25vw]
+                
+                ' style={{ zIndex: 999}}  width="730" height="415" src="https://www.youtube.com/embed/bXVcXbhhxcI?si=ZB1JEc8yGdHu6YoZ?rel=0&amp;autoplay=1&mute=1" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
             }
         </div>
     );

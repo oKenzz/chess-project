@@ -110,3 +110,49 @@
     content: '';
   }
   
+
+
+  @media only screen and (max-width: 600px) {
+
+    .game-grid {
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 7rem 1fr auto;
+        grid-template-areas:
+            "header header"
+            "game-panel game-panel"
+            "left-panel right-panel";
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .game-panel {
+        grid-area: game-panel;
+        width: 100%;
+        max-width: 100%;
+        padding: 4px;
+        margin: 0;
+        justify-content: center;
+        z-index: -9999;
+    }
+
+    .game-panel > div {
+        max-width: 97%; /* Adjust for smaller screen */
+        z-index: 1; /* Reset z-index to default */
+    }
+
+    .left-panel, .right-panel {
+        grid-area: left-panel right-panel;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        margin-bottom: 120px;
+    }
+
+    .left-panel-buttons {
+        /* Adjust button styles as needed */
+    }
+
+    /* Further adjust font sizes, button sizes, etc., as needed */
+}
