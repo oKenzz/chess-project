@@ -61,6 +61,13 @@ const MultiPlayerGame = () => {
     }, [searchParams]); // Empty dependency array for setup on mount and cleanup on unmount
 
     useEffect(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('room', roomCode || '');
+        window.history.replaceState({}, '', url.href);
+        
+    }, [roomCode]);
+
+    useEffect(() => {
         if (isLoading && !opponentIsReady && !socketRef.current) {
             // Only set up polling if necessary (i.e., loading and opponent not ready, and no socket connection)
             const gameStateInterval = setInterval(() => {

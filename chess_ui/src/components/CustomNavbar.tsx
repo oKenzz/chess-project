@@ -10,7 +10,7 @@ const CustomNavbar = (   { roomCode, disableRoomcode} : { roomCode: string | nul
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
  
   return (
-    <motion.div
+    <motion.div className='z-50'
         initial={{ y: '-8vh' }}
         animate={{ y: 0, transition: { duration: 0.5, delay: 0.5 }}}
     >
@@ -48,18 +48,6 @@ const CustomNavbar = (   { roomCode, disableRoomcode} : { roomCode: string | nul
             <div className='w-100 p-3'>
               <EscButton  style={{'width': '100%'}}/>
             </div>
-            {
-            roomCode && !disableRoomcode &&
-            (
-              <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, transition: { duration: 0.5, delay: 0.5 } }}
-                    className='w-[100vw] bg-white flex items-center justify-center -z-50 -mt-7 '
-                >
-                <p className='text-center text-gray-500'>Room Code:  { roomCode }</p>
-              </motion.div>
-            )
-          }
         </Navbar.Collapse>
       </Navbar>
       

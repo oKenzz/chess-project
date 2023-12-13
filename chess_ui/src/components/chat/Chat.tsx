@@ -79,7 +79,7 @@ const Chat = ({ socket}:{ socket: Socket;}) => {
             <AnimatePresence>
                 {showChat ? (
                     <motion.div
-                        className="w-100 h-[92vh] absolute bottom-0 right-0 flex flex-row justify-between items-center
+                        className="w-100 h-[92vh] absolute bottom-0 right-0 flex flex-row justify-between items-center z-50
                             border-t-2 border-[#7b61ff] 
                         "
                         initial="closed"
@@ -94,12 +94,12 @@ const Chat = ({ socket}:{ socket: Socket;}) => {
                         >
                             <SlArrowRight className="w-6 h-6" />
                         </motion.button>
-                        <div className="w-full h-full px-3 pb-3 flex flex-col justify-between items-center bg-white">
+                        <div className="w-full h-full px-3 pb-3 pt-6 flex flex-col justify-between items-center bg-white">
                             {/* start from bottom and go up */}
                                 <div className="
                                     chat_cards
                                     w-full h-[100%] flex flex-col items-start
-                                    gap-3 overflow-y-auto pr-2 mb-3 pb-3
+                                    gap-4 overflow-y-auto pr-2 mb-3 pb-3
                                     scrollbar-track-slate-400 scrollbar-thumb-slate-500
                                     scrollbar-thin
                                 "
@@ -149,7 +149,10 @@ const Chat = ({ socket}:{ socket: Socket;}) => {
                     </motion.div>
                 ) : (
                     <motion.button
-                        className="w-16 h-16 fixed bottom-10 right-10 flex justify-center items-center bg-white border-2 border-black rounded-full p-2 hover:opacity-80 hover:shadow-lg hover:border-opacity-0 hover:scale-110 hover:bg-white"
+                        className="w-12 h-12 fixed flex justify-center items-center bg-white border-2 border-black rounded-full p-2 hover:opacity-80 hover:shadow-lg hover:border-opacity-0 hover:scale-110 hover:bg-white
+                            bottom-3 right-3
+                            sm:w-16 sm:h-16 sm:right-10 sm:bottom-10
+                        "
                         onClick={openChat}
                         initial="closed"
                         animate="open"

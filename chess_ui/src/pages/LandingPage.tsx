@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import PlayButton from "../components/PlayButton";
 import { backgroundVariants, itemVariants } from "../config/Animations";
 import { useNavigate } from "react-router-dom";
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
-
+import { Button, Modal, TextInput } from 'flowbite-react';
+import "../styles/LandingPage.css";
 
 const MultiplayerForm = ({openModal, setOpenModal} : {
   openModal: boolean;
@@ -122,7 +122,7 @@ const LandingPage = () => {
     <AnimatePresence mode="wait">
       {!isExiting && (
         <motion.main
-          className="relative flex h-screen w-full flex-col items-stretch"
+          className="relative flex h-screen w-full flex-col items-stretch landing-page"
           initial={{ opacity: 1 }}
           exit={{ x: "100vw", transition: { duration: 0.5 } }}
         >
@@ -131,7 +131,7 @@ const LandingPage = () => {
             variants={backgroundVariants}
             initial="initial"
             animate="animate"
-            className="-z-index-1 absolute bottom-0 right-0"
+            className="-z-index-1 absolute bottom-0 right-0 background-image"
           >
             <ReactSVG src="/images/Background.svg" />
           </motion.div>
@@ -141,7 +141,7 @@ const LandingPage = () => {
             initial="hidden"
             animate="visible"
           >
-            <h1 className="font-roboto font-900 relative mt-16 text-center text-9xl text-[#7B61FF] md:text-[12rem]">
+            <h1 className="font-roboto font-900 relative mt-16 text-center text-6xl text-[#7B61FF] md:text-[12rem]">
               Simple <span className="text-[#34364C]">Chess</span> 
             </h1>
           </motion.div>
