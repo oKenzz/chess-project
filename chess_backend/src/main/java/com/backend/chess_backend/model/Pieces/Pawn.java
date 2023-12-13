@@ -1,5 +1,7 @@
 package com.backend.chess_backend.model.Pieces;
 
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
+
 public class Pawn extends Piece {
 
     public Pawn(PieceColor color, int xCoord, int yCoord) {
@@ -57,11 +59,11 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public String getPieceType() {
+    public PieceTypeEnum getPieceType() {
         if (this.getColor() == PieceColor.BLACK) {
-            return "p";
+            return PieceTypeEnum.BLACK_PAWN;
         } else {
-            return "P";
+            return PieceTypeEnum.WHITE_PAWN;
         }
     }
 }

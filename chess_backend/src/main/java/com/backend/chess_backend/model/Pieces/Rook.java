@@ -1,5 +1,7 @@
 package com.backend.chess_backend.model.Pieces;
 
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
+
 public class Rook extends Piece{
 
     int x = 0;
@@ -28,11 +30,11 @@ public class Rook extends Piece{
     }
 
     @Override
-    public String getPieceType(){
+    public PieceTypeEnum getPieceType(){
         if(this.getColor() == PieceColor.BLACK){
-            return "r";
+            return PieceTypeEnum.BLACK_ROOK;
         }else{
-            return "R";
+            return PieceTypeEnum.WHITE_ROOK;
         }
     }
 }

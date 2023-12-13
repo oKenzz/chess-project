@@ -2,6 +2,8 @@ package com.backend.chess_backend.model;
 
 import java.util.ArrayList;
 
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
+
 
 public class Translator {
 
@@ -50,9 +52,9 @@ public class Translator {
                     emptyCount++;
                 } else {
                     if (emptyCount != 0) {
-                        rowStr += emptyCount + board[x][y].getPiece().getPieceType();
+                        rowStr += emptyCount + translatePieceType(board[x][y]);
                     } else {
-                        rowStr += board[x][y].getPiece().getPieceType();
+                        rowStr += translatePieceType(board[x][y]);
                     }
                     emptyCount = 0;
                 }
@@ -78,6 +80,11 @@ public class Translator {
         String xpos = "" + alphabet.charAt(x);
         String ypos = "" + (y + 1);
         return xpos + ypos;
+    }
+
+
+    private static String translatePieceType(Square square) {
+        return square.getPiece().getPieceType().getMessage();
     }
 
     public static ArrayList<String> translatePossibleMoves(Boolean[][] bolBoard) {

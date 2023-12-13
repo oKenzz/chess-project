@@ -1,5 +1,7 @@
 package com.backend.chess_backend.model.Pieces;
 
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
+
 public class Queen extends Piece{
 
 
@@ -30,11 +32,11 @@ public class Queen extends Piece{
     }
 
     @Override
-    public String getPieceType(){
+    public PieceTypeEnum getPieceType(){
         if(this.getColor() == PieceColor.BLACK){
-            return "q";
+            return PieceTypeEnum.BLACK_QUEEN;
         }else{
-            return "Q";
+            return PieceTypeEnum.WHITE_QUEEN;
         }
     }
 }

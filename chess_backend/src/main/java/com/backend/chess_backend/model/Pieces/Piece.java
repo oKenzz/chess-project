@@ -1,5 +1,6 @@
 package com.backend.chess_backend.model.Pieces;
 
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
 
 public abstract class Piece {
     public boolean dead;
@@ -48,7 +49,7 @@ public abstract class Piece {
     }
 
     
-    abstract public String getPieceType();
+    abstract public PieceTypeEnum getPieceType();
     abstract public Boolean[][] getPossibleMoves(int boardW, int boardH);
 
 }
