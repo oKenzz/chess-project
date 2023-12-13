@@ -23,10 +23,7 @@ To set up the Maven-based backend, follow these steps:
 ```bash
 # Navigate to the backend directory
 cd chess_backend
-
-# Use Maven to compile and run the backend
-mvn clean install
-mvn exec:java
+./mvnw spring-boot:run
 ```
 
 ### Chess UI Setup
@@ -36,12 +33,8 @@ To set up the React frontend, you will need to have Node.js and npm installed. T
 ```bash
 # Navigate to the frontend directory
 cd chess_ui
-
-# Install dependencies
-npm install
-
-# Start the React application
-npm start
+yarn install
+yarn start dev
 ```
 
 The React application will run on `localhost:3000` by default.
