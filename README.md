@@ -1,60 +1,69 @@
-# Chess Project
+# Simple Chess: A Streamlined Digital Chess Experience
 
-## Description
+Welcome to Simple Chess! This is your one-stop destination for a user-friendly, digital chess experience. With a sleek React UI and a powerful Maven-backend, dive into chess games against AI or friends, all in a clean and straightforward setup.
 
-Welcome to the Chess Project! This repository contains a React-based user interface and a Maven-powered backend for a comprehensive digital chess experience. Engage in matches against an AI opponent or challenge friends in a multiplayer setting.
+## 📸 Screenshots
 
-## Demo
-https://chess-project-phi.vercel.app/
+<img src="./images/Landing_page.PNG" alt="Screenshot 1" width="300"/>
+<img src="./images/Join game Modal.PNG" alt="Screenshot 2" width="240"/>
+<img src="./images/Wating Screen.PNG" alt="Screenshot 3" width="300"/>
+<img src="./images/Game Page.PNG" alt="Screenshot 4" width="300"/>
+<img src="./images/Game Page 2.PNG" alt="Screenshot 5" width="300"/>
 
-## Features
 
-- **React Frontend**: A modern, responsive user interface for an immersive chess experience.
-- **Maven Backend**: A robust Java backend using Maven for dependency management and build automation.
-- **AI Opponent**: Test your skills against a computer-controlled adversary.
-- **Local Multiplayer**: Play with friends on the same machine.
-- **Game Saving**: Pause and resume your game at any time.
-- **Chess Timer**: Keep your matches engaging with a time-controlled environment.
-- **Undo Feature**: Step back and revise your strategy by undoing moves.
+## 🌐 Quick Demo
+Try it now: [Simple Chess Demo](https://chess-project-phi.vercel.app/)
 
-## Installation
+## 🌟 Highlights
 
-### Chess Backend Setup
+- **Sleek React UI**: Engage with an intuitive and responsive interface.
+- **Efficient Maven Backend**: Experience seamless gameplay powered by Java and Maven.
+- **Versatile AI Challenge**: Sharpen your skills against a smart computer opponent.
+- **Friend Mode**: Enjoy games with friends on the same device.
+- **Save Progress**: Easily pause and resume games.
+- **Chess Clock**: Add excitement with a timed match.
+- **Undo Moves**: Rethink strategies with the undo option.
 
-To set up the Maven-based backend, follow these steps:
+## 🚀 Quick Start
+
+### Setting Up the Backend
 
 ```bash
-# Navigate to the backend directory
 cd chess_backend
 ./mvnw spring-boot:run
 ```
 
-### Chess UI Setup
+### Launching the UI
 
-To set up the React frontend, you will need to have Node.js and npm installed. Then run the following commands:
+Make sure you have Node.js and npm. Then:
 
 ```bash
-# Navigate to the frontend directory
 cd chess_ui
 yarn install
 yarn start dev
 ```
 
-The React application will run on `localhost:3000` by default.
+Access the game at `localhost:3000`.
 
-## Usage
+## 🔍 How to Play
 
-After setting up both the backend and the frontend, open your web browser and go to `http://localhost:3000` to start playing chess.
-
-## How to Play
-
-- Launch the chess UI from your browser.
-- The backend will manage the game logic and state.
-- Select your game mode: AI or Multiplayer.
-- Use the React interface to move the chess pieces according to the rules of chess.
-- Win by checkmating your opponent's king!
+1. Open `http://localhost:3000` in your browser.
+2. Choose between AI and multiplayer modes.
+3. Enjoy a game of chess with a clean and simple interface!
+4. Achieve victory by checkmating your opponent.
 
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Authors
+
+- [@ismail424](https://github.com/ismail424)
+- [@McQueenMG](https://github.com/McQueenMG)
+- [@oKenzz](https://github.com/oKenzz)
+- [@IsmailR16](https://github.com/IsmailR16)
+- [@p0ntu2](https://github.com/p0ntu2)
+
+
+## 📜 License
+
+Simple Chess is MIT licensed. See the [LICENSE](LICENSE) for details.
+
