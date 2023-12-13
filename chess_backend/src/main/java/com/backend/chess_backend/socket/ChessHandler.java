@@ -179,9 +179,7 @@ public class ChessHandler {
         SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         if (game != null) {
             game.surrender(playerUuID);
-            String playerColor = game.getPlayerColor(playerUuID);
-            String winner = playerColor.equals("white") ? "b" : "w";
-            String gameOverMsg = winner.equals("w") ? "White wins" : "Black wins";
+            String gameOverMsg = game.checkGameOver().getMessage();
             server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverMsg);
             gameManager.removeGame(game.getId());
         }

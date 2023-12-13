@@ -46,7 +46,7 @@ public class Translator {
 
         for (int y = board[0].length - 1; y > -1; y--) {
             for (int x = 0; x < board.length; x++) {
-                if (board[x][y].isEmpty()) {
+                if (!board[x][y].containsPiece()) {
                     emptyCount++;
                 } else {
                     if (emptyCount != 0) {

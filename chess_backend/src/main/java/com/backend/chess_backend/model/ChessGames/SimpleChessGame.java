@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.backend.chess_backend.model.Board;
+import com.backend.chess_backend.model.Constants.GameOverEnum;
 import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
 import com.backend.chess_backend.model.MoveHandlers.EnpessantMoveHandler;
@@ -15,7 +16,6 @@ import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Player;
 import com.backend.chess_backend.model.Square;
-import com.backend.chess_backend.model.Constants.GameOverEnum;
 
 public class SimpleChessGame {
     private Board board;
@@ -76,13 +76,14 @@ public class SimpleChessGame {
                     board.move(currentBoard[x][y].getPiece(), newX, newY);
                     EnpessantMoveHandler.makeEnpessantMove(currentBoard[newX][newY].getPiece().getColor(), newX, newY,
                             board);
+                }else{
+                    board.move(currentBoard[x][y].getPiece(), newX, newY);
                 }
                 // } else if (MoveValidator.isEnPassantMove(currentBoard[x][y].getPiece(), newX,
                 // newY, board)) {
                 // EnPassantMoveHandler.makeEnPassantMove(currentBoard[x][y].getPiece(), newX,
                 // newY, board);
                 // }
-                board.move(currentBoard[x][y].getPiece(), newX, newY);
                 toggleTimer();
                 IncrementTurn();
                 if (isWhitesTurn()) {
@@ -121,7 +122,7 @@ public class SimpleChessGame {
 
     private void updateGameOverBlack() {
         if (CheckGameState.blackCheckmated(board)) {
-            gameOver = GameOverEnum.BLACK;
+            gameOver = GameOverEnum.WHITE;
         } else if (CheckGameState.blackStalemated(board)) {
             gameOver = GameOverEnum.DRAW;
         } else {
@@ -131,7 +132,7 @@ public class SimpleChessGame {
 
     private void updateGameOverWhite() {
         if (CheckGameState.whiteCheckmated(board)) {
-            gameOver = GameOverEnum.WHITE;
+            gameOver = GameOverEnum.BLACK;
         } else if (CheckGameState.whiteStalemated(board)) {
             gameOver = GameOverEnum.DRAW;
         } else {
@@ -141,7 +142,7 @@ public class SimpleChessGame {
 
     private Boolean attemptToMoveWhite(int x, int y) {
         Square[][] currentBoard = board.getBoard();
-        if (!currentBoard[x][y].isEmpty() && currentBoard[x][y].getPiece().getColor() == PieceColor.WHITE) {
+        if (currentBoard[x][y].containsPiece() && currentBoard[x][y].getPiece().getColor() == PieceColor.WHITE) {
             return true;
         }
 
@@ -150,7 +151,7 @@ public class SimpleChessGame {
 
     private Boolean attemptToMoveBlack(int x, int y) {
         Square[][] currentBoard = board.getBoard();
-        if (!currentBoard[x][y].isEmpty() && currentBoard[x][y].getPiece().getColor() == PieceColor.BLACK) {
+        if (currentBoard[x][y].containsPiece() && currentBoard[x][y].getPiece().getColor() == PieceColor.BLACK) {
             return true;
         }
 

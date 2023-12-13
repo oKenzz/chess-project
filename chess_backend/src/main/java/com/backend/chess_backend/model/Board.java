@@ -54,7 +54,7 @@ public class Board {
 
     // returns true if there is a piece on the square
     public Boolean containsPiece(int xCord, int yCord) {
-        return board[xCord][yCord].containsPiece(lastPiece);
+        return board[xCord][yCord].containsPiece();
     }
 
     public void reset() {

@@ -34,10 +34,6 @@ public class Square {
         return false;
     }
 
-    public boolean isEmpty() {
-        return this.piece == null;
-    }
-
     public void setPiece(Piece piece) {
         this.piece = piece;
     }
