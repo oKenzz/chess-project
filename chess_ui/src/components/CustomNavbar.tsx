@@ -32,14 +32,35 @@ const CustomNavbar = (   { roomCode, disableRoomcode} : { roomCode: string | nul
               <ReactSVG src="/images/logo.svg" />
           </Navbar.Brand>
         <Navbar.Toggle />
-        <Navbar.Collapse className='md:hidden bg-white'>
+        <Navbar.Collapse className='md:hidden bg-gray-600'>
+            <div className='w-100 p-3 flex items-center gap-3
+            border-y-2 border-gray-700 cursor-pointer'
+              onClick={() => { setIsSettingsModalOpen(true) } }
+            >
 
+                <p className='text-white text-2xl font-bold'>
+                    Settings
+                  </p>                
+                <ButtonImg id="settings_button" img='/images/Settings.svg' alt='Settings' size={50} 
+              event={() => { }}
+              />
+            </div>
             <div className='w-100 p-3'>
               <EscButton  style={{'width': '100%'}}/>
             </div>
-
+            {
+            roomCode && !disableRoomcode &&
+            (
+              <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: 0.5, delay: 0.5 } }}
+                    className='w-[100vw] bg-white flex items-center justify-center -z-50 -mt-7 '
+                >
+                <p className='text-center text-gray-500'>Room Code:  { roomCode }</p>
+              </motion.div>
+            )
+          }
         </Navbar.Collapse>
-
       </Navbar>
       
           {

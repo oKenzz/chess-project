@@ -81,7 +81,7 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
                 return { 
                     ...styles,
                     [move]: {
-                        background: "radial-gradient(circle at center, rgba(255, 255, 0, 0.9) 26%, transparent 35%)",
+                        background: "radial-gradient(circle at center, rgba(123, 97, 255, 0.8) 22%, transparent 23%)",
                         borderRadius: "50%",
                     }
                 };
@@ -110,7 +110,7 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
             id="BasicBoard"
             position={fen}
             boardOrientation={color}
-            arePremovesAllowed={true} 
+            arePremovesAllowed={false} 
             customDarkSquareStyle={{backgroundColor:  themeSettings.theme.customDarkSquareStyle}}
             customLightSquareStyle={{backgroundColor: themeSettings.theme.customLightSquareStyle}}
             customPremoveDarkSquareStyle={{backgroundColor:  themeSettings.theme.customPremoveDarkSquareStyle}}
