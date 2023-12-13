@@ -4,6 +4,9 @@
 
 Welcome to the Chess Project! This repository contains a React-based user interface and a Maven-powered backend for a comprehensive digital chess experience. Engage in matches against an AI opponent or challenge friends in a multiplayer setting.
 
+## Demo
+https://chess-project-phi.vercel.app/
+
 ## Features
 
 - **React Frontend**: A modern, responsive user interface for an immersive chess experience.
