@@ -9,7 +9,7 @@ const WaitingScreen = ({ roomCode }: WaitingScreenProps) =>{
     const [showEntertainment, setShowEntertainment] = useState(false);
     return (
         
-            <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center '>
+            <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  z-50'>
                 <div  className='absolute top-0 left-0 w-full h-full bg-black opacity-50'
                     style={{ zIndex: 999}}>
                 </div>

@@ -123,6 +123,9 @@
             "left-panel right-panel";
         width: 100vw;
         height: 100vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        --webkit-overflow-scrolling: touch;
     }
 
     .game-panel {
@@ -132,7 +135,8 @@
         padding: 4px;
         margin: 0;
         justify-content: center;
-        z-index: -9999;
+        z-index: 1;
+        --webkit-overflow-scrolling: touch;
     }
 
     .game-panel > div {
@@ -147,12 +151,12 @@
         align-items: center;
         padding: 0;
         margin: 0;
-        margin-bottom: 120px;
+        margin-bottom: 4rem;
     }
-
-    .left-panel-buttons {
-        /* Adjust button styles as needed */
+    .right-panel {
+        align-items: flex-start;
+        margin-left: 0.5rem;
     }
-
+ 
     /* Further adjust font sizes, button sizes, etc., as needed */
 }

@@ -1,0 +1,12 @@
+@media only screen and (max-width: 600px) {
+    .landing-page{
+        width: 100vw;
+        height: 100vh;
+        --webkit-overflow-scrolling: disable;
+        overflow: hidden;
+    }
+    .background-image div div svg{
+        width: 100vw;
+        height: fit-content;
+    }
+}
