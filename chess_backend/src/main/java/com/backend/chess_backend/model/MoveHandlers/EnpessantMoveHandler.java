@@ -88,7 +88,7 @@ public class EnpessantMoveHandler {
 
         if (color == PieceColor.WHITE) {
             currentBoard[x][y - 1].removePiece();
-        } else {
+        } else if (color == PieceColor.BLACK) {
             currentBoard[x][y + 1].removePiece();
         }
     }
