@@ -10,10 +10,8 @@ import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 
 public class CheckMateState {
-    
-    
 
-    public static Boolean isWhiteCheckmated(Board board){
+    public static boolean isWhiteCheckmated(Board board) {
         List<Piece> pieces = board.getAllPlayerPieces(PieceColor.WHITE);
         Map<String, ArrayList<Integer>> moves = MoveValidator.getAllPossiblePlayerMoves(pieces, board);
 
@@ -23,7 +21,7 @@ public class CheckMateState {
         return false;
     }
 
-    public static Boolean isBlackCheckmated(Board board){
+    public static boolean isBlackCheckmated(Board board) {
         List<Piece> pieces = board.getAllPlayerPieces(PieceColor.BLACK);
         Map<String, ArrayList<Integer>> moves = MoveValidator.getAllPossiblePlayerMoves(pieces, board);
 

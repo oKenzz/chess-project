@@ -2,13 +2,16 @@ package com.backend.chess_backend.socket;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
+
+import com.backend.chess_backend.model.ChessGames.IModifiedChessGame;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+
 import lombok.extern.log4j.Log4j2;
 
 @Component
@@ -57,7 +60,7 @@ public class ConnectionManager {
     }
 
     private void alertPlayerJoined(String sessionId, String roomCode) {
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(sessionId);
+        IModifiedChessGame game = gameManager.getGameByPlayerUuid(sessionId);
         if (game == null) {
             return;
         }
@@ -69,7 +72,7 @@ public class ConnectionManager {
     }
 
     private String handleNewConnection(SocketIOClient client, String sessionId) {
-        SimpleChessGame game = gameManager.createGame(sessionId, false);
+        IModifiedChessGame game = gameManager.createGame(sessionId, false);
         String room = game.getId();
         client.joinRoom(room);
         log.info("[CONNECTED] New connection, created room (" + room + ")");
@@ -79,19 +82,19 @@ public class ConnectionManager {
     private String handleRoomJoining(SocketIOClient client, String sessionId, String room) {
         switch (room) {
             case "quickPlay":
-                SimpleChessGame joinedGame = gameManager.joinRandomGame(sessionId);
+                IModifiedChessGame joinedGame = gameManager.joinRandomGame(sessionId);
                 room = joinedGame.getId();
                 log.info("[CONNECTED] Quickplay, joined room (" + room + ")");
                 client.joinRoom(room);
                 break;
             case "create":
-                SimpleChessGame newGame = gameManager.createGame(sessionId, true);
+                IModifiedChessGame newGame = gameManager.createGame(sessionId, true);
                 room = newGame.getId();
                 log.info("[CONNECTED] Created room (" + room + ")");
                 client.joinRoom(room);
                 break;
             case "singlePlayer":
-                SimpleChessGame singlePlayerGame = gameManager.createSoloGame(sessionId);
+                IModifiedChessGame singlePlayerGame = gameManager.createSoloGame(sessionId);
                 room = singlePlayerGame.getId();
                 log.info("[CONNECTED] SinglePlayer at (" + room + ")");
                 client.joinRoom(room);
@@ -110,7 +113,7 @@ public class ConnectionManager {
         }
         room = room.toUpperCase();
         if (gameManager.roomExist(room)) {
-            SimpleChessGame joinedGame = gameManager.joinRoom(room, sessionId);
+            IModifiedChessGame joinedGame = gameManager.joinRoom(room, sessionId);
             if (joinedGame != null) {
                 client.joinRoom(room);
                 log.info("[CONNECTED] Joined room (" + room + ")");

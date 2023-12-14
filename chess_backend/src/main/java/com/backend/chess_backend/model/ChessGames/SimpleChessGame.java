@@ -7,17 +7,16 @@ import java.util.Random;
 
 import com.backend.chess_backend.model.Board;
 import com.backend.chess_backend.model.Constants.GameOverEnum;
-import com.backend.chess_backend.model.MoveHandlers.CastlingMoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.CheckGameState;
-import com.backend.chess_backend.model.MoveHandlers.EnpessantMoveHandler;
+import com.backend.chess_backend.model.MoveHandlers.MoveHandler;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
-import com.backend.chess_backend.model.MoveHandlers.PromotionMoveHandler;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Player;
 import com.backend.chess_backend.model.Square;
 
-public class SimpleChessGame {
+public class SimpleChessGame implements IChessGame {
+
     private Board board;
     private Player playerWhite;
     private Player playerBlack;
@@ -37,12 +36,12 @@ public class SimpleChessGame {
         this.gameOver = GameOverEnum.NOT_OVER;
     }
 
-    public Boolean[][] possibleMoves(int x, int y) {
+    public boolean[][] possibleMoves(int x, int y) {
         Square[][] currentBoard = board.getBoard();
         Piece currentPiece = currentBoard[x][y].getPiece();
         int boardW = currentBoard.length;
         int boardH = currentBoard[0].length;
-        Boolean[][] emptyList = new Boolean[boardW][boardH];
+        boolean[][] emptyList = new boolean[boardW][boardH];
 
         for (int i = 0; i < boardW; i++) {
             for (int j = 0; j < boardH; j++) {
@@ -58,32 +57,16 @@ public class SimpleChessGame {
 
     }
 
-    public Boolean attemptMove(int x, int y, int newX, int newY) {
+    public boolean attemptMove(int x, int y, int newX, int newY) {
 
         Square[][] currentBoard = board.getBoard();
-        Boolean[][] possibleM = possibleMoves(x, y);
+        boolean[][] possibleM = possibleMoves(x, y);
 
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.isMoveAllowed(newX, newY, possibleM)) {
 
-                if (CastlingMoveHandler.isCastleMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
-                    CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
-                    board.move(currentBoard[x][y].getPiece(), newX, newY);
-                } else if (PromotionMoveHandler.isPromotionMove(currentBoard[x][y].getPiece(), newX, newY)) {
-                    board.move(currentBoard[x][y].getPiece(), newX, newY);
-                    PromotionMoveHandler.promoteToQueen(currentBoard[newX][newY].getPiece(), newX, newY, board);
-                } else if (EnpessantMoveHandler.isEnpessantMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
-                    board.move(currentBoard[x][y].getPiece(), newX, newY);
-                    EnpessantMoveHandler.makeEnpessantMove(currentBoard[newX][newY].getPiece().getColor(), newX, newY,
-                            board);
-                }else{
-                    board.move(currentBoard[x][y].getPiece(), newX, newY);
-                }
-                // } else if (MoveValidator.isEnPassantMove(currentBoard[x][y].getPiece(), newX,
-                // newY, board)) {
-                // EnPassantMoveHandler.makeEnPassantMove(currentBoard[x][y].getPiece(), newX,
-                // newY, board);
-                // }
+                MoveHandler.makeUniqueMove(x, y, newX, newY, board, currentBoard);
+
                 toggleTimer();
                 IncrementTurn();
                 if (isWhitesTurn()) {
@@ -140,7 +123,7 @@ public class SimpleChessGame {
         }
     }
 
-    private Boolean attemptToMoveWhite(int x, int y) {
+    private boolean attemptToMoveWhite(int x, int y) {
         Square[][] currentBoard = board.getBoard();
         if (currentBoard[x][y].containsPiece() && currentBoard[x][y].getPiece().getColor() == PieceColor.WHITE) {
             return true;
@@ -149,7 +132,7 @@ public class SimpleChessGame {
         return false;
     }
 
-    private Boolean attemptToMoveBlack(int x, int y) {
+    private boolean attemptToMoveBlack(int x, int y) {
         Square[][] currentBoard = board.getBoard();
         if (currentBoard[x][y].containsPiece() && currentBoard[x][y].getPiece().getColor() == PieceColor.BLACK) {
             return true;
@@ -164,14 +147,14 @@ public class SimpleChessGame {
         this.gameStartedTime = System.currentTimeMillis() / 1000L;
     }
 
-    private Boolean isWhitesTurn() {
+    private boolean isWhitesTurn() {
         if (turnsMade % 2 == 0) {
             return true;
         }
         return false;
     }
 
-    private Boolean isBlacksTurn() {
+    private boolean isBlacksTurn() {
         if (turnsMade % 2 != 0) {
             return true;
         }
@@ -213,7 +196,7 @@ public class SimpleChessGame {
         }
     }
 
-    public void addPlayer(String clinetId, Boolean isBot) {
+    public void addPlayer(String clinetId, boolean isBot) {
 
         if (!playerWhite.isOccupied()) {
             playerWhite.setPlayerID(clinetId);
@@ -250,7 +233,7 @@ public class SimpleChessGame {
         return null;
     }
 
-    public Boolean attemptUndo(String clientId) {
+    public boolean attemptUndo(String clientId) {
         if (playerWhite.isOccupied() && playerWhite.getUuid().equals(clientId)) {
             board.undoMove();
             subtractTurn();
@@ -276,15 +259,15 @@ public class SimpleChessGame {
         return new Player[] { playerWhite, playerBlack };
     }
 
-    public Boolean getCheck() {
+    public boolean getCheck() {
         return CheckGameState.checked(board);
     }
 
-    public Boolean getWhiteCheck() {
+    public boolean getWhiteCheck() {
         return CheckGameState.whiteChecked(board);
     }
 
-    public Boolean getBlackCheck() {
+    public boolean getBlackCheck() {
         return CheckGameState.blackChecked(board);
     }
 
@@ -335,7 +318,7 @@ public class SimpleChessGame {
         return this.playerBlack;
     }
 
-    public Boolean hasBotPlayer() {
+    public boolean hasBotPlayer() {
         for (Player player : this.getPlayers()) {
             if (player.isBot()) {
                 return true;

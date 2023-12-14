@@ -12,8 +12,8 @@ public class Pawn extends Piece {
     // account. Returns a matrix of booleans, true where you can move, false
     // otherwise;
     @Override
-    public Boolean[][] getPossibleMoves(int boardW, int boardH) {
-        Boolean[][] moves = new Boolean[boardW][boardH];
+    public boolean[][] getPossibleMoves(int boardW, int boardH) {
+        boolean[][] moves = new boolean[boardW][boardH];
 
         // Initialize all moves to false
         for (int i = 0; i < boardW; i++) {
@@ -21,7 +21,6 @@ public class Pawn extends Piece {
                 moves[i][j] = false;
             }
         }
-        
 
         // Determine the direction of movement based on the color of the pawn
         // int direction = (this.getColor() == PieceColor.WHITE) ? -1 : 1;

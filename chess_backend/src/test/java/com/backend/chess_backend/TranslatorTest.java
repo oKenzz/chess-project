@@ -6,24 +6,23 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.backend.chess_backend.model.Pieces.Bishop;
-import com.backend.chess_backend.model.Pieces.King;
-import com.backend.chess_backend.model.Pieces.Knight;
-import com.backend.chess_backend.model.Pieces.Pawn;
-import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Pieces.PieceFactory;
-import com.backend.chess_backend.model.Pieces.Queen;
-import com.backend.chess_backend.model.Pieces.Rook;
 import com.backend.chess_backend.model.Square;
-import com.backend.chess_backend.model.Translator;
+import com.backend.chess_backend.model.TranslatorService;
 
 @SpringBootTest
 class TranslatorTest {
 
-    Translator translator = new Translator();
+    private final TranslatorService translatorService;
+
+    @Autowired
+    public TranslatorTest(TranslatorService translatorService) {
+        this.translatorService = translatorService;
+    }
 
     @Test
     public void translateBoardTest() {
@@ -44,9 +43,9 @@ class TranslatorTest {
                     if (x == 0 || x == 7) {
                         board[x][y].setPiece(PieceFactory.makeRook(currentColor, x, y));
                     } else if (x == 1 || x == 6) {
-                        board[x][y].setPiece(PieceFactory.makeKnight(currentColor, x, y)); 
+                        board[x][y].setPiece(PieceFactory.makeKnight(currentColor, x, y));
                     } else if (x == 2 || x == 5) {
-                        board[x][y].setPiece(PieceFactory.makeBishop(currentColor, x, y)); 
+                        board[x][y].setPiece(PieceFactory.makeBishop(currentColor, x, y));
                     } else if (x == 3) {
                         board[x][y].setPiece(PieceFactory.makeQueen(currentColor, x, y));
                     } else if (x == 4) {
@@ -55,7 +54,7 @@ class TranslatorTest {
                 }
             }
         }
-        String fen = translator.translateBoard(board, "w");
+        String fen = translatorService.translateBoard(board, "w");
         assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w", fen);
     }
 
@@ -66,7 +65,7 @@ class TranslatorTest {
 
         // int[] coords = new int[2];
         ArrayList<Integer> coords = new ArrayList<Integer>();
-        coords = translator.translatePos(pos);
+        coords = translatorService.translatePos(pos);
 
         // int[] actual = new int[2];
         ArrayList<Integer> actual = new ArrayList<Integer>();
@@ -83,7 +82,7 @@ class TranslatorTest {
         String pos1 = "a4";
         String pos2 = "b4";
 
-        ArrayList<ArrayList<Integer>> coords = translator.translatePos(pos1, pos2);
+        ArrayList<ArrayList<Integer>> coords = translatorService.translatePos(pos1, pos2);
 
         ArrayList<Integer> actual1 = new ArrayList<Integer>();
         actual1.add(0);
@@ -102,19 +101,14 @@ class TranslatorTest {
     // Method needs to be made public to run tests on it
     // @Test
     // public void translateCoordsTest(){
-
-    // String pos = translator.translateCoords(0,3);
-
+    // String pos = translatorService.translateCoords(0,3);
     // String actual = "a4";
-
     // assertEquals(pos, actual);
-
     // }
-
     @Test
     public void translatePossibleMovesTest() {
 
-        Boolean[][] bolBoard = new Boolean[8][8];
+        boolean[][] bolBoard = new boolean[8][8];
 
         for (int x = 0; x < bolBoard.length; x++) {
             for (int y = 0; y < bolBoard.length; y++) {
@@ -127,7 +121,7 @@ class TranslatorTest {
             }
         }
 
-        ArrayList<String> possitions = translator.translatePossibleMoves(bolBoard);
+        ArrayList<String> possitions = translatorService.translatePossibleMoves(bolBoard);
 
         ArrayList<String> actual = new ArrayList<String>(Arrays.asList("d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"));
 

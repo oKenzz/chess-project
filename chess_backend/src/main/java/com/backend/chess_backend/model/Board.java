@@ -3,7 +3,7 @@ package com.backend.chess_backend.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.backend.chess_backend.model.Pieces.King;
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Pieces.PieceSetup;
@@ -12,7 +12,6 @@ public class Board {
 
     // Will swap "Object to Piece"
     // ArrayList<ArrayList<Object>> board = new ArrayList<ArrayList<Object>>();
-
     Square[][] board;
     int[][] lastMove = new int[2][2];
     int[] bKingPosition = new int[2];
@@ -53,7 +52,7 @@ public class Board {
     }
 
     // returns true if there is a piece on the square
-    public Boolean containsPiece(int xCord, int yCord) {
+    public boolean containsPiece(int xCord, int yCord) {
         return board[xCord][yCord].containsPiece();
     }
 
@@ -62,8 +61,8 @@ public class Board {
     }
 
     // checks if the move made is a move that is allowed for that piece
-    public boolean isMoveAllowed(int newX, int newY, Boolean[][] moveList) {
-        if (moveList[newX][newY] == true) {
+    public boolean isMoveAllowed(int newX, int newY, boolean[][] possibleM) {
+        if (possibleM[newX][newY] == true) {
             return true;
         } else {
             return false;
@@ -81,10 +80,10 @@ public class Board {
         updateBoard(piece, newX, newY);
         piece.updateCoords(newX, newY);
 
-        if (piece instanceof King && piece.getColor() == PieceColor.BLACK) {
+        if (piece.getPieceType() == PieceTypeEnum.BLACK_KING) {
             this.bKingPosition[0] = newX;
             this.bKingPosition[1] = newY;
-        } else if (piece instanceof King && piece.getColor() == PieceColor.WHITE) {
+        } else if (piece.getPieceType() == PieceTypeEnum.WHITE_KING) {
             this.wKingPosition[0] = newX;
             this.wKingPosition[1] = newY;
         }
@@ -130,11 +129,11 @@ public class Board {
     private void setKingsPositions() {
         for (int x = 0; x < this.BoardWidth; x++) {
             for (int y = 0; y < this.BoardHight; y++) {
-                if (this.board[x][y].containsPiece() && this.board[x][y].getPiece() instanceof King) {
-                    if (this.board[x][y].getPiece().getColor() == PieceColor.BLACK) {
+                if (this.board[x][y].containsPiece()) {
+                    if (this.board[x][y].getPiece().getPieceType() == PieceTypeEnum.BLACK_KING) {
                         bKingPosition[0] = x;
                         bKingPosition[1] = y;
-                    } else if (this.board[x][y].getPiece().getColor() == PieceColor.WHITE) {
+                    } else if (this.board[x][y].getPiece().getPieceType() == PieceTypeEnum.WHITE_KING) {
                         wKingPosition[0] = x;
                         wKingPosition[1] = y;
                     }

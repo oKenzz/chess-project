@@ -6,30 +6,29 @@ import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Square;
 
 public class CheckState {
-    
 
-    public static Boolean isChecked(Board board) {
+    public static boolean isChecked(Board board) {
         if (isWhiteChecked(board) == true || isBlackChecked(board) == true) {
             return true;
         }
         return false;
     }
 
-    public static Boolean isWhiteChecked(Board board) {
+    public static boolean isWhiteChecked(Board board) {
         if (threatenedWhiteKing(board) == true) {
             return true;
         }
         return false;
     }
 
-    public static Boolean isBlackChecked(Board board) {
+    public static boolean isBlackChecked(Board board) {
         if (threatenedblackKing(board) == true) {
             return true;
         }
         return false;
     }
 
-    private static Boolean threatenedWhiteKing(Board board) {
+    private static boolean threatenedWhiteKing(Board board) {
 
         Square[][] currentBoard = board.getBoard();
 
@@ -37,7 +36,8 @@ public class CheckState {
             for (int y = 0; y < board.getBoardHeight(); y++) {
                 if (currentBoard[x][y].containsPiece()) {
                     if (currentBoard[x][y].getPiece().getColor() != PieceColor.WHITE) {
-                        Boolean[][] posMoves = MoveValidator.primitivePossibleMoves(currentBoard[x][y].getPiece(), board);
+                        boolean[][] posMoves = MoveValidator.primitivePossibleMoves(currentBoard[x][y].getPiece(),
+                                board);
                         int[] whiteKingPos = board.getwKingPosition();
                         if (posMoves[whiteKingPos[0]][whiteKingPos[1]] == true) {
                             return true;
@@ -49,7 +49,7 @@ public class CheckState {
         return false;
     }
 
-    private static Boolean threatenedblackKing(Board board) {
+    private static boolean threatenedblackKing(Board board) {
 
         Square[][] currentBoard = board.getBoard();
 
@@ -57,7 +57,8 @@ public class CheckState {
             for (int y = 0; y < board.getBoardHeight(); y++) {
                 if (currentBoard[x][y].containsPiece()) {
                     if (currentBoard[x][y].getPiece().getColor() != PieceColor.BLACK) {
-                        Boolean[][] posMoves = MoveValidator.primitivePossibleMoves(currentBoard[x][y].getPiece(), board);
+                        boolean[][] posMoves = MoveValidator.primitivePossibleMoves(currentBoard[x][y].getPiece(),
+                                board);
                         int[] blackKingPos = board.getbKingPosition();
                         if (posMoves[blackKingPos[0]][blackKingPos[1]] == true) {
                             return true;

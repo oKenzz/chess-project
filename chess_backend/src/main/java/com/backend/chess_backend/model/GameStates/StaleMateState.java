@@ -11,8 +11,7 @@ import com.backend.chess_backend.model.Pieces.PieceColor;
 
 public class StaleMateState {
 
-
-    public static Boolean isWhiteStalemated(Board board){
+    public static boolean isWhiteStalemated(Board board) {
         List<Piece> pieces = board.getAllPlayerPieces(PieceColor.WHITE);
         Map<String, ArrayList<Integer>> moves = MoveValidator.getAllPossiblePlayerMoves(pieces, board);
 
@@ -22,7 +21,7 @@ public class StaleMateState {
         return false;
     }
 
-    public static Boolean isBlackStalemated(Board board){
+    public static boolean isBlackStalemated(Board board) {
         List<Piece> pieces = board.getAllPlayerPieces(PieceColor.BLACK);
         Map<String, ArrayList<Integer>> moves = MoveValidator.getAllPossiblePlayerMoves(pieces, board);
 
@@ -31,8 +30,8 @@ public class StaleMateState {
         }
         return false;
     }
-    
-    public static Boolean isStalemate(Board board){
+
+    public static boolean isStalemate(Board board) {
 
         if (isWhiteStalemated(board) || isBlackStalemated(board)) {
             return true;

@@ -9,10 +9,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.backend.chess_backend.model.ChessGames.ModifiedChessGame;
-import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
+import com.backend.chess_backend.model.ChessGames.IChessGame;
+import com.backend.chess_backend.model.ChessGames.IModifiedChessGame;
 import com.backend.chess_backend.model.Constants.GameOverEnum;
-import com.backend.chess_backend.model.Translator;
+import com.backend.chess_backend.model.TranslatorService;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -23,31 +23,33 @@ public class ChessHandler {
 
     private final GameManager gameManager;
     private final SocketIOServer server; // SocketIOServer instance
+    private final TranslatorService translatorService;
 
     @Autowired
-    public ChessHandler(GameManager gameManager, SocketIOServer server) {
+    public ChessHandler(TranslatorService translatorService, GameManager gameManager, SocketIOServer server) {
+        this.translatorService = translatorService;
         this.gameManager = gameManager;
         this.server = server;
     }
 
     public void computerMoveListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuid = client.getSessionId().toString();
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return;
         }
         game.makeRandomMove();
         server.getRoomOperations(game.getId()).sendEvent("boardState",
-                Translator.translateBoard(game.getBoard(), game.getTurn()));
+                translatorService.translateBoard(game.getBoard(), game.getTurn()));
     }
 
     public void getChatMessagesListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuid = client.getSessionId().toString();
-        ModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        IModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return;
         }
-        String response = new Gson().toJson(game.chat.getMessages());
+        String response = new Gson().toJson(game.getMessages());
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData(response);
         }
@@ -55,7 +57,7 @@ public class ChessHandler {
 
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
         String playerUuid = client.getSessionId().toString();
-        ModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        IModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
         if (game == null) {
             return;
         }
@@ -66,8 +68,8 @@ public class ChessHandler {
         if (message.length() > 100 || message.length() < 1) {
             return;
         }
-        game.chat.postMessage(message, playerUuid);
-        String response = new Gson().toJson(game.chat.getMessages());
+        game.postMessage(message, playerUuid);
+        String response = new Gson().toJson(game.getMessages());
         server.getRoomOperations(game.getId()).sendEvent("chatMessage", response);
         if (ackRequest.isAckRequested()) {
             ackRequest.sendAckData("Message has been receieved");
@@ -88,7 +90,7 @@ public class ChessHandler {
             Map<String, Object> gameState = new HashMap<>();
             gameState.put("id", game.getId());
             gameState.put("gameCreatedAt", game.getGameStartedTime());
-            gameState.put("fen", Translator.translateBoard(game.getBoard(), game.getTurn()));
+            gameState.put("fen", translatorService.translateBoard(game.getBoard(), game.getTurn()));
             gameState.put("turn", game.getTurn());
             gameState.put("playerColor", game.getPlayerColor(playerUuid));
             gameState.put("players", game.getPlayers());
@@ -111,9 +113,9 @@ public class ChessHandler {
         }
 
         String playerUuid = client.getSessionId().toString();
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
 
-        ArrayList<ArrayList<Integer>> coordinates = Translator.translatePos(
+        ArrayList<ArrayList<Integer>> coordinates = translatorService.translatePos(
                 jsonObject.getString("from"), jsonObject.getString("to"));
         boolean hasMoved = game.attemptMove(
                 coordinates.get(0).get(0), coordinates.get(0).get(1),
@@ -126,10 +128,10 @@ public class ChessHandler {
         }
     }
 
-    private void updateGameState(SimpleChessGame game) {
+    private void updateGameState(IChessGame game) {
         String gameId = game.getId();
         server.getRoomOperations(gameId).sendEvent("boardState",
-                Translator.translateBoard(game.getBoard(), game.getTurn()));
+                translatorService.translateBoard(game.getBoard(), game.getTurn()));
         server.getRoomOperations(gameId).sendEvent("syncTimers", game.getPlayerTimes());
 
         GameOverEnum gameOverStatus = game.checkGameOver();
@@ -140,12 +142,12 @@ public class ChessHandler {
 
     public void possibleMoveListener(SocketIOClient client, String square, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         if (game == null) {
             return;
         }
-        ArrayList<Integer> coords = Translator.translatePos(square);
-        ArrayList<String> coordinates = Translator
+        ArrayList<Integer> coords = translatorService.translatePos(square);
+        ArrayList<String> coordinates = translatorService
                 .translatePossibleMoves(game.possibleMoves(coords.get(0), coords.get(1)));
 
         if (ackRequest.isAckRequested()) {
@@ -155,18 +157,18 @@ public class ChessHandler {
 
     public void restartBoardListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         game.restartGame();
         server.getRoomOperations(game.getId()).sendEvent("boardState",
-                Translator.translateBoard(game.getBoard(), game.getTurn()));
+                translatorService.translateBoard(game.getBoard(), game.getTurn()));
     }
 
     public void undoMoveListener(SocketIOClient client, Void data, AckRequest ackRequest) {
         String playerUuID = client.getSessionId().toString();
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         if (game.attemptUndo(playerUuID)) {
             server.getRoomOperations(game.getId()).sendEvent("boardState",
-                    Translator.translateBoard(game.getBoard(), game.getTurn()));
+                    translatorService.translateBoard(game.getBoard(), game.getTurn()));
         }
     }
 
@@ -176,7 +178,7 @@ public class ChessHandler {
     }
 
     private void playerSurrender(String playerUuID) {
-        SimpleChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuID);
         if (game != null) {
             game.surrender(playerUuID);
             String gameOverMsg = game.checkGameOver().getMessage();

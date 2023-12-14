@@ -9,8 +9,8 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Boolean[][] getPossibleMoves(int boardW, int boardH) {
-        Boolean[][] moves = new Boolean[boardW][boardH];
+    public boolean[][] getPossibleMoves(int boardW, int boardH) {
+        boolean[][] moves = new boolean[boardW][boardH];
 
         // Initialize all moves to false
         for (int i = 0; i < boardW; i++) {
@@ -32,15 +32,15 @@ public class Knight extends Piece {
                 moves[newX][newY] = true;
             }
         }
-        
+
         return moves;
     }
 
     @Override
-    public PieceTypeEnum getPieceType(){
-        if(this.getColor() == PieceColor.BLACK){
-            return PieceTypeEnum.BLACK_KNIGHT; 
-        }else{
+    public PieceTypeEnum getPieceType() {
+        if (this.getColor() == PieceColor.BLACK) {
+            return PieceTypeEnum.BLACK_KNIGHT;
+        } else {
             return PieceTypeEnum.WHITE_KNIGHT;
         }
     }

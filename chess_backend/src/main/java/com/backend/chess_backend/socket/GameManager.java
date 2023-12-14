@@ -9,13 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.chess_backend.model.ChessGames.IChessGame;
+import com.backend.chess_backend.model.ChessGames.IModifiedChessGame;
 import com.backend.chess_backend.model.ChessGames.ModifiedChessGame;
-import com.backend.chess_backend.model.ChessGames.SimpleChessGame;
 
 @Service
 public class GameManager {
 
-    private Map<String, ModifiedChessGame> games; // Keyed by game ID
+    private Map<String, IModifiedChessGame> games; // Keyed by game ID
     private Map<String, String> playerGameMap; // Keyed by player UUID, value is game ID
 
     public GameManager() {
@@ -23,10 +24,10 @@ public class GameManager {
         playerGameMap = new ConcurrentHashMap<>();
     }
 
-    public synchronized ModifiedChessGame createGame(String clientId, boolean isPrivate) {
+    public synchronized IModifiedChessGame createGame(String clientId, boolean isPrivate) {
         if (!playerGameMap.containsKey(clientId)) {
             String newGameId = generateID();
-            ModifiedChessGame newGame = new ModifiedChessGame(newGameId, isPrivate);
+            IModifiedChessGame newGame = new ModifiedChessGame(newGameId, isPrivate);
             newGame.addPlayer(clientId, false);
             games.put(newGameId, newGame);
             playerGameMap.put(clientId, newGameId);
@@ -35,9 +36,9 @@ public class GameManager {
         return this.getGameByPlayerUuid(clientId);
     }
 
-    public synchronized ModifiedChessGame createSoloGame(String clientId) {
+    public synchronized IModifiedChessGame createSoloGame(String clientId) {
         String newGameId = generateID();
-        ModifiedChessGame newGame = new ModifiedChessGame(newGameId, true);
+        IModifiedChessGame newGame = new ModifiedChessGame(newGameId, true);
         newGame.addPlayer(clientId, false);
         games.put(newGameId, newGame);
         playerGameMap.put(clientId, newGameId);
@@ -53,11 +54,11 @@ public class GameManager {
         return games.containsKey(roomId);
     }
 
-    public synchronized ModifiedChessGame joinRoom(String gameId, String clientId) {
+    public synchronized IModifiedChessGame joinRoom(String gameId, String clientId) {
         if (playerGameMap.containsKey(clientId)) {
             return this.getGameByPlayerUuid(clientId);
         }
-        ModifiedChessGame game = games.get(gameId);
+        IModifiedChessGame game = games.get(gameId);
         if (game != null && !game.isFull()) {
             game.addPlayer(clientId, false);
             playerGameMap.put(clientId, gameId);
@@ -66,12 +67,12 @@ public class GameManager {
         return null;
     }
 
-    public synchronized ModifiedChessGame joinRandomGame(String clientId) {
+    public synchronized IModifiedChessGame joinRandomGame(String clientId) {
         if (playerGameMap.containsKey(clientId)) {
             return this.getGameByPlayerUuid(clientId);
         }
 
-        for (ModifiedChessGame game : games.values()) {
+        for (IModifiedChessGame game : games.values()) {
             if (!game.isFull() && !game.isPrivate()) {
                 game.addPlayer(clientId, false);
                 playerGameMap.put(clientId, game.getId());
@@ -84,7 +85,7 @@ public class GameManager {
     public synchronized boolean disconnect(String clientId) {
         String gameId = playerGameMap.get(clientId);
         if (gameId != null) {
-            ModifiedChessGame game = games.get(gameId);
+            IModifiedChessGame game = games.get(gameId);
             if (game != null) {
                 game.removePlayer(clientId);
                 playerGameMap.remove(clientId);
@@ -97,7 +98,7 @@ public class GameManager {
         return false;
     }
 
-    private synchronized boolean removeGameIfEmpty(SimpleChessGame game) {
+    private synchronized boolean removeGameIfEmpty(IChessGame game) {
         // if single player or game is empty
         if (game.hasBotPlayer() || game.isEmpty()) {
             removeGame(game.getId());
@@ -106,7 +107,7 @@ public class GameManager {
         return false;
     }
 
-    public ModifiedChessGame getGameByPlayerUuid(String playerUuid) {
+    public IModifiedChessGame getGameByPlayerUuid(String playerUuid) {
         String gameId = playerGameMap.get(playerUuid);
         return gameId != null ? games.get(gameId) : null;
     }
@@ -119,7 +120,7 @@ public class GameManager {
     public List<String> getGames() {
         List<String> games = new ArrayList<>(this.games.keySet());
         for (int i = 0; i < games.size(); i++) {
-            ModifiedChessGame game = this.games.get(games.get(i));
+            IModifiedChessGame game = this.games.get(games.get(i));
             if (game.isPrivate()) {
                 games.remove(i);
                 i--; // Decrement i to account for the removed element
@@ -130,7 +131,7 @@ public class GameManager {
 
     public List<Map<String, Object>> getGamesInfo() {
         List<Map<String, Object>> allGamesInfo = new ArrayList<>();
-        for (ModifiedChessGame game : games.values()) {
+        for (IModifiedChessGame game : games.values()) {
             Map<String, Object> gameInfo = new HashMap<>();
             gameInfo.put("gameId", game.getId());
             gameInfo.put("isPrivate", game.isPrivate());
@@ -141,7 +142,7 @@ public class GameManager {
     }
 
     public void kickPlayer(String uuid) {
-        SimpleChessGame game = games.get(playerGameMap.get(uuid));
+        IChessGame game = games.get(playerGameMap.get(uuid));
         game.removePlayer(uuid);
         playerGameMap.remove(uuid);
     }
@@ -164,7 +165,7 @@ public class GameManager {
      * than 10 seconds.
      */
     public void removeInactiveGames() {
-        for (ModifiedChessGame game : games.values()) {
+        for (IModifiedChessGame game : games.values()) {
             System.out.println(game.getGameTime());
             System.out.println(game.getGameTime() > 1800);
             if (game.getGameTime() > 1800) {

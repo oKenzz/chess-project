@@ -6,36 +6,44 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.chess_backend.model.Pieces.Bishop;
 import com.backend.chess_backend.model.Pieces.PieceColor;
-import com.backend.chess_backend.model.Translator;
+import com.backend.chess_backend.model.TranslatorService;
 
 @SpringBootTest
 public class BishopTest {
-    
+
+    private final TranslatorService translatorService;
+
+    @Autowired
+    public BishopTest(TranslatorService translatorService) {
+        this.translatorService = translatorService;
+    }
+
     @Test
-    void initialisationTest(){
+    void initialisationTest() {
 
         Bishop bishop = new Bishop(PieceColor.BLACK, 1, 7);
 
-        assertEquals(bishop.getX(), 1);        
+        assertEquals(bishop.getX(), 1);
         assertEquals(bishop.getY(), 7);
         assertTrue(bishop.getColor() == PieceColor.BLACK);
 
     }
 
     @Test
-    void getPossibleMovesTest(){
+    void getPossibleMovesTest() {
 
         Bishop bishop = new Bishop(PieceColor.BLACK, 1, 7);
 
-        Boolean[][] posMoves = bishop.getPossibleMoves(8, 8);
+        boolean[][] posMoves = bishop.getPossibleMoves(8, 8);
 
-        ArrayList<String> expected = new ArrayList<String>(Arrays.asList( "a7","c7","d6","e5","f4","g3","h2"));
+        ArrayList<String> expected = new ArrayList<String>(Arrays.asList("a7", "c7", "d6", "e5", "f4", "g3", "h2"));
 
-        ArrayList<String> actual = Translator.translatePossibleMoves(posMoves);
+        ArrayList<String> actual = translatorService.translatePossibleMoves(posMoves);
 
         assertEquals(expected, actual);
 
@@ -43,7 +51,7 @@ public class BishopTest {
     }
 
     @Test
-    void getPieceTypeTest(){
+    void getPieceTypeTest() {
         Bishop bishop = new Bishop(PieceColor.BLACK, 1, 7);
 
         assertEquals(bishop.getPieceType(), "b");

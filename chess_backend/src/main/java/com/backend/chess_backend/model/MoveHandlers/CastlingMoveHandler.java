@@ -1,21 +1,21 @@
 package com.backend.chess_backend.model.MoveHandlers;
 
 import com.backend.chess_backend.model.Board;
-import com.backend.chess_backend.model.Pieces.King;
+import com.backend.chess_backend.model.Constants.PieceTypeEnum;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
-import com.backend.chess_backend.model.Pieces.Rook;
 import com.backend.chess_backend.model.Square;
 
 public class CastlingMoveHandler {
 
-    public static void validateCastlingMoves(Piece king, Boolean[][] movelist, Board board) {
+    public static void validateCastlingMoves(Piece king, boolean[][] movelist, Board board) {
 
         Square[][] currentBoard = board.getBoard();
         PieceColor kingColor = king.getColor();
         if (king.getColor() == PieceColor.BLACK) {
 
-            if (currentBoard[0][7].getPiece() instanceof Rook && currentBoard[0][7].getPiece().getMovesMade() == 0) {
+            if (currentBoard[0][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
+                    && currentBoard[0][7].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(1, 7, kingColor, board) && notThreatenedEmptySquare(2, 7, kingColor, board)
                         && notThreatenedEmptySquare(3, 7, kingColor, board)) {
 
@@ -24,7 +24,8 @@ public class CastlingMoveHandler {
 
                 }
             }
-            if (currentBoard[7][7].getPiece() instanceof Rook && currentBoard[7][7].getPiece().getMovesMade() == 0) {
+            if (currentBoard[7][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
+                    && currentBoard[7][7].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(5, 7, kingColor, board)
                         && notThreatenedEmptySquare(6, 7, kingColor, board)) {
 
@@ -34,7 +35,8 @@ public class CastlingMoveHandler {
                 }
             }
         } else if (king.getColor() == PieceColor.WHITE) {
-            if (currentBoard[0][0].getPiece() instanceof Rook && currentBoard[0][0].getPiece().getMovesMade() == 0) {
+            if (currentBoard[0][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
+                    && currentBoard[0][0].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(1, 0, kingColor, board) && notThreatenedEmptySquare(2, 0, kingColor, board)
                         && notThreatenedEmptySquare(3, 0, kingColor, board)) {
 
@@ -43,7 +45,8 @@ public class CastlingMoveHandler {
 
                 }
             }
-            if (currentBoard[7][0].getPiece() instanceof Rook && currentBoard[7][0].getPiece().getMovesMade() == 0) {
+            if (currentBoard[7][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
+                    && currentBoard[7][0].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(5, 0, kingColor, board)
                         && notThreatenedEmptySquare(6, 0, kingColor, board)) {
 
@@ -73,14 +76,15 @@ public class CastlingMoveHandler {
         }
     }
 
-    public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
-        if (piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
+    public static boolean isCastleMove(Piece piece, int x, int y, Board board) {
+        if (piece.getPieceType() == PieceTypeEnum.BLACK_KING || piece.getPieceType() == PieceTypeEnum.WHITE_KING
+                && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
             return true;
         }
         return false;
     }
 
-    private static Boolean notThreatenedEmptySquare(int x, int y, PieceColor color, Board board) {
+    private static boolean notThreatenedEmptySquare(int x, int y, PieceColor color, Board board) {
 
         if (!board.containsPiece(x, y) && !MoveValidator.threatenedSquare(x, y, color, board)) {
             return true;

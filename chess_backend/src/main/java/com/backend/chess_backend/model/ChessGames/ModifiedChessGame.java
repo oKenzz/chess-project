@@ -1,10 +1,11 @@
 package com.backend.chess_backend.model.ChessGames;
 
 import com.backend.chess_backend.model.Chat.Chat;
+import com.backend.chess_backend.model.Chat.IMessage;
 
-public class ModifiedChessGame extends SimpleChessGame {
+public class ModifiedChessGame extends SimpleChessGame implements IModifiedChessGame  {
     private boolean isPrivate;
-    public Chat chat;
+    private Chat chat;
 
     public ModifiedChessGame(String gameId, boolean isPrivate) {
         super(gameId);
@@ -14,5 +15,13 @@ public class ModifiedChessGame extends SimpleChessGame {
 
     public boolean isPrivate() {
         return isPrivate;
+    }
+
+    public IMessage[] getMessages() {
+        return this.chat.getMessages();
+    }
+
+    public IMessage[] postMessage(String message, String playerUuid) {
+        return  this.chat.postMessage(message, playerUuid);
     }
 }

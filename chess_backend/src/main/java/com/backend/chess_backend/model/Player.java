@@ -1,14 +1,15 @@
 package com.backend.chess_backend.model;
 
 public class Player {
+
     private long startTime;
     private int timeLeft;
     private String uuid;
-    private Boolean isBot;
+    private boolean isBot;
     private boolean isTimerRunning;
     private boolean isOccupied;
 
-    public Player(Boolean isBot, int intialTime) {
+    public Player(boolean isBot, int intialTime) {
         this.isBot = isBot;
         this.timeLeft = intialTime;
         this.isTimerRunning = false;
@@ -29,7 +30,7 @@ public class Player {
         return isOccupied;
     }
 
-    public void setBot(Boolean isBot) {
+    public void setBot(boolean isBot) {
         this.isBot = isBot;
     }
 
@@ -62,7 +63,7 @@ public class Player {
         return uuid;
     }
 
-    public Boolean isBot() {
+    public boolean isBot() {
         return isBot;
     }
 }

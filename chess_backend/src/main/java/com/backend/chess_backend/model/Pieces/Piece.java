@@ -9,47 +9,48 @@ public abstract class Piece {
     public int yCoord;
     public int movesMade;
 
-    protected Piece (PieceColor color, int xCoord, int yCoord){
+    protected Piece(PieceColor color, int xCoord, int yCoord) {
         this.color = color;
         this.dead = false;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
         this.movesMade = 0;
-        
+
     }
 
-    public boolean isDead(){
+    public boolean isDead() {
         return dead;
     }
 
-    public PieceColor getColor(){
+    public PieceColor getColor() {
         return color;
     }
 
-    public int getX(){
+    public int getX() {
         return xCoord;
     }
 
-    public int getY(){
+    public int getY() {
         return yCoord;
     }
 
-    public int getMovesMade(){
+    public int getMovesMade() {
         return movesMade;
     }
 
-    public void IncrementMovesMade(){
+    public void IncrementMovesMade() {
         this.movesMade++;
     }
 
-    //forcefully updates the coordinates, should only be called right before move returns true
-    public void updateCoords(int newX, int newY){
+    // forcefully updates the coordinates, should only be called right before move
+    // returns true
+    public void updateCoords(int newX, int newY) {
         this.xCoord = newX;
         this.yCoord = newY;
     }
 
-    
     abstract public PieceTypeEnum getPieceType();
-    abstract public Boolean[][] getPossibleMoves(int boardW, int boardH);
+
+    abstract public boolean[][] getPossibleMoves(int boardW, int boardH);
 
 }
