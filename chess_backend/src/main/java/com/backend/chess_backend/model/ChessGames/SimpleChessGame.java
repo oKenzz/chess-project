@@ -24,7 +24,7 @@ public class SimpleChessGame implements IChessGame {
     private String gameId;
     private long gameStartedTime;
     private GameOverEnum gameOver;
-    private final Integer defaultChessTime = 10;
+    private final Integer defaultChessTime = 600;
 
     public SimpleChessGame(String gameid) {
         this.gameId = gameid;
