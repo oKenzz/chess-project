@@ -147,12 +147,6 @@ public class MoveValidator {
         }
     }
 
-    public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
-        if (piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
-            return true;
-        }
-        return false;
-    }
 
     private static void handleBlackPawnMoves(Piece piece, Boolean[][] movelist, Square[][] board) {
         if (piece.getY() > 0 && board[piece.getX()][piece.getY() - 1].containsPiece()) {

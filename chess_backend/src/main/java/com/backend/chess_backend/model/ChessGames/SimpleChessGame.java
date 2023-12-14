@@ -66,7 +66,7 @@ public class SimpleChessGame {
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || attemptToMoveBlack(x, y) && isBlacksTurn()) {
             if (board.isMoveAllowed(newX, newY, possibleM)) {
 
-                if (MoveValidator.isCastleMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
+                if (CastlingMoveHandler.isCastleMove(currentBoard[x][y].getPiece(), newX, newY, board)) {
                     CastlingMoveHandler.makeCastleMove(x, y, newX, newY, board);
                     board.move(currentBoard[x][y].getPiece(), newX, newY);
                 } else if (PromotionMoveHandler.isPromotionMove(currentBoard[x][y].getPiece(), newX, newY)) {

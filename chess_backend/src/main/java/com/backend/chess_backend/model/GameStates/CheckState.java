@@ -1,9 +1,9 @@
 package com.backend.chess_backend.model.GameStates;
 
 import com.backend.chess_backend.model.Board;
-import com.backend.chess_backend.model.Square;
 import com.backend.chess_backend.model.MoveHandlers.MoveValidator;
 import com.backend.chess_backend.model.Pieces.PieceColor;
+import com.backend.chess_backend.model.Square;
 
 public class CheckState {
     
@@ -29,7 +29,7 @@ public class CheckState {
         return false;
     }
 
-    public static Boolean threatenedWhiteKing(Board board) {
+    private static Boolean threatenedWhiteKing(Board board) {
 
         Square[][] currentBoard = board.getBoard();
 
@@ -49,7 +49,7 @@ public class CheckState {
         return false;
     }
 
-    public static Boolean threatenedblackKing(Board board) {
+    private static Boolean threatenedblackKing(Board board) {
 
         Square[][] currentBoard = board.getBoard();
 

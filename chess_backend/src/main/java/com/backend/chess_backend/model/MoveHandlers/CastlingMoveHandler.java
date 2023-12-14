@@ -1,10 +1,11 @@
 package com.backend.chess_backend.model.MoveHandlers;
 
 import com.backend.chess_backend.model.Board;
-import com.backend.chess_backend.model.Square;
+import com.backend.chess_backend.model.Pieces.King;
 import com.backend.chess_backend.model.Pieces.Piece;
 import com.backend.chess_backend.model.Pieces.PieceColor;
 import com.backend.chess_backend.model.Pieces.Rook;
+import com.backend.chess_backend.model.Square;
 
 public class CastlingMoveHandler {
 
@@ -70,6 +71,13 @@ public class CastlingMoveHandler {
                 board.move(currentBoard[7][0].getPiece(), 5, 0);
             }
         }
+    }
+
+    public static Boolean isCastleMove(Piece piece, int x, int y, Board board) {
+        if (piece instanceof King && piece.getMovesMade() == 0 && Math.abs(piece.getX() - x) == 2) {
+            return true;
+        }
+        return false;
     }
 
     private static Boolean notThreatenedEmptySquare(int x, int y, PieceColor color, Board board) {
