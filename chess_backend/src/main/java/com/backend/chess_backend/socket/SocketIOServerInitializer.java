@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
 import com.corundumstudio.socketio.SocketIOServer;
+
 import jakarta.annotation.PreDestroy;
 
 @Component
@@ -35,6 +37,7 @@ public class SocketIOServerInitializer {
         server.addEventListener("restart", Void.class, chessHandler::restartBoardListener);
         server.addEventListener("surrender", Void.class, chessHandler::surrenderListener);
         server.addEventListener("undo", Void.class, chessHandler::undoMoveListener);
+        server.addEventListener("checkIfGameIsOver", Void.class, chessHandler::onTimeRunOutListener);
         server.start();
     }
 

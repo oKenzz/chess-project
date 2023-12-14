@@ -47,6 +47,10 @@ const RightSidebar = (
         } else {
             setOpponentTime(opponentTime - 1);
         }
+
+        if (myTime <= 0 || opponentTime <= 0) {
+            socket.emit("checkIfGameIsOver");
+        }
     }
 
     useEffect(() => {

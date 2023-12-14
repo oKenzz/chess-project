@@ -24,7 +24,7 @@ public class SimpleChessGame implements IChessGame {
     private String gameId;
     private long gameStartedTime;
     private GameOverEnum gameOver;
-    private Integer defaultChessTime = 600;
+    private final Integer defaultChessTime = 10;
 
     public SimpleChessGame(String gameid) {
         this.gameId = gameid;
@@ -280,6 +280,11 @@ public class SimpleChessGame implements IChessGame {
     }
 
     public GameOverEnum checkGameOver() {
+        if (this.playerWhite.getTimeLeft() <= 0) {
+            return GameOverEnum.BLACK;
+        } else if (this.playerBlack.getTimeLeft() <= 0) {
+            return GameOverEnum.WHITE;
+        }
         return gameOver;
     }
 

@@ -55,6 +55,18 @@ public class ChessHandler {
         }
     }
 
+    public void onTimeRunOutListener(SocketIOClient client, Void data, AckRequest ackRequest) {
+        String playerUuid = client.getSessionId().toString();
+        IChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
+        if (game == null) {
+            return;
+        }
+        GameOverEnum gameOverStatus = game.checkGameOver();
+        if (gameOverStatus != GameOverEnum.NOT_OVER && gameOverStatus != null) {
+            server.getRoomOperations(game.getId()).sendEvent("gameOver", gameOverStatus.getMessage());
+        }
+    }
+
     public void onChatMessage(SocketIOClient client, String message, AckRequest ackRequest) {
         String playerUuid = client.getSessionId().toString();
         IModifiedChessGame game = gameManager.getGameByPlayerUuid(playerUuid);
