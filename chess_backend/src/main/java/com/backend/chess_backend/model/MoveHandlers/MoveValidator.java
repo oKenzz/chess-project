@@ -149,7 +149,7 @@ public class MoveValidator {
             movelist[piece.getX() - 1][piece.getY() + 1] = false;
         }
     }
-
+///////////////////////////////////////////////////////////////////////////////////////
     private static void handleBlackPawnMoves(Piece piece, boolean[][] movelist, Square[][] board) {
         if (piece.getY() > 0 && board[piece.getX()][piece.getY() - 1].containsPiece()) {
             movelist[piece.getX()][piece.getY() - 1] = false;
