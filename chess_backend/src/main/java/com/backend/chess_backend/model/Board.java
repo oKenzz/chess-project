@@ -98,7 +98,8 @@ public class Board {
         move(board[lastMove[1][0]][lastMove[1][1]].getPiece(), lastMove[0][0], lastMove[0][1]);
 
         board[tmpx][tmpy].setPiece(tmpp);
-        board[lastMove[1][0]][lastMove[1][1]].getPiece().movesMade -= 2;
+
+        board[lastMove[1][0]][lastMove[1][1]].getPiece().DecrementMovesMade(2);
 
     }
 
