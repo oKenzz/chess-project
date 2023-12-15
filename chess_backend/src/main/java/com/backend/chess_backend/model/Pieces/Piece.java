@@ -3,11 +3,11 @@ package com.backend.chess_backend.model.Pieces;
 import com.backend.chess_backend.model.Constants.PieceTypeEnum;
 
 public abstract class Piece {
-    public boolean dead;
-    public PieceColor color;
-    public int xCoord;
-    public int yCoord;
-    public int movesMade;
+    private boolean dead;
+    private PieceColor color;
+    private int xCoord;
+    private int yCoord;
+    private int movesMade;
 
     protected Piece(PieceColor color, int xCoord, int yCoord) {
         this.color = color;
@@ -38,8 +38,22 @@ public abstract class Piece {
         return movesMade;
     }
 
+    public void setMovesMade(int m) {
+        this.movesMade = m;
+    }
+
     public void IncrementMovesMade() {
         this.movesMade++;
+    }
+
+    public void DecrementMovesMade() {
+        this.movesMade--;
+    }
+
+    public void DecrementMovesMade(int m) {
+        for (int i = 0; i < m; i++) {
+            this.movesMade--;
+        }
     }
 
     // forcefully updates the coordinates, should only be called right before move

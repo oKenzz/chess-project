@@ -27,6 +27,6 @@ public class PromotionMoveHandler {
         Square[][] currentBoard = board.getBoard();
 
         currentBoard[x][y].setPiece(PieceFactory.makeQueen(piece.getColor(), x, y));
-        currentBoard[x][y].getPiece().movesMade = piece.movesMade;
+        currentBoard[x][y].getPiece().setMovesMade(piece.getMovesMade()); 
     }
 }
