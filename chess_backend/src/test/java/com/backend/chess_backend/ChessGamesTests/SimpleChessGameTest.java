@@ -75,7 +75,6 @@ public class SimpleChessGameTest {
         // Add a player
         game.addPlayer("player1", false);
         assertNotNull(game.getPlayer("player1"));
-;
     }
 
     @Test
