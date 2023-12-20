@@ -14,7 +14,7 @@ public class CastlingMoveHandler {
         PieceColor kingColor = king.getColor();
         if (king.getColor() == PieceColor.BLACK) {
 
-            if (currentBoard[0][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
+            if (currentBoard[0][7].containsPiece() && currentBoard[0][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
                     && currentBoard[0][7].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(1, 7, kingColor, board) && notThreatenedEmptySquare(2, 7, kingColor, board)
                         && notThreatenedEmptySquare(3, 7, kingColor, board)) {
@@ -24,7 +24,7 @@ public class CastlingMoveHandler {
 
                 }
             }
-            if (currentBoard[7][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
+            if (currentBoard[7][7].containsPiece() && currentBoard[7][7].getPiece().getPieceType() == PieceTypeEnum.BLACK_ROOK
                     && currentBoard[7][7].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(5, 7, kingColor, board)
                         && notThreatenedEmptySquare(6, 7, kingColor, board)) {
@@ -35,7 +35,7 @@ public class CastlingMoveHandler {
                 }
             }
         } else if (king.getColor() == PieceColor.WHITE) {
-            if (currentBoard[0][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
+            if (currentBoard[0][0].containsPiece() && currentBoard[0][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
                     && currentBoard[0][0].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(1, 0, kingColor, board) && notThreatenedEmptySquare(2, 0, kingColor, board)
                         && notThreatenedEmptySquare(3, 0, kingColor, board)) {
@@ -45,7 +45,7 @@ public class CastlingMoveHandler {
 
                 }
             }
-            if (currentBoard[7][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
+            if (currentBoard[7][0].containsPiece() && currentBoard[7][0].getPiece().getPieceType() == PieceTypeEnum.WHITE_ROOK
                     && currentBoard[7][0].getPiece().getMovesMade() == 0) {
                 if (notThreatenedEmptySquare(5, 0, kingColor, board)
                         && notThreatenedEmptySquare(6, 0, kingColor, board)) {
