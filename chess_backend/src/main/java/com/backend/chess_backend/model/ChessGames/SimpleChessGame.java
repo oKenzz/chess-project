@@ -48,7 +48,7 @@ public class SimpleChessGame implements IChessGame {
                 emptyList[i][j] = false;
             }
         }
-
+        
         if ((attemptToMoveWhite(x, y) && isWhitesTurn()) || (attemptToMoveBlack(x, y) && isBlacksTurn())) {
             return MoveValidator.getPossibleMoves(currentPiece, board);
         }
