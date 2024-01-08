@@ -28,11 +28,11 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
         sendPieceMovement(sourceSquare, targetSquare).then((hasPiecesMoved) => {
             if (hasPiecesMoved && isSinglePlayer) {
 
-                socket?.emit('computerMove');
                 // random delay to simulate computer thinking
-                // const delay = Math.floor(Math.random() * 1000) + 600;
-                // setTimeout(() => {
-                // }, delay);
+                const delay = Math.floor(Math.random() * 1000) + 600;
+                setTimeout(() => {
+                    socket?.emit('computerMove');
+                }, delay);
             }
             return hasPiecesMoved;
         });
@@ -52,7 +52,17 @@ const Chess = ({ isSinglePlayer , fen , color, socket, ...otherProps }: ChessPro
             // Move Piece
             const sourceSquare : string | undefined = pieceSquare?.toString()
             const targetSquare : string = square.toString()
-            sendPieceMovement(sourceSquare, targetSquare)
+            sendPieceMovement(sourceSquare, targetSquare).then((hasPiecesMoved) => {
+                if (hasPiecesMoved && isSinglePlayer) {
+    
+                    // random delay to simulate computer thinking
+                    const delay = Math.floor(Math.random() * 1000) + 600;
+                    setTimeout(() => {
+                        socket?.emit('computerMove');
+                    }, delay);
+                }
+                return hasPiecesMoved;
+            });
         }
 
     }
